@@ -1,0 +1,63 @@
+import cors from "cors";
+import express from "express";
+import cookieParser from "cookie-parser";
+
+import { API_PREFIX, TRUSTED_ORIGINS } from "../config/env.config.js";
+
+import { resFormatter } from "./middleware/resFormatter.middleware.js";
+import { notFoundRoute } from "./middleware/notFound.middleware.js";
+import { errorHandler } from "./middleware/error.middleware.js";
+import { apiLimiter } from "./middleware/rateLimit.middleware.js";
+
+import { SystemRoutes, UserRoutes } from "./modules/index.js";
+
+const app = express();
+app.use(cookieParser());
+app.disable("x-powered-by");
+
+app.use(
+  cors({
+    origin: TRUSTED_ORIGINS,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+  }),
+);
+
+app.use(express.json());
+app.use(resFormatter);
+
+app.get(`${API_PREFIX}`, (_req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Welcome to Sarahah API",
+    data: {
+      API_PREFIX,
+      version: "1.0.0",
+      Repo: "https://github.com/Abdelrahman968/sarahah-api",
+      Author: "Abdelrahman Ayman",
+      info: "Route Academy Assignment",
+    },
+  });
+});
+
+const routes = [
+  {
+    path: "/system",
+    middlewares: [apiLimiter],
+    router: SystemRoutes,
+  },
+  {
+    path: "/users",
+    middlewares: [apiLimiter],
+    router: UserRoutes,
+  },
+];
+
+routes.forEach(({ path, middlewares, router }) => {
+  app.use(`${API_PREFIX}${path}`, ...middlewares, router);
+});
+
+app.use(notFoundRoute);
+app.use(errorHandler);
+
+export default app;
