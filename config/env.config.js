@@ -39,6 +39,13 @@ const parsedEnv = envSchema.safeParse({
   JWT_ACCESS_EXPIRES_IN: process.env.JWT_ACCESS_EXPIRES_IN,
   JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET,
   JWT_REFRESH_EXPIRES_IN: process.env.JWT_REFRESH_EXPIRES_IN,
+  JWT_REFRESH_COOKIE_NAME: process.env.JWT_REFRESH_COOKIE_NAME,
+  SMTP_HOST: process.env.SMTP_HOST,
+  SMTP_PORT: process.env.SMTP_PORT,
+  SMTP_USER: process.env.SMTP_USER,
+  SMTP_PASSWORD: process.env.SMTP_PASSWORD,
+  MAIL_FROM: process.env.MAIL_FROM,
+  CLIENT_URL: process.env.CLIENT_URL,
 });
 
 if (!parsedEnv.success) {
@@ -59,4 +66,11 @@ export const {
   JWT_ACCESS_EXPIRES_IN,
   JWT_REFRESH_SECRET,
   JWT_REFRESH_EXPIRES_IN,
+  JWT_REFRESH_COOKIE_NAME,
+  SMTP_HOST,
+  SMTP_PORT,
+  SMTP_USER,
+  SMTP_PASSWORD,
+  MAIL_FROM,
+  CLIENT_URL,
 } = parsedEnv.data;

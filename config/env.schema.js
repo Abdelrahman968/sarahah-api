@@ -1,21 +1,24 @@
 import { z } from "zod";
 
+const portValidator = z.coerce
+  .number({
+    error: (issue) => {
+      if (issue.code === "invalid_type") {
+        return "PORT must be a number";
+      }
+
+      return "Invalid PORT";
+    },
+  })
+  .int("PORT must be an integer")
+  .positive()
+  .min(1, "PORT must be at least 1")
+  .max(65535, "PORT must be at most 65535")
+  .default(7000);
+
 export const envSchema = z.object({
   NODE_ENV: z.enum(["development", "production"]).default("development"),
-  PORT: z.coerce
-    .number({
-      error: (issue) => {
-        if (issue.code === "invalid_type") {
-          return "PORT must be a number";
-        }
-
-        return "Invalid PORT";
-      },
-    })
-    .int("PORT must be an integer")
-    .min(1, "PORT must be at least 1")
-    .max(65535, "PORT must be at most 65535")
-    .default(7000),
+  PORT: portValidator,
   API_PREFIX: z
     .string({ error: "API_PREFIX must be a string" })
     .min(1, "API_PREFIX must be at least 1 character long")
@@ -52,4 +55,12 @@ export const envSchema = z.object({
     .min(32, "JWT_REFRESH_SECRET must be at least 32 characters"),
 
   JWT_REFRESH_EXPIRES_IN: z.string(),
+  JWT_REFRESH_COOKIE_NAME: z.string(),
+
+  SMTP_HOST: z.string().min(1),
+  SMTP_PORT: portValidator,
+  SMTP_USER: z.email(),
+  SMTP_PASSWORD: z.string().min(1),
+  MAIL_FROM: z.string().min(1),
+  CLIENT_URL: z.url(),
 });

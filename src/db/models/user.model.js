@@ -87,6 +87,23 @@ const userSchema = new mongoose.Schema(
   },
 );
 
+userSchema.post("findOneAndDelete", async function (doc) {
+  if (!doc) return;
+
+  const PasswordReset = mongoose.model("PasswordReset");
+  const Session = mongoose.model("Session");
+
+  await Promise.all([
+    PasswordReset.deleteMany({
+      userId: doc._id,
+    }),
+
+    Session.deleteMany({
+      userId: doc._id,
+    }),
+  ]);
+});
+
 const User = mongoose.model("User", userSchema);
 
 export default User;

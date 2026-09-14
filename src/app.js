@@ -7,9 +7,9 @@ import { API_PREFIX, TRUSTED_ORIGINS } from "../config/env.config.js";
 import { resFormatter } from "./middleware/resFormatter.middleware.js";
 import { notFoundRoute } from "./middleware/notFound.middleware.js";
 import { errorHandler } from "./middleware/error.middleware.js";
-import { apiLimiter } from "./middleware/rateLimit.middleware.js";
+import { apiLimiter, authLimiter } from "./middleware/rateLimit.middleware.js";
 
-import { SystemRoutes, UserRoutes } from "./modules/index.js";
+import { AuthRoutes, SystemRoutes, UserRoutes } from "./modules/index.js";
 
 const app = express();
 app.use(cookieParser());
@@ -47,7 +47,12 @@ const routes = [
     router: SystemRoutes,
   },
   {
-    path: "/users",
+    path: "/auth",
+    middlewares: [authLimiter],
+    router: AuthRoutes,
+  },
+  {
+    path: "/user",
     middlewares: [apiLimiter],
     router: UserRoutes,
   },
