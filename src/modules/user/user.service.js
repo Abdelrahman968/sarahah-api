@@ -13,16 +13,11 @@ import PasswordReset from "../../db/models/password-reset.model.js";
 import { CLIENT_URL } from "../../../config/env.config.js";
 import { resetPasswordEmailTemplate } from "../../services/email/templates/forgot-password.template.js";
 import Session from "../../db/models/session.model.js";
+import { isValidObjectId } from "../../utils/isValidObjectId.js";
 
-export const GetProfileService = async (userId) => {
-  if (!mongoose.isValidObjectId(userId)) {
-    throw new Error("Invalid user ID", {
-      cause: {
-        status: 400,
-      },
-    });
-  }
-  const user = await User.findById(userId).select("-password");
+export const GetProfileService = async (id) => {
+  isValidObjectId(id);
+  const user = await User.findById(id).select("-password");
 
   if (!user) {
     throw new Error("User not found", {
@@ -35,13 +30,7 @@ export const GetProfileService = async (userId) => {
 };
 
 export const UpdateProfileService = async (id, body) => {
-  if (!mongoose.isValidObjectId(id)) {
-    throw new Error("Invalid user ID", {
-      cause: {
-        status: 400,
-      },
-    });
-  }
+  isValidObjectId(id);
 
   const user = await User.findByIdAndUpdate(
     id,
@@ -64,13 +53,7 @@ export const UpdateProfileService = async (id, body) => {
 };
 
 export const UpdateEmailService = async (id, body) => {
-  if (!mongoose.isValidObjectId(id)) {
-    throw new Error("Invalid user ID", {
-      cause: {
-        status: 400,
-      },
-    });
-  }
+  isValidObjectId(id);
 
   const newEmail = await isEmailTakenByAnotherUser(body.email, id);
 
@@ -103,11 +86,7 @@ export const UpdateEmailService = async (id, body) => {
 };
 
 export const updatePasswordService = async (id, body) => {
-  if (!mongoose.isValidObjectId(id)) {
-    throw new Error("Invalid user ID", {
-      cause: { status: 400 },
-    });
-  }
+  isValidObjectId(id);
 
   const { currentPassword, newPassword, confirmPassword } = body;
 
@@ -266,6 +245,26 @@ export const ResetPasswordService = async (
       },
     },
   );
+
+  return user;
+};
+
+export const GetAllUsersService = async () => {
+  return User.find();
+};
+
+export const deleteMeService = async (id) => {
+  isValidObjectId(id);
+
+  const user = await User.findByIdAndDelete(id);
+
+  if (!user) {
+    throw new Error("User not found", {
+      cause: {
+        status: 404,
+      },
+    });
+  }
 
   return user;
 };

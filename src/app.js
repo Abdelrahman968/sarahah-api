@@ -9,7 +9,14 @@ import { notFoundRoute } from "./middleware/notFound.middleware.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 import { apiLimiter, authLimiter } from "./middleware/rateLimit.middleware.js";
 
-import { AuthRoutes, SystemRoutes, UserRoutes } from "./modules/index.js";
+import {
+  AdminRoutes,
+  AuthRoutes,
+  SystemRoutes,
+  UserRoutes,
+} from "./modules/index.js";
+import { authenticate } from "./middleware/authenticate.middleware.js";
+import { authorize } from "./middleware/authorize.middleware.js";
 
 const app = express();
 app.use(cookieParser());
@@ -55,6 +62,11 @@ const routes = [
     path: "/user",
     middlewares: [apiLimiter],
     router: UserRoutes,
+  },
+  {
+    path: "/admin",
+    middlewares: [authenticate, authorize("admin")],
+    router: AdminRoutes,
   },
 ];
 

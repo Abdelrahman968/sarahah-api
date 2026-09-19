@@ -32,7 +32,21 @@ export const RegisterUserService = async (body) => {
     age,
   };
 
-  const user = await User.create(data);
+  let user;
+
+  try {
+    user = await User.create(data);
+  } catch (error) {
+    if (error.code === 11000 && error.keyPattern?.email) {
+      throw new Error("Email already exists", {
+        cause: {
+          status: 409,
+        },
+      });
+    }
+
+    throw error;
+  }
 
   sendEmail({
     to: user.email,
@@ -60,6 +74,7 @@ export const RegisterUserService = async (body) => {
       firstName: user.firstName,
       lastName: user.lastName,
       fullName: user.fullName,
+      role: user.role,
       email: user.email,
       gender: user.gender,
       age: user.age,

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { ro } from "zod/locales";
 
 const nameValidator = {
   type: String,
@@ -14,6 +15,12 @@ const userSchema = new mongoose.Schema(
   {
     firstName: nameValidator,
     lastName: nameValidator,
+
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
+    },
 
     email: {
       type: String,

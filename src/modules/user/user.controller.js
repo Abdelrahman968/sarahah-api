@@ -8,7 +8,9 @@ import {
   updateProfileValidator,
 } from "./user.zod.js";
 import {
+  deleteMeService,
   ForgotPasswordService,
+  GetAllUsersService,
   GetProfileService,
   ResetPasswordService,
   UpdateEmailService,
@@ -21,6 +23,17 @@ import { CLIENT_URL } from "../../../config/env.config.js";
 import { sendEmail } from "../../services/email/email.service.js";
 
 const router = Router();
+
+router.get("/getUsers", async (_req, res, next) => {
+  try {
+    const data = await GetAllUsersService();
+    res.status(200).json({
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 router.post(
   "/forgot-password",
@@ -146,5 +159,18 @@ router.patch(
     }
   },
 );
+
+router.delete("/delete/me", async (req, res, next) => {
+  try {
+    const result = await deleteMeService(req.user.id);
+
+    res.status(200).json({
+      message: "User deleted successfully",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default router;

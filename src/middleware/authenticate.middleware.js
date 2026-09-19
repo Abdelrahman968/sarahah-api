@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { JWT_ACCESS_SECRET } from "../../config/env.config.js";
 
-export const authenticate = (req, res, next) => {
+export const authenticate = (req, _res, next) => {
   try {
     const authorization = req.headers.authorization;
 
@@ -13,9 +13,9 @@ export const authenticate = (req, res, next) => {
       });
     }
 
-    const [scheme, accessToken] = authorization.split(" ");
+    const [scheme, accessToken, ...rest] = authorization.split(" ");
 
-    if (scheme !== "Bearer" || !accessToken) {
+    if (scheme !== "Bearer" || !accessToken || rest.length > 0) {
       throw new Error("Invalid authorization header", {
         cause: {
           status: 401,
@@ -33,13 +33,16 @@ export const authenticate = (req, res, next) => {
       payload.type !== "access" ||
       !payload.sub
     ) {
-      return res.status(401).json({
-        message: "Invalid access token",
+      throw new Error("Invalid access token", {
+        cause: {
+          status: 401,
+        },
       });
     }
 
     req.user = {
       id: payload.sub,
+      role: payload.role,
     };
 
     next();
