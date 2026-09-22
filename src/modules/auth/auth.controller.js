@@ -4,6 +4,7 @@ import {
   LoginUserService,
   LogoutService,
   RefreshTokenService,
+  GetProfileService,
 } from "./auth.service.js";
 
 import { loginValidator, UserRegisterValidator } from "./auth.zod.js";
@@ -19,6 +20,13 @@ import {
 } from "../../../config/env.config.js";
 import { sendEmail } from "../../services/email/email.service.js";
 import { newLoginEmailTemplate } from "../../services/email/templates/new-login.template.js";
+import {
+  forgotPasswordValidator,
+  resetPasswordValidator,
+} from "../user/user.zod.js";
+
+import { passwordChangedEmailTemplate } from "../../services/email/templates/password-change.template.js";
+import { authenticate } from "../../middleware/authenticate.middleware.js";
 
 const router = Router();
 
@@ -101,6 +109,25 @@ router.post("/login", validate(loginValidator), async (req, res, next) => {
   }
 });
 
+router.post("/logout", async (req, res, next) => {
+  try {
+    const refreshToken = req.cookies[JWT_REFRESH_COOKIE_NAME];
+
+    if (!refreshToken) {
+      clearRefreshTokenCookie(res);
+      return res.status(200).json({ message: "Logout successfully" });
+    }
+
+    await LogoutService(refreshToken);
+
+    clearRefreshTokenCookie(res);
+
+    res.status(200).json({ message: "Logout successfully" });
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.post("/refresh-token", async (req, res, next) => {
   try {
     const refreshToken = req.cookies[JWT_REFRESH_COOKIE_NAME];
@@ -126,20 +153,71 @@ router.post("/refresh-token", async (req, res, next) => {
   }
 });
 
-router.post("/logout", async (req, res, next) => {
-  try {
-    const refreshToken = req.cookies[JWT_REFRESH_COOKIE_NAME];
-
-    if (!refreshToken) {
-      clearRefreshTokenCookie(res);
-      return res.status(200).json({ message: "Logout successfully" });
+router.post(
+  "/forgot-password",
+  validate(forgotPasswordValidator),
+  async (req, res, next) => {
+    try {
+      const data = await ForgotPasswordService(req.body.email);
+      res.status(200).json({
+        data,
+      });
+    } catch (error) {
+      next(error);
     }
+  },
+);
 
-    await LogoutService(refreshToken);
+router.post(
+  "/reset-password",
+  validate(resetPasswordValidator),
+  async (req, res, next) => {
+    try {
+      const { token, newPassword, confirmPassword } = req.body;
 
-    clearRefreshTokenCookie(res);
+      const user = await ResetPasswordService(
+        token,
+        newPassword,
+        confirmPassword,
+      );
 
-    res.status(200).json({ message: "Logout successfully" });
+      const html = passwordChangedEmailTemplate({
+        name: user.firstName,
+        email: user.email,
+        changedAt: new Date().toLocaleString("en-US", {
+          dateStyle: "medium",
+          timeStyle: "short",
+        }),
+        ipAddress: req.ip,
+        device: req.get("user-agent"),
+        securityUrl: `${CLIENT_URL}/account/security`,
+      });
+
+      sendEmail({
+        to: user.email,
+        subject: "Your Sarahah Password Was Changed",
+        html,
+      }).catch((error) => {
+        console.error("Password changed email failed:", error);
+      });
+
+      res.status(200).json({
+        message: "Password reset successfully",
+        user,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+router.get("/me", authenticate, async (req, res, next) => {
+  try {
+    const data = await GetProfileService(req.user.id);
+
+    res.json({
+      data,
+    });
   } catch (error) {
     next(error);
   }

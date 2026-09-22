@@ -18,6 +18,9 @@ import {
 import { authenticate } from "./middleware/authenticate.middleware.js";
 import { authorize } from "./middleware/authorize.middleware.js";
 
+import { apiReference } from "@scalar/express-api-reference";
+import { openapiDocument } from "./docs/openapi.js";
+
 const app = express();
 app.use(cookieParser());
 app.disable("x-powered-by");
@@ -33,12 +36,16 @@ app.use(
 app.use(express.json());
 app.use(resFormatter);
 
+app.get("/", (req, res) => {
+  res.redirect(API_PREFIX);
+});
+
 app.get(`${API_PREFIX}`, (_req, res) => {
   res.status(200).json({
     success: true,
     message: "Welcome to Sarahah API",
     data: {
-      API_PREFIX,
+      apiPrefix: API_PREFIX,
       version: "1.0.0",
       Repo: "https://github.com/Abdelrahman968/sarahah-api",
       Author: "Abdelrahman Ayman",
@@ -47,26 +54,49 @@ app.get(`${API_PREFIX}`, (_req, res) => {
   });
 });
 
+app.use(
+  `${API_PREFIX}/docs`,
+  apiReference({
+    spec: {
+      content: openapiDocument,
+    },
+    theme: "default",
+    pageTitle: "Sarahah API Documentation",
+  }),
+);
+
 const routes = [
   {
     path: "/system",
     middlewares: [apiLimiter],
     router: SystemRoutes,
+    docs: {
+      tag: "System",
+    },
   },
   {
     path: "/auth",
     middlewares: [authLimiter],
     router: AuthRoutes,
+    docs: {
+      tag: "Auth",
+    },
   },
   {
     path: "/user",
     middlewares: [apiLimiter],
     router: UserRoutes,
+    docs: {
+      tag: "Users",
+    },
   },
   {
     path: "/admin",
     middlewares: [authenticate, authorize("admin")],
     router: AdminRoutes,
+    docs: {
+      tag: "Admin",
+    },
   },
 ];
 

@@ -15,6 +15,12 @@ import { welcomeEmailTemplate } from "../../services/email/templates/welcome.tem
 import { hashPassword, verifyPassword } from "../../utils/password.js";
 import User from "../../db/models/user.model.js";
 import { sendEmail } from "../../services/email/email.service.js";
+import {
+  generatePasswordResetToken,
+  hashToken,
+} from "../../utils/cryptoHash.js";
+import PasswordReset from "../../db/models/password-reset.model.js";
+import { CLIENT_URL } from "../../../config/env.config.js";
 
 export const RegisterUserService = async (body) => {
   const { firstName, lastName, email, password, gender, age } = body;
@@ -127,6 +133,26 @@ export const LoginUserService = async (body) => {
   };
 };
 
+export const LogoutService = async (refreshToken) => {
+  if (!refreshToken) {
+    return;
+  }
+
+  const tokenHash = hashToken(refreshToken);
+
+  await Session.findOneAndUpdate(
+    {
+      tokenHash,
+      revokedAt: null,
+    },
+    {
+      $set: {
+        revokedAt: new Date(),
+      },
+    },
+  );
+};
+
 export const RefreshTokenService = async (refreshToken) => {
   const payload = verifyRefreshToken(refreshToken);
   const session = await findActiveSession(refreshToken, payload.sub);
@@ -157,16 +183,114 @@ export const RefreshTokenService = async (refreshToken) => {
   };
 };
 
-export const LogoutService = async (refreshToken) => {
-  if (!refreshToken) {
-    return;
+export const ForgotPasswordService = async (email) => {
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return {
+      massage: "If the email exists, a password reset link has been sent.",
+    };
   }
 
-  const tokenHash = hashToken(refreshToken);
+  const token = generatePasswordResetToken();
 
-  await Session.findOneAndUpdate(
+  const tokenHash = hashToken(token);
+  const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+
+  await PasswordReset.deleteMany({ userId: user._id, usedAt: null });
+
+  await PasswordReset.create({
+    userId: user._id,
+    tokenHash,
+    expiresAt,
+  });
+
+  const resetUrl = `${CLIENT_URL}/reset-password?token=${token}`;
+
+  sendEmail({
+    to: user.email,
+    subject: "Password Reset",
+    html: resetPasswordEmailTemplate({
+      name: user.fullName,
+      email: user.email,
+      resetUrl,
+    }),
+  }).catch((error) => {
+    console.error("Password Reset email failed:", error);
+  });
+
+  return {
+    message: "If the email exists, a password reset link has been sent.",
+    token,
+    resetUrl,
+  };
+};
+
+export const ResetPasswordService = async (
+  token,
+  newPassword,
+  confirmPassword,
+) => {
+  if (newPassword !== confirmPassword) {
+    throw new Error("New password and confirm password do not match", {
+      cause: { status: 400 },
+    });
+  }
+
+  const tokenHash = hashToken(token);
+
+  const resetRequest = await PasswordReset.findOne({
+    tokenHash,
+    usedAt: null,
+  });
+
+  if (!resetRequest) {
+    throw new Error("Invalid or expired reset token", {
+      cause: {
+        status: 400,
+      },
+    });
+  }
+
+  if (resetRequest.expiresAt <= new Date()) {
+    throw new Error("Invalid or expired reset token", {
+      cause: {
+        status: 400,
+      },
+    });
+  }
+
+  const user = await User.findById(resetRequest.userId).select("+password");
+
+  if (!user) {
+    throw new Error("User not found", {
+      cause: {
+        status: 404,
+      },
+    });
+  }
+
+  const isSamePassword = await verifyPassword(user.password, newPassword);
+
+  if (isSamePassword) {
+    throw new Error("New password cannot be the same as the old password", {
+      cause: {
+        status: 400,
+      },
+    });
+  }
+
+  const newHashedPassword = await hashPassword(newPassword);
+
+  user.password = newHashedPassword;
+  await user.save();
+
+  resetRequest.usedAt = new Date();
+  await resetRequest.save();
+
+  await Session.updateMany(
     {
-      tokenHash,
+      userId: resetRequest.userId,
       revokedAt: null,
     },
     {
@@ -175,4 +299,20 @@ export const LogoutService = async (refreshToken) => {
       },
     },
   );
+
+  return user;
+};
+
+export const GetProfileService = async (id) => {
+  isValidObjectId(id);
+  const user = await User.findById(id).select("-password");
+
+  if (!user) {
+    throw new Error("User not found", {
+      cause: {
+        status: 404,
+      },
+    });
+  }
+  return user;
 };
