@@ -10,20 +10,14 @@ export function registerDocsRoutes(registry) {
     bearerFormat: "JWT",
   });
 
-  // ---------------------------------------------------------------------
   // System
-  // ---------------------------------------------------------------------
   registry.registerPath({
     method: "get",
     path: "/system/health",
-
     tags: ["System"],
-
     summary: "Check API health",
-
     description:
       "Returns the current status of the API and database connection.",
-
     responses: {
       200: {
         description: "API and database are healthy.",
@@ -51,19 +45,13 @@ export function registerDocsRoutes(registry) {
     },
   });
 
-  // ---------------------------------------------------------------------
   // Auth
-  // ---------------------------------------------------------------------
   registry.registerPath({
     method: "post",
     path: "/auth/register",
-
     tags: ["Auth"],
-
     summary: "Register",
-
     description: "Register a new user account.",
-
     request: {
       body: {
         content: {
@@ -72,7 +60,6 @@ export function registerDocsRoutes(registry) {
               firstName: z.string().openapi({ example: "Abdelrahman" }),
               lastName: z.string().openapi({ example: "Ayman" }),
               email: z
-                .string()
                 .email()
                 .openapi({ example: "se.abdelrahman968@gmail.com" }),
               password: z.string().openapi({ example: "Password@123" }),
@@ -100,20 +87,15 @@ export function registerDocsRoutes(registry) {
   registry.registerPath({
     method: "post",
     path: "/auth/login",
-
     tags: ["Auth"],
-
     summary: "Login",
-
     description: "Log in with email and password.",
-
     request: {
       body: {
         content: {
           "application/json": {
             schema: z.object({
               email: z
-                .string()
                 .email()
                 .openapi({ example: "se.abdelrahman968+admin@gmail.com" }),
               password: z.string().openapi({ example: "Password@123" }),
@@ -136,13 +118,9 @@ export function registerDocsRoutes(registry) {
   registry.registerPath({
     method: "post",
     path: "/auth/logout",
-
     tags: ["Auth"],
-
     summary: "Logout",
-
     description: "Revokes the refresh token stored in the cookie.",
-
     responses: {
       200: {
         description: "Logged out successfully.",
@@ -153,20 +131,15 @@ export function registerDocsRoutes(registry) {
   registry.registerPath({
     method: "post",
     path: "/auth/forgot-password",
-
     tags: ["Auth"],
-
     summary: "Forgot Password",
-
     description: "Sends a password reset token to the user's email.",
-
     request: {
       body: {
         content: {
           "application/json": {
             schema: z.object({
               email: z
-                .string()
                 .email()
                 .openapi({ example: "se.abdelrahman968+test1@gmail.com" }),
             }),
@@ -188,13 +161,9 @@ export function registerDocsRoutes(registry) {
   registry.registerPath({
     method: "post",
     path: "/auth/reset-password",
-
     tags: ["Auth"],
-
     summary: "Reset Password",
-
     description: "Resets the password using the token received by email.",
-
     request: {
       body: {
         content: {
@@ -226,21 +195,14 @@ export function registerDocsRoutes(registry) {
     },
   });
 
-  // ---------------------------------------------------------------------
   // Users
-  // ---------------------------------------------------------------------
   registry.registerPath({
     method: "get",
     path: "/user/profile",
-
     tags: ["Users"],
-
     summary: "Get Profile",
-
     description: "Get the currently authenticated user's profile.",
-
     security: [{ bearerAuth: [] }],
-
     responses: {
       200: {
         description: "Profile retrieved successfully.",
@@ -254,15 +216,10 @@ export function registerDocsRoutes(registry) {
   registry.registerPath({
     method: "get",
     path: "/user/getUsers",
-
     tags: ["Users"],
-
     summary: "Get All Users",
-
     description: "Get a list of all users.",
-
     security: [{ bearerAuth: [] }],
-
     responses: {
       200: {
         description: "Users retrieved successfully.",
@@ -400,9 +357,7 @@ export function registerDocsRoutes(registry) {
     },
   });
 
-  // ---------------------------------------------------------------------
   // Admin
-  // ---------------------------------------------------------------------
   registry.registerPath({
     method: "delete",
     path: "/admin/delete/user/{id}",

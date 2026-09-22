@@ -5,6 +5,8 @@ import {
   LogoutService,
   RefreshTokenService,
   GetProfileService,
+  ForgotPasswordService,
+  ResetPasswordService,
 } from "./auth.service.js";
 
 import { loginValidator, UserRegisterValidator } from "./auth.zod.js";

@@ -1,12 +1,10 @@
-import User from "../../db/models/user.model.js";
-import { isEmailTakenByAnotherUser } from "../../utils/checkEmail.js";
 import { hashPassword, verifyPassword } from "../../utils/password.js";
-
-import { isValidObjectId } from "../../utils/isValidObjectId.js";
+import { isValidObjectId } from "../../utils/validation/isValidObjectId.js";
+import userRepository from "../../db/repository/user.repository.js";
 
 export const GetMyInfo = async (id) => {
   isValidObjectId(id);
-  const user = await User.findById(id).select("-password");
+  const user = await userRepository.findById(id, "-password");
 
   if (!user) {
     throw new Error("User not found", {
@@ -21,7 +19,7 @@ export const GetMyInfo = async (id) => {
 export const UpdateProfileService = async (id, body) => {
   isValidObjectId(id);
 
-  const user = await User.findByIdAndUpdate(
+  const user = await userRepository.findByIdAndUpdate(
     id,
     { $set: body },
     {
@@ -44,7 +42,10 @@ export const UpdateProfileService = async (id, body) => {
 export const UpdateEmailService = async (id, body) => {
   isValidObjectId(id);
 
-  const newEmail = await isEmailTakenByAnotherUser(body.email, id);
+  const newEmail = await userRepository.ensureEmailAvailableForUpdate(
+    body.email,
+    id,
+  );
 
   if (newEmail) {
     throw new Error("Email already taken", {
@@ -54,7 +55,7 @@ export const UpdateEmailService = async (id, body) => {
     });
   }
 
-  const user = await User.findByIdAndUpdate(
+  const user = await userRepository.findByIdAndUpdate(
     id,
     { $set: body },
     {
@@ -85,7 +86,7 @@ export const updatePasswordService = async (id, body) => {
     });
   }
 
-  const user = await User.findById(id).select("+password");
+  const user = await userRepository.findById(id, "+password");
 
   if (!user) {
     throw new Error("User not found", {
@@ -111,21 +112,19 @@ export const updatePasswordService = async (id, body) => {
 
   const hashedPassword = await hashPassword(newPassword);
 
-  user.password = hashedPassword;
-
-  await user.save();
+  await userRepository.updatePassword(user._id, hashedPassword);
 
   return user;
 };
 
 export const GetAllUsersService = async () => {
-  return User.find();
+  return userRepository.findAll();
 };
 
 export const deleteMeService = async (id) => {
   isValidObjectId(id);
 
-  const user = await User.findByIdAndDelete(id);
+  const user = await userRepository.findByIdAndDelete(id);
 
   if (!user) {
     throw new Error("User not found", {

@@ -1,7 +1,7 @@
 {
   "name": "sarahah-app",
   "author": "Abdelrahman",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Sarahah app",
   "main": "server.js",
   "scripts": {

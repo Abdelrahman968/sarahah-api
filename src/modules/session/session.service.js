@@ -1,10 +1,10 @@
-import Session from "../../db/models/session.model.js";
+import sessionRepository from "../../db/repository/session.repository.js";
 import { hashToken } from "../../utils/cryptoHash.js";
 
 export const findActiveSession = async (refreshToken, userId) => {
   const tokenHash = hashToken(refreshToken);
 
-  const session = await Session.findOne({
+  const session = await sessionRepository.findOne({
     tokenHash,
     userId,
     revokedAt: null,
@@ -36,7 +36,7 @@ export const revokeSession = async (session) => {
 export const createSession = async ({ userId, refreshToken, expiresAt }) => {
   const tokenHash = hashToken(refreshToken);
 
-  return Session.create({
+  return sessionRepository.create({
     userId,
     tokenHash,
     expiresAt,

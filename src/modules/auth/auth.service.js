@@ -1,11 +1,9 @@
-import { isEmailExist } from "../../utils/checkEmail.js";
 import {
   generateAccessToken,
   generateRefreshToken,
   getTokenExpiration,
   verifyRefreshToken,
 } from "../../utils/jwt.js";
-import Session from "../../db/models/session.model.js";
 import {
   createSession,
   findActiveSession,
@@ -13,19 +11,21 @@ import {
 } from "../session/session.service.js";
 import { welcomeEmailTemplate } from "../../services/email/templates/welcome.template.js";
 import { hashPassword, verifyPassword } from "../../utils/password.js";
-import User from "../../db/models/user.model.js";
 import { sendEmail } from "../../services/email/email.service.js";
 import {
   generatePasswordResetToken,
   hashToken,
 } from "../../utils/cryptoHash.js";
-import PasswordReset from "../../db/models/password-reset.model.js";
 import { CLIENT_URL } from "../../../config/env.config.js";
+import userRepository from "../../db/repository/user.repository.js";
+import sessionRepository from "../../db/repository/session.repository.js";
+import passwordResetRepository from "../../db/repository/password-reset.repository.js";
+import { resetPasswordEmailTemplate } from "../../services/email/templates/forgot-password.template.js";
 
 export const RegisterUserService = async (body) => {
   const { firstName, lastName, email, password, gender, age } = body;
 
-  await isEmailExist(email);
+  await userRepository.ensureEmailAvailable(email);
 
   const hashedPassword = await hashPassword(password);
 
@@ -38,21 +38,7 @@ export const RegisterUserService = async (body) => {
     age,
   };
 
-  let user;
-
-  try {
-    user = await User.create(data);
-  } catch (error) {
-    if (error.code === 11000 && error.keyPattern?.email) {
-      throw new Error("Email already exists", {
-        cause: {
-          status: 409,
-        },
-      });
-    }
-
-    throw error;
-  }
+  const user = await userRepository.create(data);
 
   sendEmail({
     to: user.email,
@@ -97,7 +83,7 @@ export const RegisterUserService = async (body) => {
 export const LoginUserService = async (body) => {
   const { email, password } = body;
 
-  const user = await User.findOne({ email }).select("+password");
+  const user = await userRepository.findByEmail(email, "+password");
 
   if (!user) {
     throw new Error("Email or password is incorrect", {
@@ -140,7 +126,7 @@ export const LogoutService = async (refreshToken) => {
 
   const tokenHash = hashToken(refreshToken);
 
-  await Session.findOneAndUpdate(
+  await sessionRepository.findOneAndUpdate(
     {
       tokenHash,
       revokedAt: null,
@@ -157,7 +143,7 @@ export const RefreshTokenService = async (refreshToken) => {
   const payload = verifyRefreshToken(refreshToken);
   const session = await findActiveSession(refreshToken, payload.sub);
 
-  const user = await User.findById(payload.sub);
+  const user = await userRepository.findById(payload.sub);
 
   if (!user) {
     throw new Error("User not found", {
@@ -184,7 +170,7 @@ export const RefreshTokenService = async (refreshToken) => {
 };
 
 export const ForgotPasswordService = async (email) => {
-  const user = await User.findOne({ email });
+  const user = await userRepository.findOne({ email });
 
   if (!user) {
     return {
@@ -197,9 +183,9 @@ export const ForgotPasswordService = async (email) => {
   const tokenHash = hashToken(token);
   const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
 
-  await PasswordReset.deleteMany({ userId: user._id, usedAt: null });
+  await passwordResetRepository.deleteMany({ userId: user._id, usedAt: null });
 
-  await PasswordReset.create({
+  await passwordResetRepository.create({
     userId: user._id,
     tokenHash,
     expiresAt,
@@ -221,8 +207,8 @@ export const ForgotPasswordService = async (email) => {
 
   return {
     message: "If the email exists, a password reset link has been sent.",
-    token,
-    resetUrl,
+    // token,
+    // resetUrl,
   };
 };
 
@@ -239,7 +225,7 @@ export const ResetPasswordService = async (
 
   const tokenHash = hashToken(token);
 
-  const resetRequest = await PasswordReset.findOne({
+  const resetRequest = await passwordResetRepository.findOne({
     tokenHash,
     usedAt: null,
   });
@@ -260,7 +246,7 @@ export const ResetPasswordService = async (
     });
   }
 
-  const user = await User.findById(resetRequest.userId).select("+password");
+  const user = await userRepository.findById(resetRequest.userId, "+password");
 
   if (!user) {
     throw new Error("User not found", {
@@ -282,13 +268,12 @@ export const ResetPasswordService = async (
 
   const newHashedPassword = await hashPassword(newPassword);
 
-  user.password = newHashedPassword;
-  await user.save();
+  await userRepository.updatePassword(resetRequest.userId, newHashedPassword);
 
   resetRequest.usedAt = new Date();
   await resetRequest.save();
 
-  await Session.updateMany(
+  await sessionRepository.updateMany(
     {
       userId: resetRequest.userId,
       revokedAt: null,
@@ -305,7 +290,7 @@ export const ResetPasswordService = async (
 
 export const GetProfileService = async (id) => {
   isValidObjectId(id);
-  const user = await User.findById(id).select("-password");
+  const user = await userRepository.findById(id, "-password");
 
   if (!user) {
     throw new Error("User not found", {

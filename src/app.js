@@ -51,19 +51,11 @@ app.get(`${API_PREFIX}`, (_req, res) => {
       Author: "Abdelrahman Ayman",
       info: "Route Academy Assignment",
     },
+    docs: {
+      apiRoutes: `${API_PREFIX}/docs`,
+    },
   });
 });
-
-app.use(
-  `${API_PREFIX}/docs`,
-  apiReference({
-    spec: {
-      content: openapiDocument,
-    },
-    theme: "default",
-    pageTitle: "Sarahah API Documentation",
-  }),
-);
 
 const routes = [
   {
@@ -103,6 +95,18 @@ const routes = [
 routes.forEach(({ path, middlewares, router }) => {
   app.use(`${API_PREFIX}${path}`, ...middlewares, router);
 });
+
+app.use(
+  `${API_PREFIX}/docs`,
+  apiReference({
+    spec: {
+      content: openapiDocument,
+    },
+    theme: "kepler",
+    pageTitle: "Sarahah API Documentation",
+    showDeveloperTools: "localhost",
+  }),
+);
 
 app.use(notFoundRoute);
 app.use(errorHandler);

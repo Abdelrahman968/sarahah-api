@@ -1,11 +1,10 @@
-import User from "../../db/models/user.model.js";
-import { isEmailTakenByAnotherUser } from "../../utils/checkEmail.js";
-import { isValidObjectId } from "../../utils/isValidObjectId.js";
+import userRepository from "../../db/repository/user.repository.js";
+import { isValidObjectId } from "../../utils/validation/isValidObjectId.js";
 
 export const DeleteUserById = async (id) => {
   isValidObjectId(id);
 
-  return User.findByIdAndDelete(id);
+  return userRepository.findByIdAndDelete(id);
 };
 
 export const updateUserById = async (id, data) => {
@@ -24,7 +23,7 @@ export const updateUserById = async (id, data) => {
     });
   }
 
-  const user = await User.findById(id);
+  const user = await userRepository.findById(id);
 
   if (!user) {
     throw new Error("User not found", {
@@ -37,16 +36,18 @@ export const updateUserById = async (id, data) => {
   const updateData = { ...data };
 
   if (updateData.email) {
-    await isEmailTakenByAnotherUser(updateData.email, user._id);
-
-    updateData.email = updateData.email;
+    updateData.email = updateData.email.toLowerCase().trim();
+    await userRepository.ensureEmailAvailableForUpdate(
+      updateData.email,
+      user._id,
+    );
   }
 
   if (updateData.password) {
     updateData.password = await hashPassword(updateData.password);
   }
 
-  return User.findByIdAndUpdate(
+  return userRepository.findByIdAndUpdate(
     id,
     { $set: updateData },
     {
