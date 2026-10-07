@@ -1,4 +1,4 @@
-import { hashPassword, verifyPassword } from "../../utils/password.js";
+import { hashPassword, verifyPassword } from "../../utils/hash/password.js";
 import { isValidObjectId } from "../../utils/validation/isValidObjectId.js";
 import userRepository from "../../db/repository/user.repository.js";
 

@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { ro } from "zod/locales";
 
 const nameValidator = {
   type: String,

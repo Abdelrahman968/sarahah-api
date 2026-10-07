@@ -1,25 +1,24 @@
 import { z } from "zod";
 import {
+  ageValidator,
+  bioValidator,
+  emailValidator,
+  genderValidator,
   nameValidator,
   passwordValidator,
-} from "../../utils/globalValidator.js";
+  tokenValidator,
+} from "../../utils/validation/Validators.js";
 
 export const updateProfileValidator = z.object({
   firstName: nameValidator.optional(),
   lastName: nameValidator.optional(),
-  gender: z.enum(["male", "female", "n/a"]).optional(),
-  age: z.number().min(18).max(100).optional(),
-  bio: z
-    .string()
-    .min(1)
-    .max(500, "Bio must be less than 500 characters")
-    .optional(),
+  gender: genderValidator.optional(),
+  age: ageValidator.optional(),
+  bio: bioValidator.optional(),
 });
 
 export const updateEmailValidator = z.object({
-  email: z.email({
-    error: "Invalid email address",
-  }),
+  email: emailValidator,
 });
 
 export const updatePasswordValidator = z
@@ -38,14 +37,12 @@ export const updatePasswordValidator = z
   });
 
 export const forgotPasswordValidator = z.object({
-  email: z.email({
-    error: "Invalid email address",
-  }),
+  email: emailValidator,
 });
 
 export const resetPasswordValidator = z
   .object({
-    token: z.string().min(1),
+    token: tokenValidator,
     newPassword: passwordValidator,
     confirmPassword: passwordValidator,
   })

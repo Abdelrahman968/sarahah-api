@@ -7,8 +7,9 @@ export const validate = (schema) => {
         success: false,
         message: "Validation failed",
         errors: result.error.issues.map((issue) => ({
-          field: issue.path.join("."),
-          message: issue.message,
+          code: issue.code || "Unknown",
+          field: issue.path.join(".") || "Unknown",
+          message: issue.message || "Unknown",
         })),
       });
     }

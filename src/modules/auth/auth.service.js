@@ -10,12 +10,12 @@ import {
   revokeSession,
 } from "../session/session.service.js";
 import { welcomeEmailTemplate } from "../../services/email/templates/welcome.template.js";
-import { hashPassword, verifyPassword } from "../../utils/password.js";
+import { hashPassword, verifyPassword } from "../../utils/hash/password.js";
 import { sendEmail } from "../../services/email/email.service.js";
 import {
   generatePasswordResetToken,
   hashToken,
-} from "../../utils/cryptoHash.js";
+} from "../../utils/hash/crypto.js";
 import { CLIENT_URL } from "../../../config/env.config.js";
 import userRepository from "../../db/repository/user.repository.js";
 import sessionRepository from "../../db/repository/session.repository.js";
@@ -60,21 +60,23 @@ export const RegisterUserService = async (body) => {
     expiresAt: getTokenExpiration(refreshToken),
   });
 
+  const userInfo = {
+    id: user.id,
+    role: user.role,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    fullName: user.fullName,
+    email: user.email,
+    gender: user.gender,
+    age: user.age,
+    profileImage: user.profileImage,
+    bio: user.bio,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+  };
+
   return {
-    user: {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      fullName: user.fullName,
-      role: user.role,
-      email: user.email,
-      gender: user.gender,
-      age: user.age,
-      profileImage: user.profileImage,
-      bio: user.bio,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    },
+    user: userInfo,
     accessToken,
     refreshToken,
   };
@@ -154,7 +156,6 @@ export const RefreshTokenService = async (refreshToken) => {
   await revokeSession(session);
 
   const accessToken = generateAccessToken(user);
-
   const newRefreshToken = generateRefreshToken(user);
 
   await createSession({

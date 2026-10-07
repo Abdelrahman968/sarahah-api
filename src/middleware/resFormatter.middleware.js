@@ -7,3 +7,4 @@ export const resFormatter = (_req, res, next) => {
 
   next();
 };
+

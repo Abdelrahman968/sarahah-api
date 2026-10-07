@@ -1,5 +1,5 @@
 import sessionRepository from "../../db/repository/session.repository.js";
-import { hashToken } from "../../utils/cryptoHash.js";
+import { hashToken } from "../../utils/hash/crypto.js";
 
 export const findActiveSession = async (refreshToken, userId) => {
   const tokenHash = hashToken(refreshToken);

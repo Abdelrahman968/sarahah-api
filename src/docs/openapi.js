@@ -39,17 +39,17 @@ export const openapiDocument = generator.generateDocument({
       description: "Authentication endpoints",
     },
     {
-      name: "Users",
-      description: "User endpoints",
-    },
-    {
       name: "Admin",
       description: "Admin endpoints",
+    },
+    {
+      name: "Users",
+      description: "User endpoints",
     },
   ],
 
   externalDocs: {
     url: "https://documenter.getpostman.com/view/34579966/2sBYAyu9Ts",
-    description: "PostMan Documentation",
+    description: "Postman Documentation",
   },
 });
