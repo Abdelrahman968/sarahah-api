@@ -2,7 +2,7 @@ import { z } from "zod";
 import {
   nameValidator,
   passwordValidator,
-} from "../../utils/globalValidator.js";
+} from "../../utils/validation/Validators.js";
 
 export const AdminUpdateUserValidator = z.object({
   firstName: nameValidator.optional(),
