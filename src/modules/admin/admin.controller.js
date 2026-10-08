@@ -1,7 +1,11 @@
 import { Router } from "express";
-import { DeleteUserById, updateUserById } from "./admin.service.js";
+import {
+  DeleteUserById,
+  getAllUsers,
+  updateUserById,
+} from "./admin.service.js";
 import { validate } from "../../middleware/validate.middleware.js";
-import { AdminUpdateUserValidator } from "./admin.zod.js";
+import { AdminUpdateValidator } from "./admin.zod.js";
 const router = Router();
 
 router.delete("/delete/user/:id", async (req, res, next) => {
@@ -19,7 +23,7 @@ router.delete("/delete/user/:id", async (req, res, next) => {
 
 router.post(
   "/edit/user/:id",
-  validate(AdminUpdateUserValidator),
+  validate(AdminUpdateValidator),
   async (req, res, next) => {
     try {
       const { id } = req.params;
@@ -33,5 +37,14 @@ router.post(
     }
   },
 );
+
+router.get("/users", async (req, res, next) => {
+  try {
+    const users = await getAllUsers();
+    res.status(200).json(users);
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default router;

@@ -4,7 +4,7 @@ import {
   passwordValidator,
 } from "../../utils/validation/Validators.js";
 
-export const AdminUpdateUserValidator = z.object({
+export const AdminUpdateValidator = z.object({
   firstName: nameValidator.optional(),
   lastName: nameValidator.optional(),
   email: z

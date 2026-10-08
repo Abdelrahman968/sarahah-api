@@ -56,3 +56,7 @@ export const updateUserById = async (id, data) => {
     },
   );
 };
+
+export const getAllUsers = async () => {
+  return userRepository.findAll();
+};
