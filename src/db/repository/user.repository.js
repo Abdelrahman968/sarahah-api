@@ -58,6 +58,35 @@ class UserRepository extends BaseRepository {
 
     return user.save();
   }
+
+  async ensureUserNameAvailable(userName) {
+    const exists = await this.exists({
+      userName: userName.toLowerCase(),
+    });
+
+    if (exists) {
+      throw new Error("UserName already exists", {
+        cause: {
+          status: 409,
+        },
+      });
+    }
+  }
+
+  async ensureUserNameAvailableForUpdate(userName, userId) {
+    const exists = await this.exists({
+      userName: userName.toLowerCase(),
+      _id: { $ne: userId },
+    });
+
+    if (exists) {
+      throw new Error("UserName already exists", {
+        cause: {
+          status: 409,
+        },
+      });
+    }
+  }
 }
 
 export default new UserRepository();

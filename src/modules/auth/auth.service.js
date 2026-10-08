@@ -23,9 +23,10 @@ import passwordResetRepository from "../../db/repository/password-reset.reposito
 import { resetPasswordEmailTemplate } from "../../services/email/templates/forgot-password.template.js";
 
 export const RegisterUserService = async (body) => {
-  const { firstName, lastName, email, password, gender, age } = body;
+  const { userName, firstName, lastName, email, password, gender, age } = body;
 
   await userRepository.ensureEmailAvailable(email);
+  await userRepository.ensureUserNameAvailable(userName);
 
   const hashedPassword = await hashPassword(password);
 
@@ -63,6 +64,7 @@ export const RegisterUserService = async (body) => {
   const userInfo = {
     id: user.id,
     role: user.role,
+    userName: user.userName,
     firstName: user.firstName,
     lastName: user.lastName,
     fullName: user.fullName,

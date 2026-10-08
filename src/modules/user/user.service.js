@@ -42,18 +42,7 @@ export const UpdateProfileService = async (id, body) => {
 export const UpdateEmailService = async (id, body) => {
   isValidObjectId(id);
 
-  const newEmail = await userRepository.ensureEmailAvailableForUpdate(
-    body.email,
-    id,
-  );
-
-  if (newEmail) {
-    throw new Error("Email already taken", {
-      cause: {
-        status: 400,
-      },
-    });
-  }
+  await userRepository.ensureEmailAvailableForUpdate(body.email, id);
 
   const user = await userRepository.findByIdAndUpdate(
     id,

@@ -36,9 +36,15 @@ export const updateUserById = async (id, data) => {
   const updateData = { ...data };
 
   if (updateData.email) {
-    updateData.email = updateData.email.toLowerCase().trim();
     await userRepository.ensureEmailAvailableForUpdate(
       updateData.email,
+      user._id,
+    );
+  }
+
+  if (updateData.userName) {
+    await userRepository.ensureUserNameAvailableForUpdate(
+      updateData.userName,
       user._id,
     );
   }
@@ -59,4 +65,8 @@ export const updateUserById = async (id, data) => {
 
 export const getAllUsers = async () => {
   return userRepository.findAll();
+};
+
+export const userByUserName = async (userName) => {
+  return userRepository.findOne({ userName });
 };

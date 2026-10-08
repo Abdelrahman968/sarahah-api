@@ -5,6 +5,7 @@ import {
 } from "../../utils/validation/Validators.js";
 
 export const AdminUpdateValidator = z.object({
+  userName: nameValidator.optional(),
   firstName: nameValidator.optional(),
   lastName: nameValidator.optional(),
   email: z

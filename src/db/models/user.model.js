@@ -12,6 +12,7 @@ const nameValidator = {
 
 const userSchema = new mongoose.Schema(
   {
+    userName: nameValidator,
     firstName: nameValidator,
     lastName: nameValidator,
 
