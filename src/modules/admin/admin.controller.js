@@ -23,7 +23,7 @@ router.post(
   async (req, res, next) => {
     try {
       const { id } = req.params;
-      const user = await updateUserById(id, req.body);
+      const user = await updateUserById(id, req.validate);
       res.status(200).json({
         message: "User updated successfully",
         user,
