@@ -1,5 +1,15 @@
 import { z } from "zod";
 
+export const userNameValidator = z
+  .string()
+  .trim()
+  .min(3, "Name must be at least 3 characters long")
+  .max(20, "Name must be at most 20 characters long")
+  .regex(/^[a-zA-Z0-9]+$/, "Name must contain only letters or numbers")
+  .transform(
+    (value) => value.charAt(0).toUpperCase() + value.slice(1).toLowerCase(),
+  );
+
 export const nameValidator = z
   .string()
   .trim()

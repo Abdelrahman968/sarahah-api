@@ -3,9 +3,13 @@ import {
   DeleteUserById,
   getAllUsers,
   updateUserById,
+  userByUserName,
 } from "./admin.service.js";
 import { validate } from "../../middleware/validate.middleware.js";
-import { AdminUpdateValidator } from "./admin.zod.js";
+import {
+  AdminUpdateValidator,
+  userSearchByUserNameValidator,
+} from "./admin.zod.js";
 const router = Router();
 
 router.delete("/delete/user/:id", async (req, res, next) => {
@@ -38,7 +42,7 @@ router.post(
   },
 );
 
-router.get("/users", async (req, res, next) => {
+router.get("/users", async (_req, res, next) => {
   try {
     const users = await getAllUsers();
     res.status(200).json(users);
@@ -46,5 +50,20 @@ router.get("/users", async (req, res, next) => {
     next(error);
   }
 });
+
+router.get(
+  "/users",
+  validate(userSearchByUserNameValidator),
+  async (req, res, next) => {
+    try {
+      const { userName } = req.validate.query;
+
+      const user = await userByUserName(userName);
+      res.status(200).json(user);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 export default router;

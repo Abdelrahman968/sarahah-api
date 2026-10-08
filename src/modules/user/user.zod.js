@@ -10,11 +10,13 @@ import {
 } from "../../utils/validation/Validators.js";
 
 export const updateProfileValidator = z.object({
-  firstName: nameValidator.optional(),
-  lastName: nameValidator.optional(),
-  gender: genderValidator.optional(),
-  age: ageValidator.optional(),
-  bio: bioValidator.optional(),
+  body: z.object({
+    firstName: nameValidator.optional(),
+    lastName: nameValidator.optional(),
+    gender: genderValidator.optional(),
+    age: ageValidator.optional(),
+    bio: bioValidator.optional(),
+  }),
 });
 
 export const updateEmailValidator = z.object({
@@ -23,30 +25,45 @@ export const updateEmailValidator = z.object({
 
 export const updatePasswordValidator = z
   .object({
-    currentPassword: passwordValidator,
-    newPassword: passwordValidator,
-    confirmPassword: passwordValidator,
+    body: z.object({
+      currentPassword: passwordValidator,
+      newPassword: passwordValidator,
+      confirmPassword: passwordValidator,
+    }),
   })
-  .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  })
-  .refine((data) => data.currentPassword !== data.newPassword, {
-    message: "New password must be different from current password",
-    path: ["newPassword"],
+  .superRefine(({ body }, ctx) => {
+    if (body.newPassword !== body.confirmPassword) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["body", "confirmPassword"],
+        message: "Passwords do not match",
+      });
+    }
+
+    if (body.currentPassword === body.newPassword) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["body", "newPassword"],
+        message: "New password must be different from current password",
+      });
+    }
   });
 
 export const forgotPasswordValidator = z.object({
-  email: emailValidator,
+  body: z.object({
+    email: emailValidator,
+  }),
 });
 
 export const resetPasswordValidator = z
   .object({
-    token: tokenValidator,
-    newPassword: passwordValidator,
-    confirmPassword: passwordValidator,
+    body: z.object({
+      token: tokenValidator,
+      newPassword: passwordValidator,
+      confirmPassword: passwordValidator,
+    }),
   })
-  .refine((data) => data.newPassword === data.confirmPassword, {
+  .refine(({ body }) => body.newPassword === body.confirmPassword, {
     message: "Passwords do not match",
-    path: ["confirmPassword"],
+    path: ["body", "confirmPassword"],
   });
