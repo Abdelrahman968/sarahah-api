@@ -31,8 +31,19 @@ export const AdminUpdateValidator = z.object({
   }),
 });
 
-export const userSearchByUserNameValidator = z.object({
-  query: z.object({
-    userName: userNameValidator,
-  }),
-});
+export const userSearchByUserNameValidator = z
+  .object({
+    params: z.object({
+      userName: userNameValidator.optional(),
+    }),
+    query: z.object({
+      userName: userNameValidator.optional(),
+    }),
+  })
+  .refine(
+    ({ params, query }) => Boolean(params.userName) !== Boolean(query.userName),
+    {
+      message: "Either params or query must be provided, but not both",
+      path: ["params", "query"],
+    },
+  );

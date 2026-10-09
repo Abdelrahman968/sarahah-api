@@ -12,7 +12,16 @@ const nameValidator = {
 
 const userSchema = new mongoose.Schema(
   {
-    userName: nameValidator,
+    userName: {
+      type: String,
+      required: true,
+      minLength: [3, "First Name must be at least 3 characters"],
+      maxLength: [20, "First Name must be at most 20 characters"],
+      trim: true,
+      match: [/^[A-Za-z0-9]+$/, "Name must contain letters and numbers only"],
+      set: (value) =>
+        value.charAt(0).toUpperCase() + value.slice(1).toLowerCase(),
+    },
     firstName: nameValidator,
     lastName: nameValidator,
 

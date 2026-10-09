@@ -31,6 +31,7 @@ export const RegisterUserService = async (body) => {
   const hashedPassword = await hashPassword(password);
 
   const data = {
+    userName,
     firstName,
     lastName,
     email,
@@ -85,12 +86,17 @@ export const RegisterUserService = async (body) => {
 };
 
 export const LoginUserService = async (body) => {
-  const { email, password } = body;
+  const { userName, email, password } = body;
 
-  const user = await userRepository.findByEmail(email, "+password");
+  let user;
+  if (userName) {
+    user = await userRepository.findByUserName(userName, "+password");
+  } else {
+    user = await userRepository.findByEmail(email, "+password");
+  }
 
   if (!user) {
-    throw new Error("Email or password is incorrect", {
+    throw new Error("Email / UserName or password is incorrect", {
       cause: {
         status: 401,
       },

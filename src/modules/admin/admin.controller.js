@@ -31,7 +31,7 @@ router.post(
   async (req, res, next) => {
     try {
       const { id } = req.params;
-      const user = await updateUserById(id, req.validate);
+      const user = await updateUserById(id, req.validate.body);
       res.status(200).json({
         message: "User updated successfully",
         user,
@@ -52,13 +52,17 @@ router.get("/users", async (_req, res, next) => {
 });
 
 router.get(
-  "/users",
+  "/user{/:userName}",
   validate(userSearchByUserNameValidator),
   async (req, res, next) => {
     try {
-      const { userName } = req.validate.query;
+      const { userName: queryUserName } = req.validate.query;
+      const { userName: paramUserName } = req.validate.params;
+
+      const userName = paramUserName || queryUserName;
 
       const user = await userByUserName(userName);
+
       res.status(200).json(user);
     } catch (error) {
       next(error);

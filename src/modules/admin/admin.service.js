@@ -68,5 +68,5 @@ export const getAllUsers = async () => {
 };
 
 export const userByUserName = async (userName) => {
-  return userRepository.findOne({ userName });
+  return userRepository.findByUserName(userName);
 };

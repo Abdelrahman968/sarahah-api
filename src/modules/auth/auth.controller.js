@@ -37,10 +37,11 @@ router.post(
   validate(UserRegisterValidator),
   async (req, res, next) => {
     try {
-      const { firstName, lastName, email, password, gender, age } =
-        req.validate;
+      const { userName, firstName, lastName, email, password, gender, age } =
+        req.validate.body;
 
       const body = {
+        userName,
         firstName,
         lastName,
         email,
@@ -67,9 +68,10 @@ router.post(
 
 router.post("/login", validate(loginValidator), async (req, res, next) => {
   try {
-    const { email, password } = req.validate;
+    const { userName, email, password } = req.validate.body;
 
     const body = {
+      userName,
       email,
       password,
     };
@@ -161,7 +163,7 @@ router.post(
   validate(forgotPasswordValidator),
   async (req, res, next) => {
     try {
-      const data = await ForgotPasswordService(req.validate.email);
+      const data = await ForgotPasswordService(req.validate.body.email);
       res.status(200).json({
         data,
       });
@@ -176,7 +178,7 @@ router.post(
   validate(resetPasswordValidator),
   async (req, res, next) => {
     try {
-      const { token, newPassword, confirmPassword } = req.validate;
+      const { token, newPassword, confirmPassword } = req.validate.body;
 
       const user = await ResetPasswordService(
         token,

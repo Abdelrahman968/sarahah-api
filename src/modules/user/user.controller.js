@@ -49,7 +49,7 @@ router.patch(
   validate(updateProfileValidator),
   async (req, res, next) => {
     try {
-      const result = await UpdateProfileService(req.user.id, req.validate);
+      const result = await UpdateProfileService(req.user.id, req.validate.body);
 
       res.status(200).json({
         message: "Profile updated successfully",
@@ -66,7 +66,7 @@ router.patch(
   validate(updateEmailValidator),
   async (req, res, next) => {
     try {
-      const result = await UpdateEmailService(req.user.id, req.validate);
+      const result = await UpdateEmailService(req.user.id, req.validate.body);
 
       res.status(200).json({
         message: "Email updated successfully",
@@ -83,7 +83,10 @@ router.patch(
   validate(updatePasswordValidator),
   async (req, res, next) => {
     try {
-      const result = await updatePasswordService(req.user.id, req.validate);
+      const result = await updatePasswordService(
+        req.user.id,
+        req.validate.body,
+      );
 
       res.status(200).json({
         message: "Password updated successfully",

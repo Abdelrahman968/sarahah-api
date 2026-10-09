@@ -34,6 +34,14 @@ export const updateProfileValidator = z.object({
   }),
 });
 
-export const loginValidator = z.object({
-  body: z.object({ email: emailValidator, password: passwordValidator }),
-});
+export const loginValidator = z
+  .object({
+    body: z.object({
+      userName: userNameValidator.optional(),
+      email: emailValidator.optional(),
+      password: passwordValidator,
+    }),
+  })
+  .refine(({ body }) => Boolean(body.userName) !== Boolean(body.email), {
+    message: "You must provide either a username or an email",
+  });

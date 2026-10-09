@@ -43,6 +43,15 @@ class UserRepository extends BaseRepository {
       .select(select);
   }
 
+  findByUserName(userName) {
+    return this.model.find({
+      userName: {
+        $regex: userName,
+        $options: "i",
+      },
+    });
+  }
+
   findById(id, select) {
     return this.model.findById(id).select(select);
   }
