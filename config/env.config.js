@@ -1,6 +1,6 @@
 import { config } from "dotenv";
 import { resolve } from "node:path";
-import { envSchema } from "./env.schema.js";
+import { envSchema } from "./env.zod.js";
 import { z } from "zod";
 
 const nodeEnv = process.env.NODE_ENV || "development";
