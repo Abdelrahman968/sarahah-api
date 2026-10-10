@@ -39,6 +39,10 @@ export default class BaseRepository {
     return this.model.findByIdAndDelete(id);
   }
 
+  save(document) {
+    return document.save();
+  }
+
   async exists(filter) {
     return Boolean(await this.model.exists(filter));
   }

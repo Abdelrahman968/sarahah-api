@@ -28,7 +28,8 @@ export const findActiveSession = async (refreshToken, userId) => {
 export const revokeSession = async (session) => {
   session.revokedAt = new Date();
 
-  await session.save();
+  // await session.save();
+  await sessionRepository.save(session);
 
   return session;
 };
