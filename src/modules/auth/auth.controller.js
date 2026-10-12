@@ -7,6 +7,7 @@ import {
   GetProfileService,
   ForgotPasswordService,
   ResetPasswordService,
+  googleLogin,
 } from "./auth.service.js";
 
 import { loginValidator, UserRegisterValidator } from "./auth.zod.js";
@@ -29,6 +30,10 @@ import {
 
 import { passwordChangedEmailTemplate } from "../../services/email/templates/password-change.template.js";
 import { authenticate } from "../../middleware/authenticate.middleware.js";
+import {
+  getGoogleAuthUrl,
+  getGoogleUser,
+} from "../../services/Oauth/google.service.js";
 
 const router = Router();
 
@@ -222,6 +227,38 @@ router.get("/me", authenticate, async (req, res, next) => {
 
     res.json({
       data,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/google", (req, res) => {
+  const url = getGoogleAuthUrl();
+
+  res.redirect(url);
+});
+
+router.get("/google/callback", async (req, res, next) => {
+  try {
+    const { code } = req.query;
+
+    if (!code) {
+      throw new Error("Google authorization code is missing", {
+        cause: {
+          status: 400,
+        },
+      });
+    }
+
+    const googleUser = await getGoogleUser(code);
+    const result = await googleLogin(googleUser);
+    setRefreshTokenCookie(res, result.refreshToken);
+
+    return res.status(200).json({
+      success: true,
+      user: result.user,
+      accessToken: result.accessToken,
     });
   } catch (error) {
     next(error);

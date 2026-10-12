@@ -5,6 +5,7 @@ import {
   verifyRefreshToken,
 } from "../../utils/jwt.js";
 import {
+  createAuthenticationSession,
   createSession,
   findActiveSession,
   revokeSession,
@@ -21,6 +22,74 @@ import userRepository from "../../db/repository/user.repository.js";
 import sessionRepository from "../../db/repository/session.repository.js";
 import passwordResetRepository from "../../db/repository/password-reset.repository.js";
 import { resetPasswordEmailTemplate } from "../../services/email/templates/forgot-password.template.js";
+import accountRepository from "../../db/repository/account.repository.js";
+import { generateUsernameBase } from "../../utils/userName.js";
+
+const generateUniqueUsername = async (firstName, lastName) => {
+  const base = generateUsernameBase(firstName, lastName);
+
+  let username = base;
+  let counter = 1;
+
+  while (
+    await userRepository.findOne({
+      userName: username,
+    })
+  ) {
+    username = `${base}${counter}`;
+    counter++;
+  }
+
+  return username;
+};
+
+export const googleLogin = async (googleUser) => {
+  let account = await accountRepository.findByProviderAccountId(
+    "google",
+    googleUser.providerAccountId,
+  );
+
+  if (account) {
+    const user = await userRepository.findById(account.userId);
+
+    if (!user) {
+      throw new Error("User not found", {
+        cause: {
+          status: 404,
+        },
+      });
+    }
+
+    return createAuthenticationSession(user);
+  }
+
+  let user = await userRepository.findOne({
+    email: googleUser.email,
+  });
+
+  if (!user) {
+    const userName = await generateUniqueUsername(
+      googleUser.firstName,
+      googleUser.lastName,
+    );
+
+    user = await userRepository.create({
+      userName,
+      firstName: googleUser.firstName,
+      lastName: googleUser.lastName,
+      email: googleUser.email,
+      profileImage: googleUser.profileImage,
+    });
+  }
+
+  account = await accountRepository.create({
+    userId: user._id,
+    provider: "google",
+    providerAccountId: googleUser.providerAccountId,
+  });
+
+  return createAuthenticationSession(user);
+};
 
 export const RegisterUserService = async (body) => {
   const { userName, firstName, lastName, email, password, gender, age } = body;
@@ -28,19 +97,25 @@ export const RegisterUserService = async (body) => {
   await userRepository.ensureEmailAvailable(email);
   await userRepository.ensureUserNameAvailable(userName);
 
-  const hashedPassword = await hashPassword(password);
-
   const data = {
     userName,
     firstName,
     lastName,
     email,
-    password: hashedPassword,
     gender,
     age,
   };
 
   const user = await userRepository.create(data);
+
+  const hashedPassword = await hashPassword(password);
+
+  await accountRepository.create({
+    userId: user._id,
+    provider: "password",
+    providerAccountId: user._id.toString(),
+    password: hashedPassword,
+  });
 
   sendEmail({
     to: user.email,

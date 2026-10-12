@@ -1,27 +1,25 @@
-import Account from "../models/account.model.js";
 import BaseRepository from "./base.repository.js";
+import Account from "../models/account.model.js";
 
 class AccountRepository extends BaseRepository {
   constructor() {
     super(Account);
   }
 
-  async findByProviderAccountId(provider, providerAccountId) {
-    return Account.findOne({
+  findByProviderAccountId(provider, providerAccountId) {
+    return this.model.findOne({
       provider,
       providerAccountId,
-    }).populate("user");
-  }
-
-  async createAccount(data) {
-    return Account.create(data);
-  }
-
-  async findByUserAndProvider(userId, provider) {
-    return Account.findOne({
-      user: userId,
-      provider,
     });
+  }
+
+  findPasswordAccount(userId) {
+    return this.model
+      .findOne({
+        userId,
+        provider: "password",
+      })
+      .select("+password");
   }
 }
 

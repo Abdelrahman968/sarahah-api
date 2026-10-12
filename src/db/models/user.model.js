@@ -39,13 +39,6 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
 
-    password: {
-      type: String,
-      required: true,
-      minLength: [8, "Password must be at least 8 characters"],
-      select: false,
-    },
-
     gender: {
       type: String,
       enum: ["male", "female", "n/a"],

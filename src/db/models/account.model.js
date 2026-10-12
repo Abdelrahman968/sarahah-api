@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const accountSchema = new mongoose.Schema(
   {
-    user: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -12,12 +12,18 @@ const accountSchema = new mongoose.Schema(
     provider: {
       type: String,
       required: true,
-      enum: ["github"],
+      enum: ["password", "google"],
     },
 
     providerAccountId: {
       type: String,
       required: true,
+    },
+
+    password: {
+      type: String,
+      minLength: [8, "Password must be at least 8 characters"],
+      select: false,
     },
   },
   {
@@ -32,6 +38,7 @@ accountSchema.index(
   },
   {
     unique: true,
+    sparse: true,
   },
 );
 

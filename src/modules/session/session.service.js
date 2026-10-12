@@ -1,5 +1,10 @@
 import sessionRepository from "../../db/repository/session.repository.js";
 import { hashToken } from "../../utils/hash/crypto.js";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  getTokenExpiration,
+} from "../../utils/jwt.js";
 
 export const findActiveSession = async (refreshToken, userId) => {
   const tokenHash = hashToken(refreshToken);
@@ -28,7 +33,6 @@ export const findActiveSession = async (refreshToken, userId) => {
 export const revokeSession = async (session) => {
   session.revokedAt = new Date();
 
-  // await session.save();
   await sessionRepository.save(session);
 
   return session;
@@ -42,4 +46,21 @@ export const createSession = async ({ userId, refreshToken, expiresAt }) => {
     tokenHash,
     expiresAt,
   });
+};
+
+export const createAuthenticationSession = async (user) => {
+  const accessToken = generateAccessToken(user);
+  const refreshToken = generateRefreshToken(user);
+
+  await createSession({
+    userId: user._id,
+    refreshToken,
+    expiresAt: getTokenExpiration(refreshToken),
+  });
+
+  return {
+    user,
+    accessToken,
+    refreshToken,
+  };
 };

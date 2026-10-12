@@ -15,8 +15,14 @@ export default class BaseRepository {
     return this.model.find();
   }
 
-  findOne(filter) {
-    return this.model.findOne(filter);
+  findOne(filter, options = {}) {
+    let query = this.model.findOne(filter);
+
+    if (options.select) {
+      query = query.select(options.select);
+    }
+
+    return query;
   }
 
   findOneAndUpdate(filter, update, options = {}) {
