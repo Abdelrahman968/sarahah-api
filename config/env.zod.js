@@ -63,4 +63,8 @@ export const envSchema = z.object({
   SMTP_PASSWORD: z.string().min(1),
   MAIL_FROM: z.string().min(1),
   CLIENT_URL: z.url(),
+
+  GOOGLE_CLIENT_ID: z.string(),
+  GOOGLE_CLIENT_SECRET: z.string(),
+  GOOGLE_CALLBACK_URL: z.url(),
 });

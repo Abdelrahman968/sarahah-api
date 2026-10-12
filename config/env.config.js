@@ -46,6 +46,9 @@ const parsedEnv = envSchema.safeParse({
   SMTP_PASSWORD: process.env.SMTP_PASSWORD,
   MAIL_FROM: process.env.MAIL_FROM,
   CLIENT_URL: process.env.CLIENT_URL,
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+  GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL,
 });
 
 if (!parsedEnv.success) {
@@ -73,4 +76,7 @@ export const {
   SMTP_PASSWORD,
   MAIL_FROM,
   CLIENT_URL,
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
+  GOOGLE_CALLBACK_URL,
 } = parsedEnv.data;
