@@ -50,11 +50,24 @@ export const envSchema = z.object({
 
   JWT_ACCESS_EXPIRES_IN: z.string(),
 
+  JWT_ADMIN_ACCESS_SECRET: z
+    .string()
+    .min(32, "JWT_ADMIN_ACCESS_SECRET must be at least 32 characters"),
+
+  JWT_ADMIN_ACCESS_EXPIRES_IN: z.string(),
+
   JWT_REFRESH_SECRET: z
     .string()
     .min(32, "JWT_REFRESH_SECRET must be at least 32 characters"),
 
   JWT_REFRESH_EXPIRES_IN: z.string(),
+
+  JWT_ADMIN_REFRESH_SECRET: z
+    .string()
+    .min(32, "JWT_ADMIN_REFRESH_SECRET must be at least 32 characters"),
+
+  JWT_ADMIN_REFRESH_EXPIRES_IN: z.string(),
+
   JWT_REFRESH_COOKIE_NAME: z.string(),
 
   SMTP_HOST: z.string().min(1),

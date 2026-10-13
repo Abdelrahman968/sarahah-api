@@ -33,7 +33,6 @@ import {
 import { passwordChangedEmailTemplate } from "../../services/email/templates/password-change.template.js";
 import { authenticate } from "../../middleware/authenticate.middleware.js";
 import {
-  getGoogleAuthUrl,
   getGoogleUser,
 } from "../../services/Oauth/google.service.js";
 import {

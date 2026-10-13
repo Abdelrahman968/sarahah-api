@@ -3,20 +3,32 @@ import jwt from "jsonwebtoken";
 import {
   JWT_ACCESS_EXPIRES_IN,
   JWT_ACCESS_SECRET,
+  JWT_ADMIN_ACCESS_EXPIRES_IN,
+  JWT_ADMIN_ACCESS_SECRET,
+  JWT_ADMIN_REFRESH_EXPIRES_IN,
+  JWT_ADMIN_REFRESH_SECRET,
   JWT_REFRESH_EXPIRES_IN,
   JWT_REFRESH_SECRET,
 } from "../../config/env.config.js";
 
 export const generateAccessToken = (user) => {
+  const role = user.role;
+
+  if (!role) {
+    throw new Error("User role is required to generate access token");
+  }
+
+  const isUser = role === "user";
+
   return jwt.sign(
     {
       sub: user._id.toString(),
-      role: user.role,
+      role,
       type: "access",
     },
-    JWT_ACCESS_SECRET,
+    isUser ? JWT_ACCESS_SECRET : JWT_ADMIN_ACCESS_SECRET,
     {
-      expiresIn: JWT_ACCESS_EXPIRES_IN,
+      expiresIn: isUser ? JWT_ACCESS_EXPIRES_IN : JWT_ADMIN_ACCESS_EXPIRES_IN,
       issuer: "sarahah-api",
       audience: "sarahah-client",
     },
@@ -24,14 +36,23 @@ export const generateAccessToken = (user) => {
 };
 
 export const generateRefreshToken = (user) => {
+  const role = user.role;
+
+  if (!role) {
+    throw new Error("User role is required to generate access token");
+  }
+
+  const isUser = role === "user";
+
   return jwt.sign(
     {
       sub: user._id.toString(),
+      role,
       type: "refresh",
     },
-    JWT_REFRESH_SECRET,
+    isUser ? JWT_REFRESH_SECRET : JWT_ADMIN_REFRESH_SECRET,
     {
-      expiresIn: JWT_REFRESH_EXPIRES_IN,
+      expiresIn: isUser ? JWT_REFRESH_EXPIRES_IN : JWT_ADMIN_REFRESH_EXPIRES_IN,
       issuer: "sarahah-api",
       audience: "sarahah-client",
     },
@@ -40,7 +61,21 @@ export const generateRefreshToken = (user) => {
 
 export const verifyRefreshToken = (refreshToken) => {
   try {
-    const payload = jwt.verify(refreshToken, JWT_REFRESH_SECRET, {
+    const decoded = jwt.decode(refreshToken);
+
+    if (
+      !decoded ||
+      typeof decoded !== "object" ||
+      !decoded.role ||
+      decoded.type !== "refresh"
+    ) {
+      throw new Error();
+    }
+
+    const secret =
+      decoded.role === "user" ? JWT_REFRESH_SECRET : JWT_ADMIN_REFRESH_SECRET;
+
+    const payload = jwt.verify(refreshToken, secret, {
       issuer: "sarahah-api",
       audience: "sarahah-client",
     });
