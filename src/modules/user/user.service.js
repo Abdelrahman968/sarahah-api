@@ -84,7 +84,7 @@ export const updatePasswordService = async (id, body) => {
     });
   }
 
-  const account = await accountRepository.findPasswordAccount(user._id);
+  const account = await accountRepository.findPasswordAccount(user.id);
 
   if (!account) {
     throw new Error("Email / UserName or password is incorrect", {

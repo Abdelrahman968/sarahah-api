@@ -106,17 +106,17 @@ export const LoginUserService = async (body) => {
   }
 
   if (!user) {
-    throw new Error("Email / UserName or password is incorrect", {
+    throw new Error("Email/UserName or password is incorrect", {
       cause: {
         status: 401,
       },
     });
   }
 
-  const account = await accountRepository.findPasswordAccount(user._id);
+  const account = await accountRepository.findPasswordAccount(user.id);
 
   if (!account) {
-    throw new Error("Email / UserName or password is incorrect", {
+    throw new Error("Email/UserName or password is incorrect", {
       cause: {
         status: 401,
       },
@@ -126,7 +126,7 @@ export const LoginUserService = async (body) => {
   const isPasswordValid = await verifyPassword(account.password, password);
 
   if (!isPasswordValid) {
-    throw new Error("Email or password is incorrect", {
+    throw new Error("Email/UserName or password is incorrect", {
       cause: {
         status: 401,
       },
@@ -285,7 +285,7 @@ export const ResetPasswordService = async (
     });
   }
 
-  const account = await accountRepository.findPasswordAccount(user._id);
+  const account = await accountRepository.findPasswordAccount(user.id);
 
   if (!account) {
     throw new Error("Email / UserName or password is incorrect", {

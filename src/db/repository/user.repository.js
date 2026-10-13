@@ -44,9 +44,9 @@ class UserRepository extends BaseRepository {
   }
 
   findByUserName(userName) {
-    return this.model.find({
+    return this.model.findOne({
       userName: {
-        $regex: userName,
+        $regex: `^${userName}$`,
         $options: "i",
       },
     });

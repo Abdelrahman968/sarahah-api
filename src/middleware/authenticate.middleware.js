@@ -1,5 +1,8 @@
 import jwt from "jsonwebtoken";
-import { JWT_ACCESS_SECRET } from "../../config/env.config.js";
+import {
+  JWT_ACCESS_SECRET,
+  JWT_ADMIN_ACCESS_SECRET,
+} from "../../config/env.config.js";
 
 export const authenticate = (req, _res, next) => {
   try {
@@ -23,7 +26,23 @@ export const authenticate = (req, _res, next) => {
       });
     }
 
-    const payload = jwt.verify(accessToken, JWT_ACCESS_SECRET, {
+    const decoded = jwt.decode(accessToken);
+
+    if (
+      !decoded ||
+      typeof decoded !== "object" ||
+      !decoded.role ||
+      decoded.type !== "access"
+    ) {
+      throw new Error("Invalid Access token", {
+        cause: { status: 401 },
+      });
+    }
+
+    const secret =
+      decoded.role === "user" ? JWT_ACCESS_SECRET : JWT_ADMIN_ACCESS_SECRET;
+
+    const payload = jwt.verify(accessToken, secret, {
       issuer: "sarahah-api",
       audience: "sarahah-client",
     });

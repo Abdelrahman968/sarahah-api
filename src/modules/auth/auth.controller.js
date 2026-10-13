@@ -81,15 +81,7 @@ router.post(
 
 router.post("/login", validate(loginValidator), async (req, res, next) => {
   try {
-    const { userName, email, password } = req.validate.body;
-
-    const body = {
-      userName,
-      email,
-      password,
-    };
-
-    const result = await LoginUserService(body);
+    const result = await LoginUserService(req.validate.body);
 
     const { refreshToken, accessToken, user } = result;
 

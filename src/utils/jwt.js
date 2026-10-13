@@ -69,7 +69,9 @@ export const verifyRefreshToken = (refreshToken) => {
       !decoded.role ||
       decoded.type !== "refresh"
     ) {
-      throw new Error();
+      throw new Error("Invalid refresh token", {
+        cause: { status: 401 },
+      });
     }
 
     const secret =
@@ -85,7 +87,9 @@ export const verifyRefreshToken = (refreshToken) => {
       payload.type !== "refresh" ||
       !payload.sub
     ) {
-      throw new Error();
+      throw new Error("Invalid refresh token", {
+        cause: { status: 401 },
+      });
     }
 
     return payload;

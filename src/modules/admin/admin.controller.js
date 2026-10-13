@@ -63,7 +63,9 @@ router.get(
 
       const user = await userByUserName(userName);
 
-      res.status(200).json(user);
+      res.status(200).json({
+        user: user ? user : "User not found",
+      });
     } catch (error) {
       next(error);
     }
