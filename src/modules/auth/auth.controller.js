@@ -8,6 +8,8 @@ import {
   ForgotPasswordService,
   ResetPasswordService,
   googleLogin,
+  getGoogleAuthUrlService,
+  githubLogin,
 } from "./auth.service.js";
 
 import { loginValidator, UserRegisterValidator } from "./auth.zod.js";
@@ -34,6 +36,10 @@ import {
   getGoogleAuthUrl,
   getGoogleUser,
 } from "../../services/Oauth/google.service.js";
+import {
+  getGithubAuthUrl,
+  getGithubUser,
+} from "../../services/Oauth/github.service.js";
 
 const router = Router();
 
@@ -233,10 +239,16 @@ router.get("/me", authenticate, async (req, res, next) => {
   }
 });
 
-router.get("/google", (req, res) => {
-  const url = getGoogleAuthUrl();
+// OAuth Google Login
 
-  res.redirect(url);
+router.get("/google", (_req, res, next) => {
+  try {
+    const url = getGoogleAuthUrlService();
+
+    res.redirect(url);
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.get("/google/callback", async (req, res, next) => {
@@ -253,6 +265,39 @@ router.get("/google/callback", async (req, res, next) => {
 
     const googleUser = await getGoogleUser(code);
     const result = await googleLogin(googleUser);
+    setRefreshTokenCookie(res, result.refreshToken);
+
+    return res.status(200).json({
+      success: true,
+      user: result.user,
+      accessToken: result.accessToken,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// OAuth Github Login
+
+router.get("/github", (_req, res) => {
+  return res.redirect(getGithubAuthUrl());
+});
+
+router.get("/github/callback", async (req, res, next) => {
+  try {
+    const { code } = req.query;
+
+    if (!code) {
+      throw new Error("GitHub authorization code is missing", {
+        cause: {
+          status: 400,
+        },
+      });
+    }
+
+    const githubUser = await getGithubUser(code);
+
+    const result = await githubLogin(githubUser);
     setRefreshTokenCookie(res, result.refreshToken);
 
     return res.status(200).json({

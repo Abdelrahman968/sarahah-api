@@ -24,54 +24,7 @@ import passwordResetRepository from "../../db/repository/password-reset.reposito
 import { resetPasswordEmailTemplate } from "../../services/email/templates/forgot-password.template.js";
 import accountRepository from "../../db/repository/account.repository.js";
 import { generateUniqueUsername } from "../../utils/userName.js";
-
-export const googleLogin = async (googleUser) => {
-  let account = await accountRepository.findByProviderAccountId(
-    "google",
-    googleUser.providerAccountId,
-  );
-
-  if (account) {
-    const user = await userRepository.findById(account.userId);
-
-    if (!user) {
-      throw new Error("User not found", {
-        cause: {
-          status: 404,
-        },
-      });
-    }
-
-    return createAuthenticationSession(user);
-  }
-
-  let user = await userRepository.findOne({
-    email: googleUser.email,
-  });
-
-  if (!user) {
-    const userName = await generateUniqueUsername(
-      googleUser.firstName,
-      googleUser.lastName,
-    );
-
-    user = await userRepository.create({
-      userName,
-      firstName: googleUser.firstName,
-      lastName: googleUser.lastName,
-      email: googleUser.email,
-      avatar: googleUser.avatar,
-    });
-  }
-
-  account = await accountRepository.create({
-    userId: user._id,
-    provider: "google",
-    providerAccountId: googleUser.providerAccountId,
-  });
-
-  return createAuthenticationSession(user);
-};
+import { getGoogleAuthUrl } from "../../services/Oauth/google.service.js";
 
 export const RegisterUserService = async (body) => {
   const { userName, firstName, lastName, email, password, gender, age } = body;
@@ -366,4 +319,103 @@ export const GetProfileService = async (id) => {
     });
   }
   return user;
+};
+
+// OAuth Google Login
+
+export const getGoogleAuthUrlService = () => {
+  return getGoogleAuthUrl();
+};
+
+export const googleLogin = async (googleUser) => {
+  let account = await accountRepository.findByProviderAccountId(
+    "google",
+    googleUser.providerAccountId,
+  );
+
+  if (account) {
+    const user = await userRepository.findById(account.userId);
+
+    if (!user) {
+      throw new Error("User not found", {
+        cause: {
+          status: 404,
+        },
+      });
+    }
+
+    return createAuthenticationSession(user);
+  }
+
+  let user = await userRepository.findOne({
+    email: googleUser.email,
+  });
+
+  if (!user) {
+    const userName = await generateUniqueUsername(
+      googleUser.firstName,
+      googleUser.lastName,
+    );
+
+    user = await userRepository.create({
+      userName,
+      firstName: googleUser.firstName,
+      lastName: googleUser.lastName,
+      email: googleUser.email,
+      avatar: googleUser.avatar,
+    });
+  }
+
+  account = await accountRepository.create({
+    userId: user._id,
+    provider: "google",
+    providerAccountId: googleUser.providerAccountId,
+  });
+
+  return createAuthenticationSession(user);
+};
+
+export const githubLogin = async (githubUser) => {
+  let account = await accountRepository.findByProviderAccountId(
+    "github",
+    githubUser.providerAccountId,
+  );
+
+  if (account) {
+    const user = await userRepository.findById(account.userId);
+
+    if (!user) {
+      throw new Error("User not found", {
+        cause: {
+          status: 404,
+        },
+      });
+    }
+
+    return createAuthenticationSession(user);
+  }
+
+  let user = await userRepository.findOne({
+    email: githubUser.email,
+  });
+
+  if (!user) {
+    const userName = await generateUniqueUsername(githubUser.userName, "");
+
+    user = await userRepository.create({
+      userName,
+      firstName: githubUser.name?.split(" ")[0] || githubUser.userName,
+      lastName: githubUser.name?.split(" ").slice(1).join(" ") || "",
+      email: githubUser.email,
+      avatar: githubUser.profileImage,
+    });
+  }
+
+  account = await accountRepository.create({
+    userId: user._id,
+    provider: "github",
+    providerAccountId: githubUser.providerAccountId,
+  });
+
+  return createAuthenticationSession(user);
 };
