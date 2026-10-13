@@ -57,6 +57,7 @@ export function registerDocsRoutes(registry) {
         content: {
           "application/json": {
             schema: z.object({
+              userName: z.string().openapi({ example: "abdelrahman968" }),
               firstName: z.string().openapi({ example: "Abdelrahman" }),
               lastName: z.string().openapi({ example: "Ayman" }),
               email: z
@@ -72,7 +73,7 @@ export function registerDocsRoutes(registry) {
     },
 
     responses: {
-      200: {
+      201: {
         description: "Account created successfully.",
       },
       400: {
@@ -89,15 +90,19 @@ export function registerDocsRoutes(registry) {
     path: "/auth/login",
     tags: ["Auth"],
     summary: "Login",
-    description: "Log in with email and password.",
+    description: "Log in with either a username or an email address and password.",
     request: {
       body: {
         content: {
           "application/json": {
             schema: z.object({
-              email: z
-                .email()
-                .openapi({ example: "se.abdelrahman968+admin@gmail.com" }),
+              userName: z
+                .string()
+                .optional()
+                .openapi({ example: "abdelrahman968" }),
+              email: z.email().optional().openapi({
+                example: "se.abdelrahman968+admin@gmail.com",
+              }),
               password: z.string().openapi({ example: "Password@123" }),
             }),
           },
@@ -117,6 +122,23 @@ export function registerDocsRoutes(registry) {
 
   registry.registerPath({
     method: "post",
+    path: "/auth/refresh-token",
+    tags: ["Auth"],
+    summary: "Refresh Token",
+    description:
+      "Uses the refresh token stored in the HttpOnly cookie to issue a new access token.",
+    responses: {
+      200: {
+        description: "Access token refreshed successfully.",
+      },
+      401: {
+        description: "Refresh token is missing or invalid.",
+      },
+    },
+  });
+
+  registry.registerPath({
+    method: "post",
     path: "/auth/logout",
     tags: ["Auth"],
     summary: "Logout",
@@ -124,6 +146,73 @@ export function registerDocsRoutes(registry) {
     responses: {
       200: {
         description: "Logged out successfully.",
+      },
+    },
+  });
+
+  registry.registerPath({
+    method: "post",
+    path: "/auth/set-password",
+    tags: ["Auth"],
+    summary: "Set Password for OAuth Account",
+    description: "Set a password for the authenticated OAuth account.",
+    security: [{ bearerAuth: [] }],
+    request: {
+      body: {
+        content: {
+          "application/json": {
+            schema: z
+              .object({
+                password: z
+                  .string()
+                  .openapi({ example: "TestPassword12@" }),
+                confirmPassword: z
+                  .string()
+                  .openapi({ example: "TestPassword12@" }),
+              })
+              .refine((body) => body.password === body.confirmPassword, {
+                message: "Passwords do not match",
+                path: ["confirmPassword"],
+              }),
+          },
+        },
+      },
+    },
+    responses: {
+      200: {
+        description: "Password set successfully.",
+      },
+      401: {
+        description: "Unauthorized.",
+      },
+      409: {
+        description: "Password is already set.",
+      },
+    },
+  });
+
+  registry.registerPath({
+    method: "get",
+    path: "/auth/google",
+    tags: ["Auth"],
+    summary: "Google Auth",
+    description: "Redirects to Google to authenticate the user.",
+    responses: {
+      302: {
+        description: "Redirect to Google OAuth.",
+      },
+    },
+  });
+
+  registry.registerPath({
+    method: "get",
+    path: "/auth/github",
+    tags: ["Auth"],
+    summary: "GitHub Auth",
+    description: "Redirects to GitHub to authenticate the user.",
+    responses: {
+      302: {
+        description: "Redirect to GitHub OAuth.",
       },
     },
   });
@@ -407,6 +496,58 @@ export function registerDocsRoutes(registry) {
       },
       404: {
         description: "User not found.",
+      },
+    },
+  });
+
+  registry.registerPath({
+    method: "get",
+    path: "/admin/users",
+    tags: ["Admin"],
+    summary: "Get All Users",
+    description: "Admin: retrieve all users.",
+    security: [{ bearerAuth: [] }],
+    responses: {
+      200: {
+        description: "Users retrieved successfully.",
+      },
+    },
+  });
+
+  registry.registerPath({
+    method: "get",
+    path: "/admin/user/{userName}",
+    tags: ["Admin"],
+    summary: "Get User By Username",
+    description: "Admin: retrieve a user by their username path parameter.",
+    security: [{ bearerAuth: [] }],
+    request: {
+      params: z.object({
+        userName: z.string().openapi({ example: "abdelrahman968" }),
+      }),
+    },
+    responses: {
+      200: {
+        description: "User retrieved successfully.",
+      },
+    },
+  });
+
+  registry.registerPath({
+    method: "get",
+    path: "/admin/user",
+    tags: ["Admin"],
+    summary: "Get User By Username",
+    description: "Admin: retrieve a user by their username query parameter.",
+    security: [{ bearerAuth: [] }],
+    request: {
+      query: z.object({
+        userName: z.string().openapi({ example: "abdelrahman968" }),
+      }),
+    },
+    responses: {
+      200: {
+        description: "User retrieved successfully.",
       },
     },
   });
