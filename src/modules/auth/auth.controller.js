@@ -10,9 +10,14 @@ import {
   googleLogin,
   getGoogleAuthUrlService,
   githubLogin,
+  setPasswordService,
 } from "./auth.service.js";
 
-import { loginValidator, UserRegisterValidator } from "./auth.zod.js";
+import {
+  loginValidator,
+  setPasswordValidator,
+  UserRegisterValidator,
+} from "./auth.zod.js";
 
 import {
   clearRefreshTokenCookie,
@@ -32,9 +37,7 @@ import {
 
 import { passwordChangedEmailTemplate } from "../../services/email/templates/password-change.template.js";
 import { authenticate } from "../../middleware/authenticate.middleware.js";
-import {
-  getGoogleUser,
-} from "../../services/Oauth/google.service.js";
+import { getGoogleUser } from "../../services/Oauth/google.service.js";
 import {
   getGithubAuthUrl,
   getGithubUser,
@@ -230,7 +233,7 @@ router.get("/me", authenticate, async (req, res, next) => {
   try {
     const data = await GetProfileService(req.user.id);
 
-    res.json({
+    res.status(200).json({
       data,
     });
   } catch (error) {
@@ -308,5 +311,27 @@ router.get("/github/callback", async (req, res, next) => {
     next(error);
   }
 });
+
+router.post(
+  "/set-password",
+  validate(setPasswordValidator),
+  authenticate,
+  async (req, res, next) => {
+    try {
+      const { userId, provider } = await setPasswordService(
+        req.user.id,
+        req.validate.body,
+      );
+
+      res.status(200).json({
+        message: "Password set successfully",
+        userId,
+        provider,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 export default router;

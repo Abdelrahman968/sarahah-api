@@ -441,3 +441,31 @@ export const githubLogin = async (githubUser) => {
 
   return createAuthenticationSession(user);
 };
+
+export const setPasswordService = async (
+  userId,
+  { password, confirmPassword },
+) => {
+  const passwordAccount = await accountRepository.findPasswordAccount(userId);
+
+  if (passwordAccount) {
+    throw new Error("Password is already set", {
+      cause: { status: 409 },
+    });
+  }
+
+  if (password !== confirmPassword) {
+    throw new Error("Passwords do not match", {
+      cause: { status: 400 },
+    });
+  }
+
+  const hashedPassword = await hashPassword(password);
+
+  accountRepository.create({
+    userId,
+    provider: "password",
+    providerAccountId: userId.toString(),
+    password: hashedPassword,
+  });
+};

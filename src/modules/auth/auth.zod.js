@@ -45,3 +45,15 @@ export const loginValidator = z
   .refine(({ body }) => Boolean(body.userName) !== Boolean(body.email), {
     message: "You must provide either a username or an email",
   });
+
+export const setPasswordValidator = z
+  .object({
+    body: z.object({
+      password: passwordValidator,
+      confirmPassword: passwordValidator,
+    }),
+  })
+  .refine(({ body }) => body.password === body.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["body", "confirmPassword"],
+  });
