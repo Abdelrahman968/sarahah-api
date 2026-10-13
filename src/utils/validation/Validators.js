@@ -48,6 +48,6 @@ export const bioValidator = z.coerce
   .string()
   .max(500, "Bio must be at most 500 characters long");
 
-export const profileImageValidator = z.coerce.string().url();
+export const avatarValidator = z.coerce.string().url();
 
 export const tokenValidator = z.string().min(1);

@@ -23,25 +23,7 @@ import sessionRepository from "../../db/repository/session.repository.js";
 import passwordResetRepository from "../../db/repository/password-reset.repository.js";
 import { resetPasswordEmailTemplate } from "../../services/email/templates/forgot-password.template.js";
 import accountRepository from "../../db/repository/account.repository.js";
-import { generateUsernameBase } from "../../utils/userName.js";
-
-const generateUniqueUsername = async (firstName, lastName) => {
-  const base = generateUsernameBase(firstName, lastName);
-
-  let username = base;
-  let counter = 1;
-
-  while (
-    await userRepository.findOne({
-      userName: username,
-    })
-  ) {
-    username = `${base}${counter}`;
-    counter++;
-  }
-
-  return username;
-};
+import { generateUniqueUsername } from "../../utils/userName.js";
 
 export const googleLogin = async (googleUser) => {
   let account = await accountRepository.findByProviderAccountId(
@@ -78,7 +60,7 @@ export const googleLogin = async (googleUser) => {
       firstName: googleUser.firstName,
       lastName: googleUser.lastName,
       email: googleUser.email,
-      profileImage: googleUser.profileImage,
+      avatar: googleUser.avatar,
     });
   }
 
@@ -147,7 +129,7 @@ export const RegisterUserService = async (body) => {
     email: user.email,
     gender: user.gender,
     age: user.age,
-    profileImage: user.profileImage,
+    avatar: user.avatar,
     bio: user.bio,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,

@@ -38,6 +38,6 @@ export const getGoogleUser = async (code) => {
     firstName: payload.given_name,
     lastName: payload.family_name,
     name: payload.name,
-    profileImage: payload.picture,
+    avatar: payload.picture,
   };
 };

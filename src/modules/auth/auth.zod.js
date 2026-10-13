@@ -6,7 +6,7 @@ import {
   genderValidator,
   nameValidator,
   passwordValidator,
-  profileImageValidator,
+  avatarValidator,
   userNameValidator,
 } from "../../utils/validation/Validators.js";
 
@@ -19,7 +19,7 @@ export const UserRegisterValidator = z.object({
     password: passwordValidator,
     age: ageValidator,
     gender: genderValidator,
-    profileImage: profileImageValidator.optional(),
+    avatar: avatarValidator.optional(),
     bio: bioValidator.optional(),
   }),
 });

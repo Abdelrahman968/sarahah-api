@@ -23,7 +23,7 @@ export const AdminUpdateValidator = z.object({
       .max(100, "You must be at most 100 years old")
       .optional(),
     gender: z.enum(["male", "female", "n/a"]).default("n/a").optional(),
-    profileImage: z.coerce.string().url().optional(),
+    avatar: z.coerce.string().url().optional(),
     bio: z.coerce
       .string()
       .max(500, "Bio must be at most 500 characters long")

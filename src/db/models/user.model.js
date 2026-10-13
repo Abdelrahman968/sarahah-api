@@ -52,7 +52,7 @@ const userSchema = new mongoose.Schema(
       max: [100, "Age must be at most 100"],
     },
 
-    profileImage: {
+    avatar: {
       type: String,
       default: null,
     },
