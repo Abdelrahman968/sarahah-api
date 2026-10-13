@@ -462,7 +462,7 @@ export const setPasswordService = async (
 
   const hashedPassword = await hashPassword(password);
 
-  accountRepository.create({
+  return accountRepository.create({
     userId,
     provider: "password",
     providerAccountId: userId.toString(),
