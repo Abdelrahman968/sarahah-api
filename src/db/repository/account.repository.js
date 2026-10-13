@@ -21,6 +21,23 @@ class AccountRepository extends BaseRepository {
       })
       .select("+password");
   }
+
+  async updatePassword(userId, password) {
+    const account = await this.model
+      .findOne({
+        userId,
+        provider: "password",
+      })
+      .select("+password");
+
+    if (!account) {
+      return null;
+    }
+
+    account.password = password;
+
+    return account.save();
+  }
 }
 
 export default new AccountRepository();

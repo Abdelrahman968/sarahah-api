@@ -56,18 +56,6 @@ class UserRepository extends BaseRepository {
     return this.model.findById(id).select(select);
   }
 
-  async updatePassword(id, password) {
-    const user = await this.model.findById(id).select("+password");
-
-    if (!user) {
-      return null;
-    }
-
-    user.password = password;
-
-    return user.save();
-  }
-
   async ensureUserNameAvailable(userName) {
     const exists = await this.exists({
       userName: userName.toLowerCase(),

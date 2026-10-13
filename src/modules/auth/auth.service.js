@@ -100,9 +100,9 @@ export const LoginUserService = async (body) => {
 
   let user;
   if (userName) {
-    user = await userRepository.findByUserName(userName, "+password");
+    user = await userRepository.findByUserName(userName);
   } else {
-    user = await userRepository.findByEmail(email, "+password");
+    user = await userRepository.findByEmail(email);
   }
 
   if (!user) {
@@ -113,7 +113,17 @@ export const LoginUserService = async (body) => {
     });
   }
 
-  const isPasswordValid = await verifyPassword(user.password, password);
+  const account = await accountRepository.findPasswordAccount(user._id);
+
+  if (!account) {
+    throw new Error("Email / UserName or password is incorrect", {
+      cause: {
+        status: 401,
+      },
+    });
+  }
+
+  const isPasswordValid = await verifyPassword(account.password, password);
 
   if (!isPasswordValid) {
     throw new Error("Email or password is incorrect", {
@@ -265,7 +275,7 @@ export const ResetPasswordService = async (
     });
   }
 
-  const user = await userRepository.findById(resetRequest.userId, "+password");
+  const user = await userRepository.findById(resetRequest.userId);
 
   if (!user) {
     throw new Error("User not found", {
@@ -275,7 +285,16 @@ export const ResetPasswordService = async (
     });
   }
 
-  const isSamePassword = await verifyPassword(user.password, newPassword);
+  const account = await accountRepository.findPasswordAccount(user._id);
+
+  if (!account) {
+    throw new Error("Email / UserName or password is incorrect", {
+      cause: {
+        status: 401,
+      },
+    });
+  }
+  const isSamePassword = await verifyPassword(account.password, newPassword);
 
   if (isSamePassword) {
     throw new Error("New password cannot be the same as the old password", {
@@ -287,7 +306,10 @@ export const ResetPasswordService = async (
 
   const newHashedPassword = await hashPassword(newPassword);
 
-  await userRepository.updatePassword(resetRequest.userId, newHashedPassword);
+  await accountRepository.updatePassword(
+    resetRequest.userId,
+    newHashedPassword,
+  );
 
   resetRequest.usedAt = new Date();
   await resetRequest.save();

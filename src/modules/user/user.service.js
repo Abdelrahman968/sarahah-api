@@ -1,6 +1,7 @@
 import { hashPassword, verifyPassword } from "../../utils/hash/password.js";
 import { isValidObjectId } from "../../utils/validation/isValidObjectId.js";
 import userRepository from "../../db/repository/user.repository.js";
+import accountRepository from "../../db/repository/account.repository.js";
 
 export const GetMyInfo = async (id) => {
   isValidObjectId(id);
@@ -75,7 +76,7 @@ export const updatePasswordService = async (id, body) => {
     });
   }
 
-  const user = await userRepository.findById(id, "+password");
+  const user = await userRepository.findById(id);
 
   if (!user) {
     throw new Error("User not found", {
@@ -83,7 +84,20 @@ export const updatePasswordService = async (id, body) => {
     });
   }
 
-  const isPasswordValid = await verifyPassword(user.password, currentPassword);
+  const account = await accountRepository.findPasswordAccount(user._id);
+
+  if (!account) {
+    throw new Error("Email / UserName or password is incorrect", {
+      cause: {
+        status: 401,
+      },
+    });
+  }
+
+  const isPasswordValid = await verifyPassword(
+    account.password,
+    currentPassword,
+  );
 
   if (!isPasswordValid) {
     throw new Error("Current password is incorrect", {
@@ -91,7 +105,7 @@ export const updatePasswordService = async (id, body) => {
     });
   }
 
-  const isSamePassword = await verifyPassword(user.password, newPassword);
+  const isSamePassword = await verifyPassword(account.password, newPassword);
 
   if (isSamePassword) {
     throw new Error("New password cannot be the same as the current password", {
@@ -101,7 +115,7 @@ export const updatePasswordService = async (id, body) => {
 
   const hashedPassword = await hashPassword(newPassword);
 
-  await userRepository.updatePassword(user._id, hashedPassword);
+  await accountRepository.updatePassword(user._id, hashedPassword);
 
   return user;
 };
