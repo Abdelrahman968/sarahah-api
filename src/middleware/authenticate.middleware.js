@@ -59,9 +59,18 @@ export const authenticate = (req, _res, next) => {
       });
     }
 
+    if (payload.verified !== true) {
+      throw new Error("Email not verified", {
+        cause: {
+          status: 401,
+        },
+      });
+    }
+
     req.user = {
       id: payload.sub,
       role: payload.role,
+      verified: payload.verified,
     };
 
     next();

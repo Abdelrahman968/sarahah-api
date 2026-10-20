@@ -9,14 +9,14 @@ export const connectDB = async () => {
     });
 
     if (!mongoose.connection.db) {
-      throw new Error("MongoDB database connection is not available");
+      throw new Error("Mongo Database database connection is not available");
     }
 
     await mongoose.connection.db.command({ ping: 1 });
 
-    console.log("MongoDB connected");
+    console.log("Mongo Database connected");
   } catch (error) {
-    console.error("MongoDB connection failed:", error);
+    console.error("Mongo Database connection failed:", error);
     throw error;
   }
 };
@@ -39,9 +39,9 @@ export const disconnectDB = async () => {
   try {
     await mongoose.disconnect();
 
-    console.log("MongoDB disconnected");
+    console.log("Mongo Database disconnected");
   } catch (error) {
-    console.error("MongoDB disconnection failed:", error);
+    console.error("Mongo Database disconnection failed:", error);
     throw error;
   }
 };

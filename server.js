@@ -1,9 +1,11 @@
 import { API_PREFIX, PORT } from "./config/env.config.js";
 import app from "./src/app.js";
 import { connectDB, disconnectDB } from "./src/db/connection.db.js";
+import { connectRedis, disconnectRedis } from "./src/db/redis.client.js";
 
 const startServer = async () => {
   try {
+    await connectRedis();
     await connectDB();
 
     const server = app.listen(PORT, () =>
@@ -14,6 +16,7 @@ const startServer = async () => {
       console.log(`${signal} received. Shutting down...`);
 
       server.close(async () => {
+        await disconnectRedis();
         await disconnectDB();
         process.exit(0);
       });

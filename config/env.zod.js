@@ -34,6 +34,8 @@ export const envSchema = z.object({
     .min(1, "MongoDB database name is required")
     .default("sarahah_dev"),
 
+  REDIS_URL: z.url().default("redis://localhost:6379"),
+
   TRUSTED_ORIGINS: z
     .string()
     .transform((value) => {

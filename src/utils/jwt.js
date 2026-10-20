@@ -24,6 +24,7 @@ export const generateAccessToken = (user) => {
     {
       sub: user._id.toString(),
       role,
+      verified: user.verified,
       type: "access",
     },
     isUser ? JWT_ACCESS_SECRET : JWT_ADMIN_ACCESS_SECRET,
@@ -48,6 +49,7 @@ export const generateRefreshToken = (user) => {
     {
       sub: user._id.toString(),
       role,
+      verified: user.verified,
       type: "refresh",
     },
     isUser ? JWT_REFRESH_SECRET : JWT_ADMIN_REFRESH_SECRET,

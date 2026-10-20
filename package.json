@@ -6,7 +6,7 @@
   "main": "server.js",
   "scripts": {
     "start:node": "cross-env NODE_ENV=production node server.js",
-    "start:dev": "cross-env NODE_ENV=development nodemon server.js"
+    "start:dev": "cross-env NODE_ENV=development node --watch server.js"
   },
   "keywords": [
     "node",
@@ -16,8 +16,7 @@
   ],
   "type": "module",
   "devDependencies": {
-    "cross-env": "^10.1.0",
-    "nodemon": "^3.1.14"
+    "cross-env": "^10.1.0"
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^9.1.0",
@@ -32,6 +31,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.10.0",
     "nodemailer": "^10.0.9",
+    "redis": "^6.3.0",
     "zod": "^4.6.2"
   },
   "allowScripts": {
