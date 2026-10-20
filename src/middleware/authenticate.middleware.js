@@ -59,7 +59,7 @@ export const authenticate = (req, _res, next) => {
       });
     }
 
-    if (payload.verified !== true) {
+    if (payload.isVerified !== true) {
       throw new Error("Email not verified", {
         cause: {
           status: 401,
