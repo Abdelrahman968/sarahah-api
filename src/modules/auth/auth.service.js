@@ -381,6 +381,7 @@ export const googleLogin = async (googleUser) => {
 
     user = await userRepository.create({
       userName,
+      isVerify: true,
       firstName: googleUser.firstName,
       lastName: googleUser.lastName,
       email: googleUser.email,
@@ -426,6 +427,7 @@ export const githubLogin = async (githubUser) => {
 
     user = await userRepository.create({
       userName,
+      isVerified: true,
       firstName: githubUser.name?.split(" ")[0] || githubUser.userName,
       lastName: githubUser.name?.split(" ").slice(1).join(" ") || "",
       email: githubUser.email,

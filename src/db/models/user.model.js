@@ -3,8 +3,8 @@ import mongoose from "mongoose";
 const nameValidator = {
   type: String,
   required: true,
-  minLength: [3, "First Name must be at least 3 characters"],
-  maxLength: [20, "First Name must be at most 20 characters"],
+  minLength: [3, "Name must be at least 3 characters"],
+  maxLength: [20, "Name must be at most 20 characters"],
   trim: true,
   match: [/^[A-Za-z]+$/, "Name must contain letters only"],
   set: (value) => value.charAt(0).toUpperCase() + value.slice(1).toLowerCase(),
@@ -19,8 +19,7 @@ const userSchema = new mongoose.Schema(
       maxLength: [20, "First Name must be at most 20 characters"],
       trim: true,
       match: [/^[A-Za-z0-9]+$/, "Name must contain letters and numbers only"],
-      set: (value) =>
-        value.charAt(0).toUpperCase() + value.slice(1).toLowerCase(),
+      set: (value) => value.toLowerCase(),
     },
     firstName: nameValidator,
     lastName: nameValidator,
@@ -52,7 +51,7 @@ const userSchema = new mongoose.Schema(
 
     age: {
       type: Number,
-      default: 18,
+      default: null,
       min: [18, "Age must be at least 18"],
       max: [100, "Age must be at most 100"],
     },
