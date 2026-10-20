@@ -16,9 +16,20 @@ const startServer = async () => {
       console.log(`${signal} received. Shutting down...`);
 
       server.close(async () => {
-        await disconnectRedis();
-        await disconnectDB();
-        process.exit(0);
+        const results = await Promise.allSettled([
+          disconnectRedis(),
+          disconnectDB(),
+        ]);
+
+        results.forEach((result) => {
+          if (result.status === "rejected") {
+            console.error("Shutdown error:", result.reason);
+          }
+        });
+
+        process.exit(
+          results.some((result) => result.status === "rejected") ? 1 : 0,
+        );
       });
     };
 

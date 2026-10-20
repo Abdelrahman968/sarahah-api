@@ -9,7 +9,7 @@ export const connectDB = async () => {
     });
 
     if (!mongoose.connection.db) {
-      throw new Error("Mongo Database database connection is not available");
+      throw new Error("Mongo Database connection is not available");
     }
 
     await mongoose.connection.db.command({ ping: 1 });
