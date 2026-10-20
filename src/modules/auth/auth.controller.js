@@ -11,6 +11,7 @@ import {
   getGoogleAuthUrlService,
   githubLogin,
   setPasswordService,
+  revokeAccessToken,
 } from "./auth.service.js";
 
 import {
@@ -119,25 +120,6 @@ router.post("/login", validate(loginValidator), async (req, res, next) => {
   }
 });
 
-router.post("/logout", async (req, res, next) => {
-  try {
-    const refreshToken = req.cookies[JWT_REFRESH_COOKIE_NAME];
-
-    if (!refreshToken) {
-      clearRefreshTokenCookie(res);
-      return res.status(200).json({ message: "Logout successfully" });
-    }
-
-    await LogoutService(refreshToken);
-
-    clearRefreshTokenCookie(res);
-
-    res.status(200).json({ message: "Logout successfully" });
-  } catch (error) {
-    next(error);
-  }
-});
-
 router.post("/refresh-token", async (req, res, next) => {
   try {
     const refreshToken = req.cookies[JWT_REFRESH_COOKIE_NAME];
@@ -220,18 +202,6 @@ router.post(
     }
   },
 );
-
-router.get("/me", authenticate, async (req, res, next) => {
-  try {
-    const data = await GetProfileService(req.user.id);
-
-    res.status(200).json({
-      data,
-    });
-  } catch (error) {
-    next(error);
-  }
-});
 
 // OAuth Google Login
 
@@ -325,5 +295,39 @@ router.post(
     }
   },
 );
+
+router.get("/profile", authenticate, async (req, res, next) => {
+  try {
+    const data = await GetProfileService(req.user.id);
+
+    res.status(200).json({
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/logout", authenticate, async (req, res, next) => {
+  try {
+    const refreshToken = req.cookies[JWT_REFRESH_COOKIE_NAME];
+
+    if (!refreshToken) {
+      clearRefreshTokenCookie(res);
+      await revokeAccessToken(req.user.exp, req.user.jti);
+
+      return res.status(200).json({ message: "Logout successfully" });
+    }
+
+    await LogoutService(refreshToken, req.user.exp, req.user.jti);
+    await revokeAccessToken(req.user.exp, req.user.jti);
+
+    clearRefreshTokenCookie(res);
+
+    res.status(200).json({ message: "Logout successfully" });
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default router;

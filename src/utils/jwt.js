@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { v4 as uuidv4 } from "uuid";
 
 import {
   JWT_ACCESS_EXPIRES_IN,
@@ -32,6 +33,7 @@ export const generateAccessToken = (user) => {
       expiresIn: isUser ? JWT_ACCESS_EXPIRES_IN : JWT_ADMIN_ACCESS_EXPIRES_IN,
       issuer: "sarahah-api",
       audience: "sarahah-client",
+      jwtid: uuidv4(),
     },
   );
 };
@@ -57,6 +59,7 @@ export const generateRefreshToken = (user) => {
       expiresIn: isUser ? JWT_REFRESH_EXPIRES_IN : JWT_ADMIN_REFRESH_EXPIRES_IN,
       issuer: "sarahah-api",
       audience: "sarahah-client",
+      jwtid: uuidv4(),
     },
   );
 };

@@ -3,8 +3,9 @@ import {
   JWT_ACCESS_SECRET,
   JWT_ADMIN_ACCESS_SECRET,
 } from "../../config/env.config.js";
+import { redisExists } from "../services/redis/redis.service.js";
 
-export const authenticate = (req, _res, next) => {
+export const authenticate = async (req, _res, next) => {
   try {
     const authorization = req.headers.authorization;
 
@@ -31,8 +32,8 @@ export const authenticate = (req, _res, next) => {
     if (
       !decoded ||
       typeof decoded !== "object" ||
-      !decoded.role ||
-      decoded.type !== "access"
+      decoded.type !== "access" ||
+      !decoded.role
     ) {
       throw new Error("Invalid Access token", {
         cause: { status: 401 },
@@ -50,7 +51,10 @@ export const authenticate = (req, _res, next) => {
     if (
       typeof payload !== "object" ||
       payload.type !== "access" ||
-      !payload.sub
+      !payload.sub ||
+      !payload.jti ||
+      typeof payload.isVerified !== "boolean" ||
+      !payload.exp
     ) {
       throw new Error("Invalid access token", {
         cause: {
@@ -59,18 +63,20 @@ export const authenticate = (req, _res, next) => {
       });
     }
 
-    if (payload.isVerified !== true) {
-      throw new Error("Email not verified", {
-        cause: {
-          status: 401,
-        },
+    const isRevoked = await redisExists(`revoked:access:${payload.jti}`);
+
+    if (isRevoked) {
+      throw new Error("Access token has been revoked", {
+        cause: { status: 401 },
       });
     }
 
     req.user = {
       id: payload.sub,
       role: payload.role,
-      verified: payload.verified,
+      isVerified: payload.isVerified,
+      jti: payload.jti,
+      exp: payload.exp,
     };
 
     next();

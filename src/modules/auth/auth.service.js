@@ -25,6 +25,7 @@ import { resetPasswordEmailTemplate } from "../../services/email/templates/forgo
 import accountRepository from "../../db/repository/account.repository.js";
 import { generateUniqueUsername } from "../../utils/userName.js";
 import { getGoogleAuthUrl } from "../../services/Oauth/google.service.js";
+import { redisSet } from "../../services/redis/redis.service.js";
 
 export const RegisterUserService = async (body) => {
   const { userName, firstName, lastName, email, password, gender, age } = body;
@@ -167,6 +168,15 @@ export const LogoutService = async (refreshToken) => {
       },
     },
   );
+};
+
+export const revokeAccessToken = async (exp, jti) => {
+  const ttl = exp - Math.floor(Date.now() / 1000);
+
+  if (ttl > 0) {
+    await redisSet(`revoked:access:${jti}`, "1", ttl);
+  }
+  return true;
 };
 
 export const RefreshTokenService = async (refreshToken) => {

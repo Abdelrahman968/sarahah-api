@@ -1,5 +1,6 @@
 import { checkDBHealth } from "../../db/connection.db.js";
 import { redisHealthCheck } from "../../db/redis.client.js";
+import userRepository from "../../db/repository/user.repository.js";
 
 export const checkHealthService = async () => {
   const database = await checkDBHealth();
@@ -47,4 +48,8 @@ export const checkHealthService = async () => {
     uptime: formattedUptime,
     timestamp: new Date().toISOString(),
   };
+};
+
+export const GetAllUsersService = async () => {
+  return userRepository.findAll();
 };

@@ -7,30 +7,13 @@ import {
 } from "./user.zod.js";
 import {
   deleteMeService,
-  GetAllUsersService,
   GetMyInfo,
   UpdateEmailService,
   updatePasswordService,
   UpdateProfileService,
 } from "./user.service.js";
-import { authenticate } from "../../middleware/authenticate.middleware.js";
 
 const router = Router();
-
-router.get("/getUsers", async (_req, res, next) => {
-  try {
-    const data = await GetAllUsersService();
-    res.status(200).json({
-      data,
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Protected routes
-
-router.use(authenticate);
 
 router.get("/profile", async (req, res, next) => {
   try {

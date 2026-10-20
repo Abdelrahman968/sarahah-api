@@ -5,9 +5,13 @@ export const redisGet = (key) => {
 };
 
 export const redisSet = (key, value, ttl) => {
-  return ttl
-    ? redisClient.set(key, value, { EX: ttl })
-    : redisClient.set(key, value);
+  if (ttl === undefined) {
+    return redisClient.set(key, value);
+  }
+
+  return redisClient.set(key, value, {
+    expiration: { type: "EX", value: ttl },
+  });
 };
 
 export const redisDel = (key) => {
@@ -20,4 +24,8 @@ export const redisTTL = (key) => {
 
 export const redisExpire = (key, expireIn) => {
   return redisClient.expire(key, expireIn);
+};
+
+export const redisExists = (key) => {
+  return redisClient.exists(key);
 };

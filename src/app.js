@@ -8,6 +8,7 @@ import { resFormatter } from "./middleware/resFormatter.middleware.js";
 import { notFoundRoute } from "./middleware/notFound.middleware.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 import { apiLimiter, authLimiter } from "./middleware/rateLimit.middleware.js";
+import { requireVerifiedEmail } from "./middleware/requireVerifiedEmail.middleware.js";
 
 import {
   AdminRoutes,
@@ -36,7 +37,7 @@ app.use(
 app.use(express.json());
 app.use(resFormatter);
 
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
   res.redirect(API_PREFIX);
 });
 
@@ -76,7 +77,7 @@ const routes = [
   },
   {
     path: "/user",
-    middlewares: [apiLimiter],
+    middlewares: [authenticate, requireVerifiedEmail, apiLimiter],
     router: UserRoutes,
     docs: {
       tag: "Users",
@@ -84,7 +85,7 @@ const routes = [
   },
   {
     path: "/admin",
-    middlewares: [authenticate, authorize("admin")],
+    middlewares: [authenticate, requireVerifiedEmail, authorize("admin")],
     router: AdminRoutes,
     docs: {
       tag: "Admin",

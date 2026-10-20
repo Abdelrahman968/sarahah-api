@@ -120,10 +120,6 @@ export const updatePasswordService = async (id, body) => {
   return user;
 };
 
-export const GetAllUsersService = async () => {
-  return userRepository.findAll();
-};
-
 export const deleteMeService = async (id) => {
   isValidObjectId(id);
 
