@@ -77,7 +77,7 @@ const userSchema = new mongoose.Schema(
     toJSON: {
       virtuals: true,
       transform: (_doc, ret) => {
-        const { _id, __v, password, ...user } = ret;
+        const { _id, __v, ...user } = ret;
 
         return {
           id: _id.toString(),
@@ -88,7 +88,7 @@ const userSchema = new mongoose.Schema(
     toObject: {
       virtuals: true,
       transform: (_doc, ret) => {
-        const { _id, __v, password, ...user } = ret;
+        const { _id, __v, ...user } = ret;
 
         return {
           id: _id.toString(),

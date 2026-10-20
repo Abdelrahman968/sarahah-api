@@ -1,7 +1,9 @@
 import { checkDBHealth } from "../../db/connection.db.js";
+import { redisHealthCheck } from "../../db/redis.client.js";
 
 export const checkHealthService = async () => {
   const database = await checkDBHealth();
+  const redis = await redisHealthCheck();
 
   if (!database) {
     throw new Error(
@@ -9,10 +11,19 @@ export const checkHealthService = async () => {
       {
         cause: {
           status: 503,
-          service: "database",
+          service: "Mongo DB",
         },
       },
     );
+  }
+
+  if (!redis) {
+    throw new Error("Redis is not healthy, please check the Redis connection", {
+      cause: {
+        status: 503,
+        service: "Redis",
+      },
+    });
   }
 
   const uptime = Math.floor(process.uptime());
@@ -31,6 +42,7 @@ export const checkHealthService = async () => {
     services: {
       api: "up",
       database: "up",
+      redis: "up",
     },
     uptime: formattedUptime,
     timestamp: new Date().toISOString(),
