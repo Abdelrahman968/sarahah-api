@@ -381,7 +381,7 @@ export const googleLogin = async (googleUser) => {
 
     user = await userRepository.create({
       userName,
-      isVerify: true,
+      isVerified: true,
       firstName: googleUser.firstName,
       lastName: googleUser.lastName,
       email: googleUser.email,
