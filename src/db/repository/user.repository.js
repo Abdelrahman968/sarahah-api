@@ -45,10 +45,7 @@ class UserRepository extends BaseRepository {
 
   findByUserName(userName) {
     return this.model.findOne({
-      userName: {
-        $regex: `^${userName}$`,
-        $options: "i",
-      },
+      userName: userName.toLowerCase(),
     });
   }
 
@@ -83,6 +80,11 @@ class UserRepository extends BaseRepository {
         },
       });
     }
+  }
+
+  async isUserVerifiedById(userId) {
+    const user = await this.model.findById(userId).select("verified").lean();
+    return user?.verified ?? false;
   }
 }
 
