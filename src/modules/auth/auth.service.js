@@ -11,16 +11,17 @@ import {
   revokeSession,
 } from "../session/session.service.js";
 import { welcomeEmailTemplate } from "../../services/email/templates/welcome.template.js";
-import {
-  hash as hashPassword,
-  verifyHash as verifyPassword,
-} from "../../utils/hash/hash.js";
+import { hash, verifyHash } from "../../utils/hash/hash.js";
 import { sendEmail } from "../../services/email/email.service.js";
 import {
   generatePasswordResetToken,
   hashToken,
 } from "../../utils/hash/crypto.js";
-import { CLIENT_URL } from "../../../config/env.config.js";
+import {
+  CLIENT_URL,
+  OTP_EXPIRES_IN,
+  OTP_LENGTH,
+} from "../../../config/env.config.js";
 import userRepository from "../../db/repository/user.repository.js";
 import sessionRepository from "../../db/repository/session.repository.js";
 import passwordResetRepository from "../../db/repository/password-reset.repository.js";
@@ -28,7 +29,71 @@ import { resetPasswordEmailTemplate } from "../../services/email/templates/forgo
 import accountRepository from "../../db/repository/account.repository.js";
 import { generateUniqueUsername } from "../../utils/userName.js";
 import { getGoogleAuthUrl } from "../../services/Oauth/google.service.js";
-import { redisSet } from "../../services/redis/redis.service.js";
+import {
+  redisExists,
+  redisSet,
+  redisTTL,
+} from "../../services/redis/redis.service.js";
+import generateCode from "../../utils/generateCode.js";
+import { verifyEmailTemplate } from "../../services/email/templates/verify-email.template.js";
+
+export const generateOTPCode = async (userId) => {
+  const user = await userRepository.findById(userId);
+
+  if (!user) {
+    throw new Error("User not found", {
+      cause: { status: 404 },
+    });
+  }
+
+  if (user.isVerified === true) {
+    throw new Error("User is already verified", {
+      cause: { status: 400 },
+    });
+  }
+
+  const otpCacheKey = `otp:email-verification:${user.id}`;
+
+  const otpExists = await redisExists(otpCacheKey);
+
+  if (otpExists) {
+    const ttl = await redisTTL(otpCacheKey);
+
+    const minutes = Math.floor(ttl / 60);
+    const seconds = ttl % 60;
+
+    return {
+      sent: false,
+      expiresIn: `${minutes} minutes and ${seconds} seconds`,
+    };
+  }
+
+  const otpCode = generateCode(OTP_LENGTH);
+  const otpHash = await hash(otpCode);
+
+  await redisSet(otpCacheKey, otpHash, OTP_EXPIRES_IN);
+
+  sendEmail({
+    to: user.email,
+    subject: "OTP Code Verification - Sarahah App",
+    html: verifyEmailTemplate({
+      name: user.fullName,
+      email: user.email,
+      code: otpCode,
+      verifyUrl: CLIENT_URL,
+    }),
+  }).catch((error) => {
+    console.error("Welcome email failed:", error);
+  });
+
+  const expiresInMin = Math.floor(OTP_EXPIRES_IN / 60);
+  const expiresInSec = OTP_EXPIRES_IN % 60;
+
+  return {
+    sent: true,
+    expiresIn: `${expiresInMin} minutes and ${expiresInSec} seconds`,
+  };
+};
 
 export const RegisterUserService = async (body) => {
   const { userName, firstName, lastName, email, password, gender, age } = body;
@@ -47,7 +112,7 @@ export const RegisterUserService = async (body) => {
 
   const user = await userRepository.create(data);
 
-  const hashedPassword = await hashPassword(password);
+  const hashedPassword = await hash(password);
 
   await accountRepository.create({
     userId: user._id,
@@ -127,7 +192,7 @@ export const LoginUserService = async (body) => {
     });
   }
 
-  const isPasswordValid = await verifyPassword(account.password, password);
+  const isPasswordValid = await verifyHash(account.password, password);
 
   if (!isPasswordValid) {
     throw new Error("Email/UserName or password is incorrect", {
@@ -307,7 +372,7 @@ export const ResetPasswordService = async (
       },
     });
   }
-  const isSamePassword = await verifyPassword(account.password, newPassword);
+  const isSamePassword = await verifyHash(account.password, newPassword);
 
   if (isSamePassword) {
     throw new Error("New password cannot be the same as the old password", {
@@ -317,7 +382,7 @@ export const ResetPasswordService = async (
     });
   }
 
-  const newHashedPassword = await hashPassword(newPassword);
+  const newHashedPassword = await hash(newPassword);
 
   await accountRepository.updatePassword(
     resetRequest.userId,
@@ -475,7 +540,7 @@ export const setPasswordService = async (
     });
   }
 
-  const hashedPassword = await hashPassword(password);
+  const hashedPassword = await hash(password);
 
   return accountRepository.create({
     userId,

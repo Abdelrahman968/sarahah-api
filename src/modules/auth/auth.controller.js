@@ -12,6 +12,7 @@ import {
   githubLogin,
   setPasswordService,
   revokeAccessToken,
+  generateOTPCode,
 } from "./auth.service.js";
 
 import {
@@ -51,20 +52,7 @@ router.post(
   validate(UserRegisterValidator),
   async (req, res, next) => {
     try {
-      const { userName, firstName, lastName, email, password, gender, age } =
-        req.validate.body;
-
-      const body = {
-        userName,
-        firstName,
-        lastName,
-        email,
-        password,
-        gender,
-        age,
-      };
-
-      const result = await RegisterUserService(body);
+      const result = await RegisterUserService(req.validate.body);
 
       const { refreshToken, ...data } = result;
 
@@ -72,6 +60,7 @@ router.post(
 
       res.status(201).json({
         message: "User created successfully",
+        notes: "Need to verify email",
         data: data,
       });
     } catch (error) {
@@ -108,8 +97,17 @@ router.post("/login", validate(loginValidator), async (req, res, next) => {
       console.error("New Login email failed:", error);
     });
 
+    if (!user.isVerified) {
+      generateOTPCode(user.id).catch((error) => {
+        console.error("Generate verification OTP failed:", error);
+      });
+    }
+
     res.status(200).json({
       message: "Login Successfully",
+      ...(user.isVerified === false && {
+        notes: "Need to verify email, please check your email",
+      }),
       data: {
         user,
         accessToken,
@@ -325,6 +323,17 @@ router.post("/logout", authenticate, async (req, res, next) => {
     clearRefreshTokenCookie(res);
 
     res.status(200).json({ message: "Logout successfully" });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/activate", authenticate, async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const otpService = await generateOTPCode(userId);
+
+    res.status(200).json(otpService);
   } catch (error) {
     next(error);
   }
