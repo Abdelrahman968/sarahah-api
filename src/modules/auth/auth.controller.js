@@ -46,6 +46,7 @@ import {
   getGithubAuthUrl,
   getGithubUser,
 } from "../../services/Oauth/github.service.js";
+import { requireVerifiedEmail } from "../../middleware/requireVerifiedEmail.middleware.js";
 
 const router = Router();
 
@@ -114,89 +115,6 @@ router.post("/login", validate(loginValidator), async (req, res, next) => {
     next(error);
   }
 });
-
-router.post("/refresh-token", async (req, res, next) => {
-  try {
-    const refreshToken = req.cookies[JWT_REFRESH_COOKIE_NAME];
-
-    if (!refreshToken) {
-      throw new Error("Refresh token is required", {
-        cause: { status: 401 },
-      });
-    }
-
-    const result = await RefreshTokenService(refreshToken);
-
-    setRefreshTokenCookie(res, result.refreshToken);
-
-    res.status(200).json({
-      message: "Token refreshed successfully",
-      data: {
-        accessToken: result.accessToken,
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.post(
-  "/forgot-password",
-  validate(forgotPasswordValidator),
-  async (req, res, next) => {
-    try {
-      const data = await ForgotPasswordService(req.validate.body.email);
-      res.status(200).json({
-        data,
-      });
-    } catch (error) {
-      next(error);
-    }
-  },
-);
-
-router.post(
-  "/reset-password",
-  validate(resetPasswordValidator),
-  async (req, res, next) => {
-    try {
-      const { token, newPassword, confirmPassword } = req.validate.body;
-
-      const user = await ResetPasswordService(
-        token,
-        newPassword,
-        confirmPassword,
-      );
-
-      const html = passwordChangedEmailTemplate({
-        name: user.firstName,
-        email: user.email,
-        changedAt: new Date().toLocaleString("en-US", {
-          dateStyle: "medium",
-          timeStyle: "short",
-        }),
-        ipAddress: req.ip,
-        device: req.get("user-agent"),
-        securityUrl: `${CLIENT_URL}/account/security`,
-      });
-
-      sendEmail({
-        to: user.email,
-        subject: "Your Sarahah Password Was Changed",
-        html,
-      }).catch((error) => {
-        console.error("Password changed email failed:", error);
-      });
-
-      res.status(200).json({
-        message: "Password reset successfully",
-        user,
-      });
-    } catch (error) {
-      next(error);
-    }
-  },
-);
 
 // OAuth Google Login
 
@@ -269,33 +187,15 @@ router.get("/github/callback", async (req, res, next) => {
   }
 });
 
-router.post(
-  "/set-password",
-  validate(setPasswordValidator),
-  authenticate,
-  async (req, res, next) => {
-    try {
-      const { userId, provider } = await setPasswordService(
-        req.user.id,
-        req.validate.body,
-      );
-
-      res.status(200).json({
-        message: "Password set successfully",
-        userId,
-        provider,
-      });
-    } catch (error) {
-      next(error);
-    }
-  },
-);
-
 router.get("/profile", authenticate, async (req, res, next) => {
   try {
     const data = await GetProfileService(req.user.id);
 
     res.status(200).json({
+      success: true,
+      ...(data.isVerified === false && {
+        notes: "Please verify your email to access to all features.",
+      }),
       data,
     });
   } catch (error) {
@@ -342,8 +242,130 @@ router.post(
   validate(activateEmailValidator),
   async (req, res, next) => {
     try {
-      const result = await verifyOTPCode(req.user.id, req.validate.body.otp);
-      res.status(200).json(result);
+      const refreshToken = req.cookies[JWT_REFRESH_COOKIE_NAME];
+      const {
+        message,
+        accessToken,
+        refreshToken: newRefreshToken,
+      } = await verifyOTPCode(req.user.id, req.validate.body.otp);
+
+      if (refreshToken) {
+        await LogoutService(refreshToken, req.user.exp, req.user.jti);
+      }
+      await revokeAccessToken(req.user.exp, req.user.jti);
+
+      clearRefreshTokenCookie(res);
+      setRefreshTokenCookie(res, newRefreshToken);
+
+      res.status(200).json({ message, accessToken });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+router.use(requireVerifiedEmail);
+
+router.post(
+  "/set-password",
+  validate(setPasswordValidator),
+  authenticate,
+  async (req, res, next) => {
+    try {
+      const { userId, provider } = await setPasswordService(
+        req.user.id,
+        req.validate.body,
+      );
+
+      res.status(200).json({
+        message: "Password set successfully",
+        userId,
+        provider,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+router.post("/refresh-token", async (req, res, next) => {
+  try {
+    const refreshToken = req.cookies[JWT_REFRESH_COOKIE_NAME];
+
+    if (!refreshToken) {
+      throw new Error("Refresh token is required", {
+        cause: { status: 401 },
+      });
+    }
+
+    const result = await RefreshTokenService(refreshToken);
+
+    setRefreshTokenCookie(res, result.refreshToken);
+
+    res.status(200).json({
+      message: "Token refreshed successfully",
+      data: {
+        accessToken: result.accessToken,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post(
+  "/forgot-password",
+  validate(forgotPasswordValidator),
+  async (req, res, next) => {
+    try {
+      const data = await ForgotPasswordService(req.validate.body.email);
+      res.status(200).json({
+        data,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+router.post(
+  "/reset-password",
+  validate(resetPasswordValidator),
+  requireVerifiedEmail,
+  async (req, res, next) => {
+    try {
+      const { token, newPassword, confirmPassword } = req.validate.body;
+
+      const user = await ResetPasswordService(
+        token,
+        newPassword,
+        confirmPassword,
+      );
+
+      const html = passwordChangedEmailTemplate({
+        name: user.firstName,
+        email: user.email,
+        changedAt: new Date().toLocaleString("en-US", {
+          dateStyle: "medium",
+          timeStyle: "short",
+        }),
+        ipAddress: req.ip,
+        device: req.get("user-agent"),
+        securityUrl: `${CLIENT_URL}/account/security`,
+      });
+
+      sendEmail({
+        to: user.email,
+        subject: "Your Sarahah Password Was Changed",
+        html,
+      }).catch((error) => {
+        console.error("Password changed email failed:", error);
+      });
+
+      res.status(200).json({
+        message: "Password reset successfully",
+        user,
+      });
     } catch (error) {
       next(error);
     }

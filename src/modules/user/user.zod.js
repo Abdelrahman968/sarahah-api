@@ -20,7 +20,9 @@ export const updateProfileValidator = z.object({
 });
 
 export const updateEmailValidator = z.object({
-  email: emailValidator,
+  body: z.object({
+    email: emailValidator,
+  }),
 });
 
 export const updatePasswordValidator = z

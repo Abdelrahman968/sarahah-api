@@ -40,6 +40,7 @@ import {
 } from "../../services/redis/redis.service.js";
 import generateCode from "../../utils/generateCode.js";
 import { verifyEmailTemplate } from "../../services/email/templates/verify-email.template.js";
+import { isValidObjectId } from "../../utils/validation/isValidObjectId.js";
 
 export const generateOTPCode = async (userId) => {
   const user = await userRepository.findById(userId);
@@ -135,8 +136,6 @@ export const verifyOTPCode = async (userId, otpCode) => {
 
   const otpAttempt = Number((await redisGet(otpAttemptKey)) ?? 0);
 
-  const verifyOTP = await verifyHash(otpHashCache, otpCode);
-
   if (otpAttempt >= OTP_MAX_ATTEMPTS) {
     await redisDel(otpCacheKey);
     await redisDel(otpAttemptKey);
@@ -145,6 +144,8 @@ export const verifyOTPCode = async (userId, otpCode) => {
       cause: { status: 400 },
     });
   }
+
+  const verifyOTP = await verifyHash(otpHashCache, otpCode);
 
   if (!verifyOTP) {
     await redisIncr(otpAttemptKey);
@@ -158,8 +159,19 @@ export const verifyOTPCode = async (userId, otpCode) => {
   await redisDel(otpCacheKey);
   await redisDel(otpAttemptKey);
 
+  const accessToken = generateAccessToken(user);
+  const refreshToken = generateRefreshToken(user);
+
+  await createSession({
+    userId: user._id,
+    refreshToken,
+    expiresAt: getTokenExpiration(refreshToken),
+  });
+
   return {
     message: "User verified successfully",
+    accessToken,
+    refreshToken,
   };
 };
 
