@@ -11,7 +11,10 @@ import {
   revokeSession,
 } from "../session/session.service.js";
 import { welcomeEmailTemplate } from "../../services/email/templates/welcome.template.js";
-import { hashPassword, verifyPassword } from "../../utils/hash/password.js";
+import {
+  hash as hashPassword,
+  verifyHash as verifyPassword,
+} from "../../utils/hash/hash.js";
 import { sendEmail } from "../../services/email/email.service.js";
 import {
   generatePasswordResetToken,

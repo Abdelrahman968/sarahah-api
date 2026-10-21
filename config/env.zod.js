@@ -72,6 +72,10 @@ export const envSchema = z.object({
 
   JWT_REFRESH_COOKIE_NAME: z.string(),
 
+  CODE_CHARACTERS: z
+    .string()
+    .min(10, "CODE_CHARACTERS must be at least 10 characters"),
+
   SMTP_HOST: z.string().min(1),
   SMTP_PORT: portValidator,
   SMTP_USER: z.email(),
