@@ -29,3 +29,7 @@ export const redisExpire = (key, expireIn) => {
 export const redisExists = (key) => {
   return redisClient.exists(key);
 };
+
+export const redisIncr = (key) => {
+  return redisClient.incr(key);
+};

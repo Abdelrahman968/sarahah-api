@@ -21,6 +21,7 @@ import {
   CLIENT_URL,
   OTP_EXPIRES_IN,
   OTP_LENGTH,
+  OTP_MAX_ATTEMPTS,
 } from "../../../config/env.config.js";
 import userRepository from "../../db/repository/user.repository.js";
 import sessionRepository from "../../db/repository/session.repository.js";
@@ -30,7 +31,10 @@ import accountRepository from "../../db/repository/account.repository.js";
 import { generateUniqueUsername } from "../../utils/userName.js";
 import { getGoogleAuthUrl } from "../../services/Oauth/google.service.js";
 import {
+  redisDel,
   redisExists,
+  redisGet,
+  redisIncr,
   redisSet,
   redisTTL,
 } from "../../services/redis/redis.service.js";
@@ -53,6 +57,7 @@ export const generateOTPCode = async (userId) => {
   }
 
   const otpCacheKey = `otp:email-verification:${user.id}`;
+  const otpAttemptKey = `${otpCacheKey}:attempts`;
 
   const otpExists = await redisExists(otpCacheKey);
 
@@ -72,6 +77,7 @@ export const generateOTPCode = async (userId) => {
   const otpHash = await hash(otpCode);
 
   await redisSet(otpCacheKey, otpHash, OTP_EXPIRES_IN);
+  await redisSet(otpAttemptKey, 0, OTP_EXPIRES_IN);
 
   sendEmail({
     to: user.email,
@@ -92,6 +98,68 @@ export const generateOTPCode = async (userId) => {
   return {
     sent: true,
     expiresIn: `${expiresInMin} minutes and ${expiresInSec} seconds`,
+  };
+};
+
+export const verifyOTPCode = async (userId, otpCode) => {
+  const user = await userRepository.findById(userId);
+
+  if (!user) {
+    throw new Error("User not found", {
+      cause: { status: 404 },
+    });
+  }
+
+  if (!otpCode) {
+    throw new Error("OTP code is required", {
+      cause: { status: 400 },
+    });
+  }
+
+  if (user.isVerified === true) {
+    throw new Error("User is already verified", {
+      cause: { status: 400 },
+    });
+  }
+
+  const otpCacheKey = `otp:email-verification:${user.id}`;
+  const otpAttemptKey = `${otpCacheKey}:attempts`;
+
+  const otpHashCache = await redisGet(otpCacheKey);
+
+  if (!otpHashCache) {
+    throw new Error("OTP code not found or expired", {
+      cause: { status: 404 },
+    });
+  }
+
+  const otpAttempt = Number((await redisGet(otpAttemptKey)) ?? 0);
+
+  const verifyOTP = await verifyHash(otpHashCache, otpCode);
+
+  if (otpAttempt >= OTP_MAX_ATTEMPTS) {
+    await redisDel(otpCacheKey);
+    await redisDel(otpAttemptKey);
+
+    throw new Error("Too many attempts. OTP code has been revoked", {
+      cause: { status: 400 },
+    });
+  }
+
+  if (!verifyOTP) {
+    await redisIncr(otpAttemptKey);
+
+    throw new Error("Invalid OTP code", {
+      cause: { status: 400 },
+    });
+  }
+  user.isVerified = true;
+  await userRepository.save(user);
+  await redisDel(otpCacheKey);
+  await redisDel(otpAttemptKey);
+
+  return {
+    message: "User verified successfully",
   };
 };
 

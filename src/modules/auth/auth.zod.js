@@ -57,3 +57,9 @@ export const setPasswordValidator = z
     message: "Passwords do not match",
     path: ["body", "confirmPassword"],
   });
+
+export const activateEmailValidator = z.object({
+  body: z.object({
+    otp: z.string(),
+  }),
+});

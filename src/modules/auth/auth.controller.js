@@ -13,9 +13,11 @@ import {
   setPasswordService,
   revokeAccessToken,
   generateOTPCode,
+  verifyOTPCode,
 } from "./auth.service.js";
 
 import {
+  activateEmailValidator,
   loginValidator,
   setPasswordValidator,
   UserRegisterValidator,
@@ -97,16 +99,11 @@ router.post("/login", validate(loginValidator), async (req, res, next) => {
       console.error("New Login email failed:", error);
     });
 
-    if (!user.isVerified) {
-      generateOTPCode(user.id).catch((error) => {
-        console.error("Generate verification OTP failed:", error);
-      });
-    }
-
     res.status(200).json({
       message: "Login Successfully",
       ...(user.isVerified === false && {
         notes: "Need to verify email, please check your email",
+        route: "auth/activate-request",
       }),
       data: {
         user,
@@ -328,7 +325,7 @@ router.post("/logout", authenticate, async (req, res, next) => {
   }
 });
 
-router.get("/activate", authenticate, async (req, res, next) => {
+router.get("/activate-request", authenticate, async (req, res, next) => {
   try {
     const userId = req.user.id;
     const otpService = await generateOTPCode(userId);
@@ -338,5 +335,19 @@ router.get("/activate", authenticate, async (req, res, next) => {
     next(error);
   }
 });
+
+router.post(
+  "/activate-email",
+  authenticate,
+  validate(activateEmailValidator),
+  async (req, res, next) => {
+    try {
+      const result = await verifyOTPCode(req.user.id, req.validate.body.otp);
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 export default router;
