@@ -19,7 +19,7 @@ export const openapiDocument = generator.generateDocument({
     title: "Sarahah API",
     version: "0.1.0",
     description:
-      "A secure and scalable RESTful API for an anonymous messaging platform, built with Node.js, Express.js, MongoDB, and Mongoose. Includes authentication, user management, anonymous messages, sessions, password recovery, and email notifications.",
+      `Sarahah App REST API built with Node.js, Express, and MongoDB. Includes authentication, user management, OAuth, email verification, and password recovery.\n\n[Download the Postman collection](${API_PREFIX}/docs/postman) or [view the hosted Postman documentation](https://documenter.getpostman.com/view/34579966/2sBYAyu9Ts).`,
   },
 
   servers: [

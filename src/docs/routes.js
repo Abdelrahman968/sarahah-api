@@ -45,6 +45,19 @@ export function registerDocsRoutes(registry) {
     },
   });
 
+  registry.registerPath({
+    method: "get",
+    path: "/system/get-users",
+    tags: ["System"],
+    summary: "Get Users",
+    description: "Returns the user list available from the system endpoint.",
+    responses: {
+      200: {
+        description: "Users retrieved successfully.",
+      },
+    },
+  });
+
   // Auth
   registry.registerPath({
     method: "post",
@@ -57,13 +70,11 @@ export function registerDocsRoutes(registry) {
         content: {
           "application/json": {
             schema: z.object({
-              userName: z.string().openapi({ example: "abdelrahman968" }),
-              firstName: z.string().openapi({ example: "Abdelrahman" }),
-              lastName: z.string().openapi({ example: "Ayman" }),
-              email: z
-                .email()
-                .openapi({ example: "se.abdelrahman968@gmail.com" }),
-              password: z.string().openapi({ example: "Password@123" }),
+              userName: z.string().openapi({ example: "sarahah_user" }),
+              firstName: z.string().openapi({ example: "Sarahah" }),
+              lastName: z.string().openapi({ example: "User" }),
+              email: z.email().openapi({ example: "user@example.com" }),
+              password: z.string().openapi({ example: "YourPassword123!" }),
               gender: z.enum(["male", "female"]).openapi({ example: "male" }),
               age: z.number().int().openapi({ example: 23 }),
             }),
@@ -99,11 +110,11 @@ export function registerDocsRoutes(registry) {
               userName: z
                 .string()
                 .optional()
-                .openapi({ example: "abdelrahman968" }),
+                .openapi({ example: "sarahah_user" }),
               email: z.email().optional().openapi({
-                example: "se.abdelrahman968+admin@gmail.com",
+                example: "user@example.com",
               }),
-              password: z.string().openapi({ example: "Password@123" }),
+              password: z.string().openapi({ example: "YourPassword123!" }),
             }),
           },
         },
@@ -143,9 +154,75 @@ export function registerDocsRoutes(registry) {
     tags: ["Auth"],
     summary: "Logout",
     description: "Revokes the refresh token stored in the cookie.",
+    security: [{ bearerAuth: [] }],
     responses: {
       200: {
         description: "Logged out successfully.",
+      },
+    },
+  });
+
+  registry.registerPath({
+    method: "get",
+    path: "/auth/profile",
+    tags: ["Auth"],
+    summary: "Get Authenticated Profile",
+    description: "Returns the profile for the authenticated user.",
+    security: [{ bearerAuth: [] }],
+    responses: {
+      200: {
+        description: "Profile retrieved successfully.",
+      },
+      401: {
+        description: "Unauthorized.",
+      },
+    },
+  });
+
+  registry.registerPath({
+    method: "get",
+    path: "/auth/activate-request",
+    tags: ["Auth"],
+    summary: "Request Email Activation Code",
+    description: "Sends an email verification code to the authenticated user.",
+    security: [{ bearerAuth: [] }],
+    responses: {
+      200: {
+        description: "Activation code sent.",
+      },
+      401: {
+        description: "Unauthorized.",
+      },
+    },
+  });
+
+  registry.registerPath({
+    method: "post",
+    path: "/auth/activate-email",
+    tags: ["Auth"],
+    summary: "Verify Email",
+    description: "Verifies the authenticated user's email with an OTP code.",
+    security: [{ bearerAuth: [] }],
+    request: {
+      body: {
+        content: {
+          "application/json": {
+            schema: z.object({
+              otp: z.string().openapi({ example: "123456" }),
+            }),
+          },
+        },
+      },
+    },
+    responses: {
+      200: {
+        description: "Email verified successfully.",
+      },
+      400: {
+        description: "Invalid or expired code.",
+      },
+      401: {
+        description: "Unauthorized.",
       },
     },
   });
@@ -163,12 +240,10 @@ export function registerDocsRoutes(registry) {
           "application/json": {
             schema: z
               .object({
-                password: z
-                  .string()
-                  .openapi({ example: "TestPassword12@" }),
+                password: z.string().openapi({ example: "YourPassword123!" }),
                 confirmPassword: z
                   .string()
-                  .openapi({ example: "TestPassword12@" }),
+                  .openapi({ example: "YourPassword123!" }),
               })
               .refine((body) => body.password === body.confirmPassword, {
                 message: "Passwords do not match",
@@ -228,9 +303,7 @@ export function registerDocsRoutes(registry) {
         content: {
           "application/json": {
             schema: z.object({
-              email: z
-                .email()
-                .openapi({ example: "se.abdelrahman968+test1@gmail.com" }),
+              email: z.email().openapi({ example: "user@example.com" }),
             }),
           },
         },
@@ -258,16 +331,13 @@ export function registerDocsRoutes(registry) {
         content: {
           "application/json": {
             schema: z.object({
-              token: z.string().openapi({
-                example:
-                  "b80cefc437a142d2e0a032656a212a25c60dc8a27fb19f9ce4f3645059857d28",
-              }),
+              token: z.string().openapi({ example: "reset-token-from-email" }),
               newPassword: z
                 .string()
-                .openapi({ example: "NewPassword@123@rest" }),
+                .openapi({ example: "YourNewPassword123!" }),
               confirmPassword: z
                 .string()
-                .openapi({ example: "NewPassword@123@rest" }),
+                .openapi({ example: "YourNewPassword123!" }),
             }),
           },
         },
@@ -298,20 +368,6 @@ export function registerDocsRoutes(registry) {
       },
       401: {
         description: "Unauthorized.",
-      },
-    },
-  });
-
-  registry.registerPath({
-    method: "get",
-    path: "/user/getUsers",
-    tags: ["Users"],
-    summary: "Get All Users",
-    description: "Get a list of all users.",
-    security: [{ bearerAuth: [] }],
-    responses: {
-      200: {
-        description: "Users retrieved successfully.",
       },
     },
   });
@@ -377,7 +433,7 @@ export function registerDocsRoutes(registry) {
               email: z
                 .string()
                 .email()
-                .openapi({ example: "se.abdelrahman968+test1@gmail.com" }),
+                .openapi({ example: "user@example.com" }),
             }),
           },
         },
@@ -411,11 +467,15 @@ export function registerDocsRoutes(registry) {
         content: {
           "application/json": {
             schema: z.object({
-              currentPassword: z.string().openapi({ example: "Password@123" }),
-              newPassword: z.string().openapi({ example: "NewPassword@123" }),
+              currentPassword: z
+                .string()
+                .openapi({ example: "YourCurrentPassword123!" }),
+              newPassword: z
+                .string()
+                .openapi({ example: "YourNewPassword123!" }),
               confirmPassword: z
                 .string()
-                .openapi({ example: "NewPassword@123" }),
+                .openapi({ example: "YourNewPassword123!" }),
             }),
           },
         },
@@ -523,7 +583,7 @@ export function registerDocsRoutes(registry) {
     security: [{ bearerAuth: [] }],
     request: {
       params: z.object({
-        userName: z.string().openapi({ example: "abdelrahman968" }),
+        userName: z.string().openapi({ example: "sarahah_user" }),
       }),
     },
     responses: {
@@ -542,7 +602,7 @@ export function registerDocsRoutes(registry) {
     security: [{ bearerAuth: [] }],
     request: {
       query: z.object({
-        userName: z.string().openapi({ example: "abdelrahman968" }),
+        userName: z.string().openapi({ example: "sarahah_user" }),
       }),
     },
     responses: {

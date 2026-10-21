@@ -121,7 +121,10 @@ After starting the server, open:
 http://localhost:5000/api/v1/docs
 ```
 
-This route serves the Scalar API reference for the project.
+This route serves the Scalar API reference for the project. Download the
+[Postman collection](http://localhost:5000/api/v1/docs/postman) to import the
+ready-to-use requests. Set the collection variables for your account, and use
+the Login request to populate `accessToken` for authenticated requests.
 
 ## Default Routes Overview
 

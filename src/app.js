@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import cors from "cors";
 import express from "express";
 import cookieParser from "cookie-parser";
@@ -23,6 +24,10 @@ import { apiReference } from "@scalar/express-api-reference";
 import { openapiDocument } from "./docs/openapi.js";
 
 const app = express();
+const postmanCollectionPath = fileURLToPath(
+  new URL("./docs/Sarahah App.postman_collection.json", import.meta.url),
+);
+
 app.use(cookieParser());
 app.disable("x-powered-by");
 
@@ -54,6 +59,7 @@ app.get(`${API_PREFIX}`, (_req, res) => {
     },
     docs: {
       apiRoutes: `${API_PREFIX}/docs`,
+      postmanCollection: `${API_PREFIX}/docs/postman`,
     },
   });
 });
@@ -97,6 +103,10 @@ routes.forEach(({ path, middlewares, router }) => {
   app.use(`${API_PREFIX}${path}`, ...middlewares, router);
 });
 
+app.get(`${API_PREFIX}/docs/postman`, (_req, res) => {
+  res.download(postmanCollectionPath, "Sarahah App.postman_collection.json");
+});
+
 app.use(
   `${API_PREFIX}/docs`,
   apiReference({
@@ -104,8 +114,16 @@ app.use(
       content: openapiDocument,
     },
     theme: "kepler",
+    layout: "modern",
+    darkMode: true,
     pageTitle: "Sarahah API Documentation",
     showDeveloperTools: "localhost",
+    customCss: `
+      :root {
+        --scalar-color-accent: #14b8a6;
+        --scalar-radius: 12px;
+      }
+    `,
   }),
 );
 
