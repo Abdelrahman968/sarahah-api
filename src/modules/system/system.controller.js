@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { checkHealthService, GetAllUsersService } from "./system.service.js";
+
 const router = Router();
 
 router.get("/health", async (req, res) => {
