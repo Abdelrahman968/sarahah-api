@@ -31,7 +31,6 @@ export const processImage = (folder = "images") => {
       }
 
       const userId = String(req.user.id);
-
       const uploadDir = path.resolve("uploads", userId, folder);
 
       await fs.mkdir(uploadDir, {
@@ -48,9 +47,14 @@ export const processImage = (folder = "images") => {
         })
         .toFile(outputPath);
 
+      const relativePath = path
+        .join("uploads", userId, folder, fileName)
+        .replaceAll("\\", "/");
+
       req.processedImage = {
         fileName,
         path: outputPath,
+        relativePath,
         mimetype: "image/webp",
       };
 
