@@ -80,6 +80,8 @@ export const envSchema = z.object({
   OTP_EXPIRES_IN: z.coerce.number().min(300).max(3600).default(300),
   OTP_MAX_ATTEMPTS: z.coerce.number().min(3).max(10).default(5),
 
+  LOGIN_MAX_ATTEMPTS: z.coerce.number().min(3).max(10).default(5),
+
   SMTP_HOST: z.string().min(1),
   SMTP_PORT: portValidator,
   SMTP_USER: z.email(),

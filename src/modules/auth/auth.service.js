@@ -33,6 +33,7 @@ import { getGoogleAuthUrl } from "../../services/Oauth/google.service.js";
 import {
   redisDel,
   redisExists,
+  redisExpire,
   redisGet,
   redisIncr,
   redisSet,
@@ -272,15 +273,54 @@ export const LoginUserService = async (body) => {
     });
   }
 
+  const loginFailedCacheKey = `login:failed:${user.id}:attempts`;
+  const loginBanCacheKey = `login:ban:${user.id}`;
+
+  const isBanned = await redisGet(loginBanCacheKey);
+
+  if (isBanned) {
+    throw new Error(
+      "Too many failed login attempts. Please try again in 5 minutes.",
+      {
+        cause: {
+          status: 429,
+        },
+      },
+    );
+  }
+
   const isPasswordValid = await verifyHash(account.password, password);
 
   if (!isPasswordValid) {
+    const failedAttempts = await redisIncr(loginFailedCacheKey);
+
+    if (failedAttempts === 1) {
+      await redisExpire(loginFailedCacheKey, 300);
+    }
+
+    if (failedAttempts >= 5) {
+      await redisSet(loginBanCacheKey, "1", 300);
+
+      await redisDel(loginFailedCacheKey);
+
+      throw new Error(
+        "Too many failed login attempts. Your account has been temporarily banned for 5 minutes.",
+        {
+          cause: {
+            status: 429,
+          },
+        },
+      );
+    }
+
     throw new Error("Email/UserName or password is incorrect", {
       cause: {
         status: 401,
       },
     });
   }
+
+  await redisDel(loginFailedCacheKey);
 
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
