@@ -22,15 +22,17 @@ import { authorize } from "./middleware/authorize.middleware.js";
 
 import { apiReference } from "@scalar/express-api-reference";
 import { openapiDocument } from "./docs/openapi.js";
+import helmet from "helmet";
 
 const app = express();
 const postmanCollectionPath = fileURLToPath(
   new URL("./docs/Sarahah App.postman_collection.json", import.meta.url),
 );
 
+app.disable("x-powered-by");
 app.use(cookieParser());
 app.use("/uploads", express.static("uploads"));
-app.disable("x-powered-by");
+app.use(helmet());
 
 app.use(
   cors({
