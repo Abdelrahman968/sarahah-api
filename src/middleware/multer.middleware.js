@@ -17,7 +17,7 @@ export const upload = multer({
     const allowedMimeTypes = ["image/jpeg", "image/png", "image/jpg"];
 
     if (!allowedMimeTypes.includes(file.mimetype)) {
-      return cb(new Error("Only JPEG, PNG, and WebP images are allowed"));
+      return cb(new Error("Only JPEG, PNG, and JPE images are allowed"), false);
     }
     cb(null, true);
   },

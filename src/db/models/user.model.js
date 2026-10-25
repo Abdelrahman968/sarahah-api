@@ -56,6 +56,13 @@ const userSchema = new mongoose.Schema(
       max: [100, "Age must be at most 100"],
     },
 
+    twoFactor: {
+      enabled: {
+        type: Boolean,
+        default: false,
+      },
+    },
+
     avatar: {
       type: String,
       default: null,
