@@ -29,6 +29,7 @@ const postmanCollectionPath = fileURLToPath(
 );
 
 app.use(cookieParser());
+app.use("/uploads", express.static("uploads"));
 app.disable("x-powered-by");
 
 app.use(
