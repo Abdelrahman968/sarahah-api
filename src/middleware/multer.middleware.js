@@ -43,7 +43,7 @@ export const processImage = (folder = "images") => {
       }
 
       const userId = String(req.user.id);
-      const uploadDir = path.resolve("uploads", userId, folder);
+      const uploadDir = path.resolve("public", "uploads", userId, folder);
 
       await fs.mkdir(uploadDir, {
         recursive: true,
@@ -60,7 +60,7 @@ export const processImage = (folder = "images") => {
         .toFile(outputPath);
 
       const relativePath = path
-        .join("uploads", userId, folder, fileName)
+        .join("public", "uploads", userId, folder, fileName)
         .replaceAll("\\", "/");
 
       req.processedImage = {
