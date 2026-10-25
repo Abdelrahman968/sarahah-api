@@ -1,5 +1,6 @@
 import { fileURLToPath } from "node:url";
 import cors from "cors";
+import helmet from "helmet";
 import express from "express";
 import cookieParser from "cookie-parser";
 
@@ -22,7 +23,6 @@ import { authorize } from "./middleware/authorize.middleware.js";
 
 import { apiReference } from "@scalar/express-api-reference";
 import { openapiDocument } from "./docs/openapi.js";
-import helmet from "helmet";
 
 const app = express();
 const postmanCollectionPath = fileURLToPath(

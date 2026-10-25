@@ -24,10 +24,22 @@ export const upload = multer({
 });
 
 export const processImage = (folder = "images") => {
-  return async (req, _res, next) => {
+  return async (req, res, next) => {
     try {
       if (!req.file) {
         return next(new Error("Image is required"));
+      }
+
+      const image = sharp(req.file.buffer, {
+        limitInputPixels: 16_000_000,
+      });
+
+      const metadata = await image.metadata();
+
+      if (!["jpeg", "png"].includes(metadata.format)) {
+        return res.status(400).json({
+          message: "Only valid JPEG and PNG images are allowed",
+        });
       }
 
       const userId = String(req.user.id);
