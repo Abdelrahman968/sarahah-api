@@ -17,7 +17,7 @@ import {
 } from "./auth.service.js";
 
 import {
-  activateEmailValidator,
+  OtpValidator,
   loginValidator,
   setPasswordValidator,
   UserRegisterValidator,
@@ -228,7 +228,7 @@ router.post("/logout", authenticate, async (req, res, next) => {
 router.get("/activate-request", authenticate, async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const otpService = await generateOTPCode(userId);
+    const otpService = await generateOTPCode(userId, "email-verification");
 
     res.status(200).json(otpService);
   } catch (error) {
@@ -239,7 +239,7 @@ router.get("/activate-request", authenticate, async (req, res, next) => {
 router.post(
   "/activate-email",
   authenticate,
-  validate(activateEmailValidator),
+  validate(OtpValidator),
   async (req, res, next) => {
     try {
       const refreshToken = req.cookies[JWT_REFRESH_COOKIE_NAME];
@@ -247,7 +247,11 @@ router.post(
         message,
         accessToken,
         refreshToken: newRefreshToken,
-      } = await verifyOTPCode(req.user.id, req.validate.body.otp);
+      } = await verifyOTPCode(
+        req.user.id,
+        req.validate.body.otp,
+        "email-verification",
+      );
 
       if (refreshToken) {
         await LogoutService(refreshToken, req.user.exp, req.user.jti);
@@ -331,7 +335,6 @@ router.post(
 router.post(
   "/reset-password",
   validate(resetPasswordValidator),
-  requireVerifiedEmail,
   async (req, res, next) => {
     try {
       const { token, newPassword, confirmPassword } = req.validate.body;
@@ -366,6 +369,45 @@ router.post(
         message: "Password reset successfully",
         user,
       });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+router.get("/2fa-req", authenticate, async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const otpService = await generateOTPCode(userId, "two-factor");
+
+    res.status(200).json(otpService);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post(
+  "/2fa-activate",
+  authenticate,
+  validate(OtpValidator),
+  async (req, res, next) => {
+    try {
+      const refreshToken = req.cookies[JWT_REFRESH_COOKIE_NAME];
+      const {
+        message,
+        accessToken,
+        refreshToken: newRefreshToken,
+      } = await verifyOTPCode(req.user.id, req.validate.body.otp, "two-factor");
+
+      if (refreshToken) {
+        await LogoutService(refreshToken, req.user.exp, req.user.jti);
+      }
+      await revokeAccessToken(req.user.exp, req.user.jti);
+
+      clearRefreshTokenCookie(res);
+      setRefreshTokenCookie(res, newRefreshToken);
+
+      res.status(200).json({ message, accessToken });
     } catch (error) {
       next(error);
     }

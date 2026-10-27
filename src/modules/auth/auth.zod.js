@@ -58,7 +58,7 @@ export const setPasswordValidator = z
     path: ["body", "confirmPassword"],
   });
 
-export const activateEmailValidator = z.object({
+export const OtpValidator = z.object({
   body: z.object({
     otp: z.string(),
   }),

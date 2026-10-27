@@ -42,8 +42,15 @@ import {
 import generateCode from "../../utils/generateCode.js";
 import { verifyEmailTemplate } from "../../services/email/templates/verify-email.template.js";
 import { isValidObjectId } from "../../utils/validation/isValidObjectId.js";
+import { OTP_TYPES } from "../../common/constants/otp.constants.js";
 
-export const generateOTPCode = async (userId) => {
+export const generateOTPCode = async (userId, otpType) => {
+  if (!Object.values(OTP_TYPES).includes(otpType)) {
+    throw new Error("Invalid otp type", {
+      cause: { status: 400 },
+    });
+  }
+
   const user = await userRepository.findById(userId);
 
   if (!user) {
@@ -52,13 +59,30 @@ export const generateOTPCode = async (userId) => {
     });
   }
 
-  if (user.isVerified === true) {
-    throw new Error("User is already verified", {
-      cause: { status: 400 },
-    });
+  switch (otpType) {
+    case OTP_TYPES.EMAIL_VERIFICATION:
+      if (user.isVerified === true) {
+        throw new Error("User is already verified", {
+          cause: { status: 400 },
+        });
+      }
+      break;
+
+    case OTP_TYPES.TWO_FACTOR:
+      if (user.twoFactor.enabled === false) {
+        throw new Error("Two factor authentication is not enabled", {
+          cause: { status: 400 },
+        });
+      }
+      break;
+
+    default:
+      throw new Error("Invalid otp type", {
+        cause: { status: 400 },
+      });
   }
 
-  const otpCacheKey = `otp:email-verification:${user.id}`;
+  const otpCacheKey = `otp:${otpType}:${user.id}`;
   const otpAttemptKey = `${otpCacheKey}:attempts`;
 
   const otpExists = await redisExists(otpCacheKey);
@@ -91,19 +115,27 @@ export const generateOTPCode = async (userId) => {
       verifyUrl: CLIENT_URL,
     }),
   }).catch((error) => {
-    console.error("Welcome email failed:", error);
+    console.error("Otp email failed:", error);
   });
 
   const expiresInMin = Math.floor(OTP_EXPIRES_IN / 60);
   const expiresInSec = OTP_EXPIRES_IN % 60;
 
   return {
+    otpType,
     sent: true,
     expiresIn: `${expiresInMin} minutes and ${expiresInSec} seconds`,
+    otp: otpCode, // For testing purposes
   };
 };
 
-export const verifyOTPCode = async (userId, otpCode) => {
+export const verifyOTPCode = async (userId, otpCode, otpType) => {
+  if (!Object.values(OTP_TYPES).includes(otpType)) {
+    throw new Error("Invalid otp type", {
+      cause: { status: 400 },
+    });
+  }
+
   const user = await userRepository.findById(userId);
 
   if (!user) {
@@ -118,13 +150,30 @@ export const verifyOTPCode = async (userId, otpCode) => {
     });
   }
 
-  if (user.isVerified === true) {
-    throw new Error("User is already verified", {
-      cause: { status: 400 },
-    });
+  switch (otpType) {
+    case OTP_TYPES.EMAIL_VERIFICATION:
+      if (user.isVerified === true) {
+        throw new Error("User is already verified", {
+          cause: { status: 400 },
+        });
+      }
+      break;
+
+    case OTP_TYPES.TWO_FACTOR:
+      if (user.twoFactor.enabled === false) {
+        throw new Error("Two factor authentication is not enabled", {
+          cause: { status: 400 },
+        });
+      }
+      break;
+
+    default:
+      throw new Error("Invalid otp type", {
+        cause: { status: 400 },
+      });
   }
 
-  const otpCacheKey = `otp:email-verification:${user.id}`;
+  const otpCacheKey = `otp:${otpType}:${user.id}`;
   const otpAttemptKey = `${otpCacheKey}:attempts`;
 
   const otpHashCache = await redisGet(otpCacheKey);
@@ -321,6 +370,11 @@ export const LoginUserService = async (body) => {
   }
 
   await redisDel(loginFailedCacheKey);
+
+  if (user.twoFactor.enabled) {
+    const userId = user.id;
+    return await generateOTPCode(userId, "two-factor");
+  }
 
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
