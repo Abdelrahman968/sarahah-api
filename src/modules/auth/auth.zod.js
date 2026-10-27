@@ -9,6 +9,7 @@ import {
   avatarValidator,
   userNameValidator,
 } from "../../utils/validation/Validators.js";
+import { OTP_TYPES } from "../../common/constants/otp.constants.js";
 
 export const UserRegisterValidator = z.object({
   body: z.object({
@@ -68,5 +69,15 @@ export const LoginOTPValidator = z.object({
   body: z.object({
     challenge: z.string().min(1),
     otp: z.string().min(1),
+  }),
+});
+
+export const resendOTPValidator = z.object({
+  body: z.object({
+    otpType: z.enum([
+      OTP_TYPES.EMAIL_VERIFICATION,
+      OTP_TYPES.TWO_FACTOR_SETUP,
+      OTP_TYPES.TWO_FACTOR_LOGIN,
+    ]),
   }),
 });

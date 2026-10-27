@@ -17,6 +17,7 @@ import {
   enable2FA,
   disable2FA,
   verifyLoginOTPService,
+  resendOTPService,
 } from "./auth.service.js";
 
 import {
@@ -25,6 +26,7 @@ import {
   setPasswordValidator,
   UserRegisterValidator,
   LoginOTPValidator,
+  resendOTPValidator,
 } from "./auth.zod.js";
 
 import {
@@ -501,6 +503,26 @@ router.post(
           user,
           accessToken,
         },
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+router.post(
+  "/resend-otp",
+  validate(resendOTPValidator),
+  async (req, res, next) => {
+    try {
+      const { otpType } = req.validate.body;
+      const result = await resendOTPService(req.user.id, otpType);
+
+      return res.status(200).json({
+        message: result.sent
+          ? "OTP sent successfully"
+          : "An OTP is already active",
+        data: result,
       });
     } catch (error) {
       next(error);

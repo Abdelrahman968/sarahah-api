@@ -852,3 +852,7 @@ export const verifyLoginOTPService = async (challenge, otp) => {
     refreshToken: result.refreshToken,
   };
 };
+
+export const resendOTPService = async (userId, otpType) => {
+  return generateOTPCode(userId, otpType);
+};
