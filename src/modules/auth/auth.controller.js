@@ -81,9 +81,9 @@ router.post(
 
 router.post("/login", validate(loginValidator), async (req, res, next) => {
   try {
-    const { requiresTwoFactor, challenge, ...rest } = await LoginUserService(
-      req.validate.body,
-    );
+    const result = await LoginUserService(req.validate.body);
+
+    const { requiresTwoFactor, challenge, ...rest } = result;
 
     if (requiresTwoFactor) {
       return res.status(200).json({
@@ -513,6 +513,7 @@ router.post(
 router.post(
   "/resend-otp",
   validate(resendOTPValidator),
+  authenticate,
   async (req, res, next) => {
     try {
       const { otpType } = req.validate.body;

@@ -95,6 +95,8 @@ export const generateOTPCode = async (userId, otpType) => {
   const otpCacheKey = `otp:${otpType}:${user.id}`;
   const otpAttemptKey = `${otpCacheKey}:attempts`;
 
+  const otpPlainCacheKey = `${otpCacheKey}:plain`;
+
   const otpExists = await redisExists(otpCacheKey);
 
   if (otpExists) {
@@ -114,6 +116,7 @@ export const generateOTPCode = async (userId, otpType) => {
 
   await redisSet(otpCacheKey, otpHash, OTP_EXPIRES_IN);
   await redisSet(otpAttemptKey, 0, OTP_EXPIRES_IN);
+  await redisSet(otpPlainCacheKey, otpCode, OTP_EXPIRES_IN);
 
   if (otpType === OTP_TYPES.TWO_FACTOR_SETUP) {
     const html = twoFactorSetupEmailTemplate({
@@ -253,6 +256,8 @@ export const verifyOTPCode = async (userId, otpCode, otpType) => {
 
   await redisDel(otpCacheKey);
   await redisDel(otpAttemptKey);
+
+  await redisDel(`${otpCacheKey}:plain`);
 
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
@@ -854,5 +859,66 @@ export const verifyLoginOTPService = async (challenge, otp) => {
 };
 
 export const resendOTPService = async (userId, otpType) => {
-  return generateOTPCode(userId, otpType);
+  if (!Object.values(OTP_TYPES).includes(otpType)) {
+    throw new Error("Invalid OTP type", {
+      cause: { status: 400 },
+    });
+  }
+
+  const user = await userRepository.findById(userId);
+
+  if (!user) {
+    throw new Error("User not found", {
+      cause: { status: 404 },
+    });
+  }
+
+  const otpCacheKey = `otp:${otpType}:${user.id}`;
+  const otpPlainCacheKey = `${otpCacheKey}:plain`;
+
+  const otpCode = await redisGet(otpPlainCacheKey);
+
+  if (!otpCode) {
+    throw new Error("OTP expired. Please request a new one.", {
+      cause: { status: 400 },
+    });
+  }
+
+  let subject;
+  let html;
+
+  if (otpType === OTP_TYPES.TWO_FACTOR_SETUP) {
+    subject = "Confirm Two-Factor Authentication";
+
+    html = twoFactorSetupEmailTemplate({
+      name: user.firstName,
+      otp: otpCode,
+      expiresIn: 5,
+    });
+  } else {
+    subject = "OTP Code Verification - Sarahah App";
+
+    html = verifyEmailTemplate({
+      name: user.fullName,
+      email: user.email,
+      code: otpCode,
+      verifyUrl: CLIENT_URL,
+    });
+  }
+
+  await sendEmail({
+    to: user.email,
+    subject,
+    html,
+  });
+
+  const ttl = await redisTTL(otpCacheKey);
+  const minutes = Math.floor(ttl / 60);
+  const seconds = ttl % 60;
+
+  return {
+    otpType,
+    sent: true,
+    expiresIn: `${minutes} minutes and ${seconds} seconds`,
+  };
 };
