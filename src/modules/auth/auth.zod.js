@@ -63,3 +63,10 @@ export const OtpValidator = z.object({
     otp: z.string(),
   }),
 });
+
+export const LoginOTPValidator = z.object({
+  body: z.object({
+    challenge: z.string().min(1),
+    otp: z.string().min(1),
+  }),
+});

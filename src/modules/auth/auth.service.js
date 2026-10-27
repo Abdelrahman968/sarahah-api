@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -61,23 +62,31 @@ export const generateOTPCode = async (userId, otpType) => {
 
   switch (otpType) {
     case OTP_TYPES.EMAIL_VERIFICATION:
-      if (user.isVerified === true) {
+      if (user.isVerified) {
         throw new Error("User is already verified", {
           cause: { status: 400 },
         });
       }
       break;
 
-    case OTP_TYPES.TWO_FACTOR:
-      if (user.twoFactor.enabled === false) {
-        throw new Error("Two factor authentication is not enabled", {
+    case OTP_TYPES.TWO_FACTOR_SETUP:
+      if (user.twoFactor.enabled) {
+        throw new Error("2FA is already enabled", {
+          cause: { status: 409 },
+        });
+      }
+      break;
+
+    case OTP_TYPES.TWO_FACTOR_LOGIN:
+      if (!user.twoFactor.enabled) {
+        throw new Error("2FA is not enabled", {
           cause: { status: 400 },
         });
       }
       break;
 
     default:
-      throw new Error("Invalid otp type", {
+      throw new Error("Invalid OTP type", {
         cause: { status: 400 },
       });
   }
@@ -105,18 +114,34 @@ export const generateOTPCode = async (userId, otpType) => {
   await redisSet(otpCacheKey, otpHash, OTP_EXPIRES_IN);
   await redisSet(otpAttemptKey, 0, OTP_EXPIRES_IN);
 
-  sendEmail({
-    to: user.email,
-    subject: "OTP Code Verification - Sarahah App",
-    html: verifyEmailTemplate({
-      name: user.fullName,
-      email: user.email,
-      code: otpCode,
-      verifyUrl: CLIENT_URL,
-    }),
-  }).catch((error) => {
-    console.error("Otp email failed:", error);
-  });
+  if (otpType === OTP_TYPES.TWO_FACTOR_SETUP) {
+    const html = twoFactorSetupEmailTemplate({
+      name: user.firstName,
+      otp,
+      expiresIn: 5,
+    });
+
+    sendEmail({
+      to: user.email,
+      subject: "Confirm Two-Factor Authentication",
+      html,
+    }).catch((error) => {
+      console.error("Otp email failed:", error);
+    });
+  } else if (OTP_TYPES.EMAIL_VERIFICATION) {
+    sendEmail({
+      to: user.email,
+      subject: "OTP Code Verification - Sarahah App",
+      html: verifyEmailTemplate({
+        name: user.fullName,
+        email: user.email,
+        code: otpCode,
+        verifyUrl: CLIENT_URL,
+      }),
+    }).catch((error) => {
+      console.error("Otp email failed:", error);
+    });
+  }
 
   const expiresInMin = Math.floor(OTP_EXPIRES_IN / 60);
   const expiresInSec = OTP_EXPIRES_IN % 60;
@@ -152,23 +177,31 @@ export const verifyOTPCode = async (userId, otpCode, otpType) => {
 
   switch (otpType) {
     case OTP_TYPES.EMAIL_VERIFICATION:
-      if (user.isVerified === true) {
+      if (user.isVerified) {
         throw new Error("User is already verified", {
           cause: { status: 400 },
         });
       }
       break;
 
-    case OTP_TYPES.TWO_FACTOR:
-      if (user.twoFactor.enabled === false) {
-        throw new Error("Two factor authentication is not enabled", {
+    case OTP_TYPES.TWO_FACTOR_SETUP:
+      if (user.twoFactor.enabled) {
+        throw new Error("2FA is already enabled", {
+          cause: { status: 409 },
+        });
+      }
+      break;
+
+    case OTP_TYPES.TWO_FACTOR_LOGIN:
+      if (!user.twoFactor.enabled) {
+        throw new Error("2FA is not enabled", {
           cause: { status: 400 },
         });
       }
       break;
 
     default:
-      throw new Error("Invalid otp type", {
+      throw new Error("Invalid OTP type", {
         cause: { status: 400 },
       });
   }
@@ -204,8 +237,19 @@ export const verifyOTPCode = async (userId, otpCode, otpType) => {
       cause: { status: 400 },
     });
   }
-  user.isVerified = true;
-  await userRepository.save(user);
+
+  switch (otpType) {
+    case OTP_TYPES.EMAIL_VERIFICATION:
+      user.isVerified = true;
+      await userRepository.save(user);
+      break;
+
+    case OTP_TYPES.TWO_FACTOR_SETUP:
+      user.twoFactor.enabled = true;
+      await userRepository.save(user);
+      break;
+  }
+
   await redisDel(otpCacheKey);
   await redisDel(otpAttemptKey);
 
@@ -219,7 +263,7 @@ export const verifyOTPCode = async (userId, otpCode, otpType) => {
   });
 
   return {
-    message: "User verified successfully",
+    message: "OTP verified successfully",
     accessToken,
     refreshToken,
   };
@@ -372,8 +416,19 @@ export const LoginUserService = async (body) => {
   await redisDel(loginFailedCacheKey);
 
   if (user.twoFactor.enabled) {
-    const userId = user.id;
-    return await generateOTPCode(userId, "two-factor");
+    const otpResult = generateOTPCode(user.id, OTP_TYPES.TWO_FACTOR_LOGIN);
+    const challenge = randomUUID();
+
+    const redisKey = `login:2fa:challenge:${challenge}`;
+    const OTP_LOGIN_TTL = 300;
+
+    await redisSet(redisKey, user.id, OTP_LOGIN_TTL);
+
+    return {
+      requiresTwoFactor: true,
+      challenge,
+      ...otpResult,
+    };
   }
 
   const accessToken = generateAccessToken(user);
@@ -722,4 +777,56 @@ export const setPasswordService = async (
     providerAccountId: userId.toString(),
     password: hashedPassword,
   });
+};
+
+export const enable2FA = async (userId) => {
+  const user = await userRepository.findById(userId);
+
+  if (!user) {
+    throw new Error("User not found", {
+      cause: { status: 404 },
+    });
+  }
+
+  return generateOTPCode(userId, OTP_TYPES.TWO_FACTOR_SETUP);
+};
+
+export const disable2FA = async (userId) => {
+  const user = await userRepository.findById(userId);
+
+  if (!user) {
+    throw new Error("User not found", {
+      cause: { status: 404 },
+    });
+  }
+
+  return await userRepository.findByIdAndUpdate(userId, {
+    twoFactor: {
+      enable: false,
+    },
+  });
+};
+
+export const verifyLoginOTPService = async (challenge, otp) => {
+  if (!challenge || !otp) {
+    throw new Error("Challenge and OTP are required", {
+      cause: { status: 400 },
+    });
+  }
+
+  const redisKey = `login:2fa:challenge:${challenge}`;
+
+  const userId = await redisGet(redisKey);
+
+  if (!userId) {
+    throw new Error("Login challenge is invalid or expired", {
+      cause: { status: 401 },
+    });
+  }
+
+  const result = await verifyOTPCode(userId, otp, OTP_TYPES.TWO_FACTOR_LOGIN);
+
+  await redisDel(redisKey);
+
+  return result;
 };

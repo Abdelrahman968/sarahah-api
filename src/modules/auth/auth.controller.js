@@ -14,6 +14,9 @@ import {
   revokeAccessToken,
   generateOTPCode,
   verifyOTPCode,
+  enable2FA,
+  disable2FA,
+  verifyLoginOTPService,
 } from "./auth.service.js";
 
 import {
@@ -21,6 +24,7 @@ import {
   loginValidator,
   setPasswordValidator,
   UserRegisterValidator,
+  LoginOTPValidator,
 } from "./auth.zod.js";
 
 import {
@@ -47,6 +51,7 @@ import {
   getGithubUser,
 } from "../../services/Oauth/github.service.js";
 import { requireVerifiedEmail } from "../../middleware/requireVerifiedEmail.middleware.js";
+import { OTP_TYPES } from "../../common/constants/otp.constants.js";
 
 const router = Router();
 
@@ -75,6 +80,14 @@ router.post(
 router.post("/login", validate(loginValidator), async (req, res, next) => {
   try {
     const result = await LoginUserService(req.validate.body);
+
+    if (result.requiresTwoFactor) {
+      return res.status(200).json({
+        message: "OTP sent. Complete two-factor authentication.",
+        requiresTwoFactor: true,
+        challenge: result.challenge,
+      });
+    }
 
     const { refreshToken, accessToken, user } = result;
 
@@ -228,7 +241,10 @@ router.post("/logout", authenticate, async (req, res, next) => {
 router.get("/activate-request", authenticate, async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const otpService = await generateOTPCode(userId, "email-verification");
+    const otpService = await generateOTPCode(
+      userId,
+      OTP_TYPES.EMAIL_VERIFICATION,
+    );
 
     res.status(200).json(otpService);
   } catch (error) {
@@ -378,7 +394,10 @@ router.post(
 router.get("/2fa-req", authenticate, async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const otpService = await generateOTPCode(userId, "two-factor");
+    const otpService = await generateOTPCode(
+      userId,
+      OTP_TYPES.TWO_FACTOR_SETUP,
+    );
 
     res.status(200).json(otpService);
   } catch (error) {
@@ -387,7 +406,7 @@ router.get("/2fa-req", authenticate, async (req, res, next) => {
 });
 
 router.post(
-  "/2fa-activate",
+  "/2fa-verify",
   authenticate,
   validate(OtpValidator),
   async (req, res, next) => {
@@ -397,7 +416,11 @@ router.post(
         message,
         accessToken,
         refreshToken: newRefreshToken,
-      } = await verifyOTPCode(req.user.id, req.validate.body.otp, "two-factor");
+      } = await verifyOTPCode(
+        req.user.id,
+        req.validate.body.otp,
+        OTP_TYPES.TWO_FACTOR_SETUP,
+      );
 
       if (refreshToken) {
         await LogoutService(refreshToken, req.user.exp, req.user.jti);
@@ -408,6 +431,74 @@ router.post(
       setRefreshTokenCookie(res, newRefreshToken);
 
       res.status(200).json({ message, accessToken });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+router.get("/2fa-enable", authenticate, async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const result = await enable2FA(userId);
+
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/2fa-disable", authenticate, async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const result = await disable2FA(userId);
+
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post(
+  "/login/verify-2fa",
+  validate(LoginOTPValidator),
+  async (req, res, next) => {
+    try {
+      const { challenge, otp } = req.validate.body;
+
+      const result = await verifyLoginOTPService(challenge, otp);
+
+      const { user, accessToken, refreshToken } = result;
+
+      setRefreshTokenCookie(res, refreshToken);
+
+      const html = newLoginEmailTemplate({
+        name: user.firstName,
+        email: user.email,
+        loginTime: new Date().toLocaleString("en-US", {
+          dateStyle: "medium",
+          timeStyle: "short",
+        }),
+        ipAddress: req.ip,
+        device: req.headers["user-agent"],
+        securityUrl: `${CLIENT_URL}/account/security`,
+      });
+
+      sendEmail({
+        to: user.email,
+        subject: "New Login to Your Sarahah Account",
+        html,
+      }).catch((error) => {
+        console.error("New Login email failed:", error);
+      });
+
+      return res.status(200).json({
+        message: "Login successfully",
+        data: {
+          user,
+          accessToken,
+        },
+      });
     } catch (error) {
       next(error);
     }
