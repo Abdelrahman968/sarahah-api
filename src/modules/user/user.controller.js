@@ -8,10 +8,13 @@ import {
 import {
   deleteMeService,
   GetMyInfo,
+  updateAvatarService,
   UpdateEmailService,
   updatePasswordService,
   UpdateProfileService,
 } from "./user.service.js";
+import { authenticate } from "../../middleware/authenticate.middleware.js";
+import { processImage, upload } from "../../middleware/multer.middleware.js";
 
 const router = Router();
 
@@ -93,5 +96,24 @@ router.delete("/delete/me", async (req, res, next) => {
     next(error);
   }
 });
+
+router.patch(
+  "/update-avatar",
+  authenticate,
+  upload.single("avatar"),
+  processImage("avatar"),
+  async (req, res, next) => {
+    try {
+      const result = await updateAvatarService(req.user.id, req.processedImage);
+
+      res.status(200).json({
+        message: "Avatar updated successfully",
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 export default router;

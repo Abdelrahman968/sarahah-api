@@ -31,14 +31,14 @@ const postmanCollectionPath = fileURLToPath(
 
 app.disable("x-powered-by");
 app.use(cookieParser());
-app.use("/public", express.static("public"));
+app.use("/uploads", express.static("uploads"));
 app.use(helmet());
 
 app.use(
   cors({
     origin: TRUSTED_ORIGINS,
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   }),
 );
 

@@ -1,3 +1,4 @@
+import path from "node:path";
 import {
   hash as hashPassword,
   verifyHash as verifyPassword,
@@ -5,6 +6,7 @@ import {
 import { isValidObjectId } from "../../utils/validation/isValidObjectId.js";
 import userRepository from "../../db/repository/user.repository.js";
 import accountRepository from "../../db/repository/account.repository.js";
+import deleteAvatarFile from "../../utils/deleteAvatarFile.js";
 
 export const GetMyInfo = async (id) => {
   isValidObjectId(id);
@@ -137,4 +139,37 @@ export const deleteMeService = async (id) => {
   }
 
   return user;
+};
+
+export const updateAvatarService = async (userId, image) => {
+  const user = await userRepository.findById(userId);
+  if (!user) {
+    throw new Error("User not found", {
+      cause: {
+        status: 404,
+      },
+    });
+  }
+
+  const oldAvatar = user.avatar;
+
+  const updatedUser = await userRepository.findByIdAndUpdate(
+    userId,
+    { avatar: image.relativePath },
+    {
+      returnDocument: "after",
+      runValidators: true,
+    },
+  );
+
+  if (oldAvatar) {
+    try {
+      const oldAvatarPath = path.resolve(oldAvatar);
+      await deleteAvatarFile(oldAvatarPath);
+    } catch (error) {
+      console.error("Failed to delete old avatar:", error);
+    }
+  }
+
+  return updatedUser;
 };

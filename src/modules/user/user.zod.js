@@ -1,6 +1,7 @@
 import { z } from "zod";
 import {
   ageValidator,
+  avatarValidator,
   bioValidator,
   emailValidator,
   genderValidator,
