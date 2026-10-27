@@ -79,13 +79,16 @@ router.post(
 
 router.post("/login", validate(loginValidator), async (req, res, next) => {
   try {
-    const result = await LoginUserService(req.validate.body);
+    const { requiresTwoFactor, challenge, ...rest } = await LoginUserService(
+      req.validate.body,
+    );
 
-    if (result.requiresTwoFactor) {
+    if (requiresTwoFactor) {
       return res.status(200).json({
         message: "OTP sent. Complete two-factor authentication.",
         requiresTwoFactor: true,
-        challenge: result.challenge,
+        challenge,
+        ...rest,
       });
     }
 
@@ -284,12 +287,11 @@ router.post(
   },
 );
 
-router.use(requireVerifiedEmail);
-
 router.post(
   "/set-password",
   validate(setPasswordValidator),
   authenticate,
+  requireVerifiedEmail,
   async (req, res, next) => {
     try {
       const { userId, provider } = await setPasswordService(
@@ -336,6 +338,7 @@ router.post("/refresh-token", async (req, res, next) => {
 router.post(
   "/forgot-password",
   validate(forgotPasswordValidator),
+
   async (req, res, next) => {
     try {
       const data = await ForgotPasswordService(req.validate.body.email);
@@ -391,24 +394,27 @@ router.post(
   },
 );
 
-router.get("/2fa-req", authenticate, async (req, res, next) => {
-  try {
-    const userId = req.user.id;
-    const otpService = await generateOTPCode(
-      userId,
-      OTP_TYPES.TWO_FACTOR_SETUP,
-    );
+router.get(
+  "/2fa-enable",
+  authenticate,
+  requireVerifiedEmail,
+  async (req, res, next) => {
+    try {
+      const userId = req.user.id;
+      const result = await enable2FA(userId);
 
-    res.status(200).json(otpService);
-  } catch (error) {
-    next(error);
-  }
-});
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 router.post(
   "/2fa-verify",
   authenticate,
   validate(OtpValidator),
+  requireVerifiedEmail,
   async (req, res, next) => {
     try {
       const refreshToken = req.cookies[JWT_REFRESH_COOKIE_NAME];
@@ -437,27 +443,24 @@ router.post(
   },
 );
 
-router.get("/2fa-enable", authenticate, async (req, res, next) => {
-  try {
-    const userId = req.user.id;
-    const result = await enable2FA(userId);
+router.get(
+  "/2fa-disable",
+  authenticate,
+  requireVerifiedEmail,
+  async (req, res, next) => {
+    try {
+      const userId = req.user.id;
+      const result = await disable2FA(userId);
 
-    res.status(200).json(result);
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.get("/2fa-disable", authenticate, async (req, res, next) => {
-  try {
-    const userId = req.user.id;
-    const result = await disable2FA(userId);
-
-    res.status(200).json(result);
-  } catch (error) {
-    next(error);
-  }
-});
+      res.status(200).json({
+        massage: "2FA disabled successfully",
+        result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 router.post(
   "/login/verify-2fa",
@@ -468,7 +471,7 @@ router.post(
 
       const result = await verifyLoginOTPService(challenge, otp);
 
-      const { user, accessToken, refreshToken } = result;
+      const { user, accessToken, refreshToken, otpCode, otpType } = result;
 
       setRefreshTokenCookie(res, refreshToken);
 

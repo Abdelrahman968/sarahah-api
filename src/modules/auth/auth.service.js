@@ -44,6 +44,7 @@ import generateCode from "../../utils/generateCode.js";
 import { verifyEmailTemplate } from "../../services/email/templates/verify-email.template.js";
 import { isValidObjectId } from "../../utils/validation/isValidObjectId.js";
 import { OTP_TYPES } from "../../common/constants/otp.constants.js";
+import { twoFactorSetupEmailTemplate } from "../../services/email/templates/two-factor-setup.template.js";
 
 export const generateOTPCode = async (userId, otpType) => {
   if (!Object.values(OTP_TYPES).includes(otpType)) {
@@ -117,7 +118,7 @@ export const generateOTPCode = async (userId, otpType) => {
   if (otpType === OTP_TYPES.TWO_FACTOR_SETUP) {
     const html = twoFactorSetupEmailTemplate({
       name: user.firstName,
-      otp,
+      otp: otpCode,
       expiresIn: 5,
     });
 
@@ -128,7 +129,7 @@ export const generateOTPCode = async (userId, otpType) => {
     }).catch((error) => {
       console.error("Otp email failed:", error);
     });
-  } else if (OTP_TYPES.EMAIL_VERIFICATION) {
+  } else {
     sendEmail({
       to: user.email,
       subject: "OTP Code Verification - Sarahah App",
@@ -416,18 +417,26 @@ export const LoginUserService = async (body) => {
   await redisDel(loginFailedCacheKey);
 
   if (user.twoFactor.enabled) {
-    const otpResult = generateOTPCode(user.id, OTP_TYPES.TWO_FACTOR_LOGIN);
-    const challenge = randomUUID();
+    const otpResult = await generateOTPCode(
+      user.id,
+      OTP_TYPES.TWO_FACTOR_LOGIN,
+    );
 
-    const redisKey = `login:2fa:challenge:${challenge}`;
-    const OTP_LOGIN_TTL = 300;
+    const challengeKey = `login:2fa:${user.id}`;
 
-    await redisSet(redisKey, user.id, OTP_LOGIN_TTL);
+    let challenge = await redisGet(challengeKey);
+
+    if (!challenge) {
+      challenge = randomUUID();
+
+      await redisSet(challengeKey, challenge, 900);
+      await redisSet(`login:2fa:challenge:${challenge}`, user.id, 900);
+    }
 
     return {
       requiresTwoFactor: true,
       challenge,
-      ...otpResult,
+      otpResult,
     };
   }
 
@@ -800,11 +809,18 @@ export const disable2FA = async (userId) => {
     });
   }
 
-  return await userRepository.findByIdAndUpdate(userId, {
-    twoFactor: {
-      enable: false,
+  return await userRepository.findByIdAndUpdate(
+    userId,
+    {
+      twoFactor: {
+        enable: false,
+      },
     },
-  });
+    {
+      returnDocument: "after",
+      runValidators: true,
+    },
+  );
 };
 
 export const verifyLoginOTPService = async (challenge, otp) => {
@@ -815,7 +831,6 @@ export const verifyLoginOTPService = async (challenge, otp) => {
   }
 
   const redisKey = `login:2fa:challenge:${challenge}`;
-
   const userId = await redisGet(redisKey);
 
   if (!userId) {
@@ -826,7 +841,14 @@ export const verifyLoginOTPService = async (challenge, otp) => {
 
   const result = await verifyOTPCode(userId, otp, OTP_TYPES.TWO_FACTOR_LOGIN);
 
-  await redisDel(redisKey);
+  const user = await userRepository.findById(userId);
 
-  return result;
+  await redisDel(redisKey);
+  await redisDel(`login:2fa:${userId}`);
+
+  return {
+    user,
+    accessToken: result.accessToken,
+    refreshToken: result.refreshToken,
+  };
 };
