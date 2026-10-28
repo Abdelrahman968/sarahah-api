@@ -293,6 +293,170 @@ export function registerDocsRoutes(registry) {
   });
 
   registry.registerPath({
+    method: "get",
+    path: "/auth/google/callback",
+    tags: ["Auth"],
+    summary: "Google OAuth Callback",
+    description:
+      "Completes Google OAuth login using the authorization code returned by Google.",
+    request: {
+      query: z.object({
+        code: z.string().openapi({ example: "google-authorization-code" }),
+      }),
+    },
+    responses: {
+      200: {
+        description: "Google login completed successfully.",
+      },
+      400: {
+        description: "Google authorization code is missing or invalid.",
+      },
+    },
+  });
+
+  registry.registerPath({
+    method: "get",
+    path: "/auth/github/callback",
+    tags: ["Auth"],
+    summary: "GitHub OAuth Callback",
+    description:
+      "Completes GitHub OAuth login using the authorization code returned by GitHub.",
+    request: {
+      query: z.object({
+        code: z.string().openapi({ example: "github-authorization-code" }),
+      }),
+    },
+    responses: {
+      200: {
+        description: "GitHub login completed successfully.",
+      },
+      400: {
+        description: "GitHub authorization code is missing or invalid.",
+      },
+    },
+  });
+
+  registry.registerPath({
+    method: "get",
+    path: "/auth/2fa-enable",
+    tags: ["Auth"],
+    summary: "Enable Two-Factor Authentication",
+    description: "Generates a two-factor authentication setup code.",
+    security: [{ bearerAuth: [] }],
+    responses: {
+      200: {
+        description: "Two-factor setup code generated.",
+      },
+      401: {
+        description: "Unauthorized.",
+      },
+    },
+  });
+
+  registry.registerPath({
+    method: "post",
+    path: "/auth/2fa-verify",
+    tags: ["Auth"],
+    summary: "Verify Two-Factor Setup",
+    description: "Verifies the OTP and enables two-factor authentication.",
+    security: [{ bearerAuth: [] }],
+    request: {
+      body: {
+        content: {
+          "application/json": {
+            schema: z.object({
+              otp: z.string().openapi({ example: "123456" }),
+            }),
+          },
+        },
+      },
+    },
+    responses: {
+      200: {
+        description: "Two-factor authentication enabled.",
+      },
+      400: {
+        description: "Invalid or expired OTP.",
+      },
+    },
+  });
+
+  registry.registerPath({
+    method: "get",
+    path: "/auth/2fa-disable",
+    tags: ["Auth"],
+    summary: "Disable Two-Factor Authentication",
+    description: "Disables two-factor authentication for the current user.",
+    security: [{ bearerAuth: [] }],
+    responses: {
+      200: {
+        description: "Two-factor authentication disabled.",
+      },
+      401: {
+        description: "Unauthorized.",
+      },
+    },
+  });
+
+  registry.registerPath({
+    method: "post",
+    path: "/auth/login/verify-2fa",
+    tags: ["Auth"],
+    summary: "Verify Login Two-Factor Code",
+    description: "Completes a login that requires two-factor authentication.",
+    request: {
+      body: {
+        content: {
+          "application/json": {
+            schema: z.object({
+              challenge: z.string().openapi({ example: "login-challenge" }),
+              otp: z.string().openapi({ example: "123456" }),
+            }),
+          },
+        },
+      },
+    },
+    responses: {
+      200: {
+        description: "Login completed successfully.",
+      },
+      401: {
+        description: "Invalid or expired login challenge.",
+      },
+    },
+  });
+
+  registry.registerPath({
+    method: "post",
+    path: "/auth/resend-otp",
+    tags: ["Auth"],
+    summary: "Resend OTP",
+    description: "Resends an active email verification or 2FA OTP.",
+    security: [{ bearerAuth: [] }],
+    request: {
+      body: {
+        content: {
+          "application/json": {
+            schema: z.object({
+              otpType: z
+                .enum(["email-verification", "two-factor-setup"])
+                .openapi({ example: "email-verification" }),
+            }),
+          },
+        },
+      },
+    },
+    responses: {
+      200: {
+        description: "OTP resend request processed.",
+      },
+      401: {
+        description: "Unauthorized.",
+      },
+    },
+  });
+
+  registry.registerPath({
     method: "post",
     path: "/auth/forgot-password",
     tags: ["Auth"],
@@ -506,6 +670,36 @@ export function registerDocsRoutes(registry) {
     },
   });
 
+  registry.registerPath({
+    method: "patch",
+    path: "/user/update-avatar",
+    tags: ["Users"],
+    summary: "Update Avatar",
+    description: "Uploads and updates the authenticated user's avatar image.",
+    security: [{ bearerAuth: [] }],
+    request: {
+      body: {
+        content: {
+          "multipart/form-data": {
+            schema: z.object({
+              avatar: z
+                .string()
+                .openapi({ type: "string", format: "binary" }),
+            }),
+          },
+        },
+      },
+    },
+    responses: {
+      200: {
+        description: "Avatar updated successfully.",
+      },
+      400: {
+        description: "Invalid or missing image.",
+      },
+    },
+  });
+
   // Admin
   registry.registerPath({
     method: "delete",
@@ -544,7 +738,25 @@ export function registerDocsRoutes(registry) {
         content: {
           "application/json": {
             schema: z.object({
+              userName: z.string().optional().openapi({ example: "ahmed_user" }),
               firstName: z.string().optional().openapi({ example: "Ahmed" }),
+              lastName: z.string().optional().openapi({ example: "Mohamed" }),
+              email: z
+                .email()
+                .optional()
+                .openapi({ example: "ahmed@example.com" }),
+              password: z.string().optional().openapi({ example: "NewPassword123!" }),
+              age: z.number().int().min(18).max(100).optional().openapi({ example: 26 }),
+              gender: z
+                .enum(["male", "female", "n/a"])
+                .optional()
+                .openapi({ example: "male" }),
+              avatar: z.string().url().optional().openapi({
+                example: "https://cdn.example.com/avatar.webp",
+              }),
+              bio: z.string().max(500).optional().openapi({
+                example: "Frontend Developer",
+              }),
             }),
           },
         },

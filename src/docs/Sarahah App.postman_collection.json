@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "7fa566ab-5e67-4112-844c-010c7364a93a",
     "name": "Sarahah App",
-    "description": "Runnable Postman requests for the Sarahah API. Set the collection variables before use; the Login request stores its access token automatically.",
+    "description": "Postman collection for Sarahah.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "34579966"
   },
@@ -11,10 +11,15 @@
       "name": "System",
       "item": [
         {
-          "name": "Health Check",
+          "name": "System Health",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/system/health",
               "host": [
@@ -25,13 +30,89 @@
                 "health"
               ]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "System Health",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/system/health",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "system",
+                    "health"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "ratelimit",
+                  "value": "\"100-in-15min\"; r=98; t=829"
+                },
+                {
+                  "key": "ratelimit-policy",
+                  "value": "\"100-in-15min\"; q=100; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "167"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"a7-qSpDQZknDHgkgaiCxeSrs225eaM\""
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 07:49:56 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"API is healthy and running\",\n  \"services\": {\n    \"api\": \"up\",\n    \"database\": \"up\",\n    \"redis\": \"up\"\n  },\n  \"uptime\": \"00:01:17\",\n  \"timestamp\": \"2026-10-21T07:49:56.036Z\"\n}"
+            }
+          ]
         },
         {
-          "name": "Get Users",
+          "name": "Get All Users",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/system/get-users",
               "host": [
@@ -40,9 +121,94 @@
               "path": [
                 "system",
                 "get-users"
+              ],
+              "query": [
+                {
+                  "key": "userName",
+                  "value": "Abdelrahman968",
+                  "disabled": true
+                }
               ]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "Get All Users",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/system/get-users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "system",
+                    "get-users"
+                  ],
+                  "query": [
+                    {
+                      "key": "userName",
+                      "value": "Abdelrahman968",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "ratelimit",
+                  "value": "\"100-in-15min\"; r=97; t=776"
+                },
+                {
+                  "key": "ratelimit-policy",
+                  "value": "\"100-in-15min\"; q=100; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "356"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"164-wlX6nGDNZEO901oIsihXS7jIU/8\""
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 07:50:48 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"6ad865636c319af39a949911\",\n      \"userName\": \"abdelrahman968\",\n      \"firstName\": \"Abdelrahman\",\n      \"lastName\": \"Ayman\",\n      \"role\": \"admin\",\n      \"email\": \"se.abdelrahman968+newadmin@gmail.com\",\n      \"isVerified\": true,\n      \"gender\": \"male\",\n      \"age\": 23,\n      \"avatar\": null,\n      \"bio\": null,\n      \"createdAt\": \"2026-10-21T07:10:27.842Z\",\n      \"updatedAt\": \"2026-10-21T07:48:44.392Z\",\n      \"fullName\": \"Abdelrahman Ayman\"\n    }\n  ]\n}"
+            }
+          ]
         }
       ]
     },
@@ -53,9 +219,28 @@
           "name": "Delete User By ID",
           "request": {
             "method": "DELETE",
-            "header": [],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Abdelrahman\",\n  \"lastName\": \"Ayman\",\n  \"email\": \"se.abdelrahman968+admin@gmail.com\",\n  \"password\": \"Password@123\",\n  \"gender\": \"male\",\n  \"age\": 23\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
-              "raw": "{{baseUrl}}/admin/delete/user/{{userId}}",
+              "raw": "{{baseUrl}}/admin/delete/user/6aac25113c5dde33996e400c",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -63,20 +248,89 @@
                 "admin",
                 "delete",
                 "user",
-                "{{userId}}"
-              ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
+                "6aac25113c5dde33996e400c"
               ]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "Delete User By ID",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "disabled": true
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"firstName\": \"Abdelrahman\",\n  \"lastName\": \"Ayman\",\n  \"email\": \"se.abdelrahman968+admin@gmail.com\",\n  \"password\": \"Password@123\",\n  \"gender\": \"male\",\n  \"age\": 23\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/admin/delete/user/6aac25113c5dde33996e400c",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "delete",
+                    "user",
+                    "6aac25113c5dde33996e400c"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "348"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"15c-96MWoJeUEAClgPqJtk74YPAYu5Y\""
+                },
+                {
+                  "key": "date",
+                  "value": "Thu, 17 Sep 2026 17:53:45 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"User deleted successfully\",\n  \"user\": {\n    \"id\": \"6aac25113c5dde33996e400c\",\n    \"firstName\": \"Abdelrahman\",\n    \"lastName\": \"Ayman\",\n    \"role\": \"user\",\n    \"email\": \"se.abdelrahman968+test1@gmail.com\",\n    \"gender\": \"male\",\n    \"age\": 23,\n    \"profileImage\": null,\n    \"bio\": null,\n    \"createdAt\": \"2026-09-17T17:36:17.550Z\",\n    \"updatedAt\": \"2026-09-17T17:36:17.550Z\",\n    \"fullName\": \"Abdelrahman Ayman\"\n  }\n}"
+            }
+          ]
         },
         {
           "name": "Update User By ID",
@@ -86,11 +340,15 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstName\": \"Sarahah\"\n}",
+              "raw": "{\n  \"firstName\": \"Ahmed\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -98,7 +356,7 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/admin/edit/user/{{userId}}",
+              "raw": "{{baseUrl}}/admin/edit/user/:id",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -106,26 +364,111 @@
                 "admin",
                 "edit",
                 "user",
-                "{{userId}}"
-              ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
+                ":id"
+              ],
+              "variable": [
                 {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
+                  "key": "id",
+                  "value": "6aac24c3eee4ae666fdc4676"
                 }
               ]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "Update User By ID",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"firstName\": \"Ahmed\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/admin/edit/user/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "edit",
+                    "user",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "6aac24c3eee4ae666fdc4676"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "329"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"149-TvS5Qhn0HvgbhG7fq9/jGHplgQA\""
+                },
+                {
+                  "key": "date",
+                  "value": "Thu, 17 Sep 2026 18:13:03 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"User updated successfully\",\n  \"user\": {\n    \"id\": \"6aac24c3eee4ae666fdc4676\",\n    \"firstName\": \"Ahmed\",\n    \"lastName\": \"Ayman\",\n    \"role\": \"user\",\n    \"email\": \"se.abdelrahman968@gmail.com\",\n    \"gender\": \"n/a\",\n    \"age\": 23,\n    \"profileImage\": null,\n    \"bio\": null,\n    \"createdAt\": \"2026-09-17T17:34:59.989Z\",\n    \"updatedAt\": \"2026-09-17T18:13:03.692Z\",\n    \"fullName\": \"Ahmed Ayman\"\n  }\n}"
+            }
+          ]
         },
         {
           "name": "Get All Users",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/admin/users",
               "host": [
@@ -135,46 +478,239 @@
                 "admin",
                 "users"
               ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "Get All Users",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/admin/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "users"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "332"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"14c-E+lwJfnRPML8kQN/qUxEFzCVBlc\""
+                },
+                {
+                  "key": "date",
+                  "value": "Thu, 08 Oct 2026 23:50:27 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id\": \"6ac82bdf657e73fd4b0416ea\",\n    \"userName\": \"Abdelrahman968\",\n    \"firstName\": \"Abdelrahman\",\n    \"lastName\": \"Ayman\",\n    \"role\": \"admin\",\n    \"email\": \"se.abdelrahman968+admin@gmail.com\",\n    \"gender\": \"male\",\n    \"age\": 23,\n    \"profileImage\": null,\n    \"bio\": null,\n    \"createdAt\": \"2026-10-08T23:48:47.097Z\",\n    \"updatedAt\": \"2026-10-08T23:48:47.097Z\",\n    \"fullName\": \"Abdelrahman Ayman\"\n  }\n]"
+            }
+          ]
         },
         {
           "name": "Get User By UserName",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
             "url": {
-              "raw": "{{baseUrl}}/admin/user/{{userName}}",
+              "raw": "{{baseUrl}}/admin/user/abdelrahman968",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "admin",
                 "user",
-                "{{userName}}"
-              ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
+                "abdelrahman968"
+              ],
+              "query": [
                 {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
+                  "key": "userName",
+                  "value": "Abdelrahman968",
+                  "disabled": true
                 }
               ]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "queryUserName",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/admin/user?userName=Abdelrahman968",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "user"
+                  ],
+                  "query": [
+                    {
+                      "key": "userName",
+                      "value": "Abdelrahman968"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "326"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"146-12ah9AuvKxXE/vz1cOgw288b+Ac\""
+                },
+                {
+                  "key": "date",
+                  "value": "Tue, 13 Oct 2026 07:04:29 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"user\": {\n    \"id\": \"6acdbfd5d852e9ff23e0f07e\",\n    \"userName\": \"Abdelrahman968\",\n    \"firstName\": \"Abdelrahman\",\n    \"lastName\": \"Ayman\",\n    \"role\": \"admin\",\n    \"email\": \"se.abdelrahman968@gmail.com\",\n    \"gender\": \"n/a\",\n    \"age\": 18,\n    \"avatar\": null,\n    \"bio\": null,\n    \"createdAt\": \"2026-10-13T05:21:25.785Z\",\n    \"updatedAt\": \"2026-10-13T05:21:25.785Z\",\n    \"fullName\": \"Abdelrahman Ayman\"\n  }\n}"
+            },
+            {
+              "name": "paramUserName",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/admin/user/abdelrahman968",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "user",
+                    "abdelrahman968"
+                  ],
+                  "query": [
+                    {
+                      "key": "userName",
+                      "value": "Abdelrahman968",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "326"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"146-12ah9AuvKxXE/vz1cOgw288b+Ac\""
+                },
+                {
+                  "key": "date",
+                  "value": "Tue, 13 Oct 2026 07:05:16 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"user\": {\n    \"id\": \"6acdbfd5d852e9ff23e0f07e\",\n    \"userName\": \"Abdelrahman968\",\n    \"firstName\": \"Abdelrahman\",\n    \"lastName\": \"Ayman\",\n    \"role\": \"admin\",\n    \"email\": \"se.abdelrahman968@gmail.com\",\n    \"gender\": \"n/a\",\n    \"age\": 18,\n    \"avatar\": null,\n    \"bio\": null,\n    \"createdAt\": \"2026-10-13T05:21:25.785Z\",\n    \"updatedAt\": \"2026-10-13T05:21:25.785Z\",\n    \"fullName\": \"Abdelrahman Ayman\"\n  }\n}"
+            }
+          ]
         }
       ]
     },
@@ -188,20 +724,18 @@
               "name": "Set Password Oauth",
               "request": {
                 "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{accessToken}}",
-                      "type": "string"
-                    }
-                  ]
+                  "type": "bearer"
                 },
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"password\": \"{{newPassword}}\",\n  \"confirmPassword\": \"{{newPassword}}\"\n}",
+                  "raw": "{\r\n    \"password\":\"TestPassword12@\",\r\n    \"confirmPassword\":\"TestPassword12@\"\r\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -218,7 +752,165 @@
                     "set-password"
                   ]
                 }
-              }
+              },
+              "response": [
+                {
+                  "name": "Password is already set",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{accessToken}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n    \"password\":\"TestPassword12@\",\r\n    \"confirmPassword\":\"TestPassword12@\"\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/auth/set-password",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "auth",
+                        "set-password"
+                      ]
+                    }
+                  },
+                  "status": "Conflict",
+                  "code": 409,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "vary",
+                      "value": "Origin"
+                    },
+                    {
+                      "key": "access-control-allow-credentials",
+                      "value": "true"
+                    },
+                    {
+                      "key": "ratelimit",
+                      "value": "\"10-in-15min\"; r=9; t=900"
+                    },
+                    {
+                      "key": "ratelimit-policy",
+                      "value": "\"10-in-15min\"; q=10; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                    },
+                    {
+                      "key": "content-type",
+                      "value": "application/json; charset=utf-8"
+                    },
+                    {
+                      "key": "content-length",
+                      "value": "283"
+                    },
+                    {
+                      "key": "etag",
+                      "value": "W/\"11b-sslmc9s/A8c/Q6QB7h7Knlr+HOo\""
+                    },
+                    {
+                      "key": "date",
+                      "value": "Tue, 13 Oct 2026 06:23:32 GMT"
+                    },
+                    {
+                      "key": "connection",
+                      "value": "keep-alive"
+                    },
+                    {
+                      "key": "keep-alive",
+                      "value": "timeout=5"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Password is already set\",\n  \"data\": {\n    \"statusCode\": 409,\n    \"stack\": \"at setPasswordService (file:///E:/Route%20Academy/Backend/Sarahah/sarahah-api/src/modules/auth/auth.service.js:452:11)\",\n    \"route\": \"/api/v1/auth/set-password\",\n    \"method\": \"POST\",\n    \"API_PREFIX\": \"/api/v1\"\n  }\n}"
+                },
+                {
+                  "name": "Set Password Oauth",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{accessToken}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n    \"password\":\"TestPassword12@\",\r\n    \"confirmPassword\":\"TestPassword12@\"\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/auth/set-password",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "auth",
+                        "set-password"
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "vary",
+                      "value": "Origin"
+                    },
+                    {
+                      "key": "access-control-allow-credentials",
+                      "value": "true"
+                    },
+                    {
+                      "key": "ratelimit",
+                      "value": "\"10-in-15min\"; r=8; t=873"
+                    },
+                    {
+                      "key": "ratelimit-policy",
+                      "value": "\"10-in-15min\"; q=10; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                    },
+                    {
+                      "key": "content-type",
+                      "value": "application/json; charset=utf-8"
+                    },
+                    {
+                      "key": "content-length",
+                      "value": "97"
+                    },
+                    {
+                      "key": "etag",
+                      "value": "W/\"61-FSl9qUE243bT13jCbyJtpWJNtUw\""
+                    },
+                    {
+                      "key": "date",
+                      "value": "Tue, 13 Oct 2026 06:43:02 GMT"
+                    },
+                    {
+                      "key": "connection",
+                      "value": "keep-alive"
+                    },
+                    {
+                      "key": "keep-alive",
+                      "value": "timeout=5"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"message\": \"Password set successfully\",\n  \"userId\": \"6acdbfd5d852e9ff23e0f07e\",\n  \"provider\": \"password\"\n}"
+                }
+              ]
             },
             {
               "name": "Google Auth",
@@ -235,7 +927,8 @@
                     "google"
                   ]
                 }
-              }
+              },
+              "response": []
             },
             {
               "name": "Github Auth",
@@ -252,7 +945,8 @@
                     "github"
                   ]
                 }
-              }
+              },
+              "response": []
             }
           ]
         },
@@ -268,7 +962,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"userName\": \"{{userName}}\",\n  \"firstName\": \"Sarahah\",\n  \"lastName\": \"User\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"gender\": \"male\",\n  \"age\": 23\n}",
+              "raw": "{\n    \"userName\": \"abdelrahman968\",\n    \"firstName\": \"Abdelrahman\",\n    \"lastName\": \"Ayman\",\n    \"email\": \"se.abdelrahman968+admin@gmail.com\",\n    \"password\": \"Password@123\",\n    \"gender\": \"male\",\n    \"age\": 23\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -285,7 +979,169 @@
                 "register"
               ]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "Register",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"firstName\": \"Abdelrahman\",\n  \"lastName\": \"Ayman\",\n  \"email\": \"se.abdelrahman968@gmail.com\",\n  \"password\": \"Password@123\",\n  \"gender\": \"male\",\n  \"age\": 23\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/register",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "register"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "ratelimit",
+                  "value": "\"10-in-15min\"; r=9; t=900"
+                },
+                {
+                  "key": "ratelimit-policy",
+                  "value": "\"10-in-15min\"; q=10; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWE3ZjhlNjkwZWU1ZmY0NTQyMzQ3NDQiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTc4OTM5MzEyNiwiZXhwIjoxNzg5OTk3OTI2LCJhdWQiOiJzYXJhaGFoLWNsaWVudCIsImlzcyI6InNhcmFoYWgtYXBpIn0.FnZBJh_DghNH89lm-SmCe2HKF30U-HS81786wiGFIxU; Max-Age=604800; Path=/api/v1/users; Expires=Mon, 21 Sep 2026 13:38:46 GMT; HttpOnly; SameSite=Lax"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "605"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"25d-Q2G5FhnA17bKk9F14PRkye33xnQ\""
+                },
+                {
+                  "key": "date",
+                  "value": "Mon, 14 Sep 2026 13:38:46 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"User created successfully\",\n  \"data\": {\n    \"user\": {\n      \"id\": \"6aa7f8e690ee5ff454234744\",\n      \"firstName\": \"Abdelrahman\",\n      \"lastName\": \"Ayman\",\n      \"fullName\": \"Abdelrahman Ayman\",\n      \"email\": \"se.abdelrahman968@gmail.com\",\n      \"gender\": \"male\",\n      \"age\": 23,\n      \"profileImage\": null,\n      \"bio\": null,\n      \"createdAt\": \"2026-09-14T13:38:46.273Z\",\n      \"updatedAt\": \"2026-09-14T13:38:46.273Z\"\n    },\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWE3ZjhlNjkwZWU1ZmY0NTQyMzQ3NDQiLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzg5MzkzMTI2LCJleHAiOjE3ODkzOTQwMjYsImF1ZCI6InNhcmFoYWgtY2xpZW50IiwiaXNzIjoic2FyYWhhaC1hcGkifQ.fzGa8SiAsjFx9mRbLL0WAUNHqmEHzXIfjONNxhv7MWo\"\n  }\n}"
+            },
+            {
+              "name": "Email already exists",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"firstName\": \"Abdelrahman\",\n  \"lastName\": \"Ayman\",\n  \"email\": \"se.abdelrahman968@gmail.com\",\n  \"password\": \"Password@123\",\n  \"gender\": \"male\",\n  \"age\": 23\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/register",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "register"
+                  ]
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "ratelimit",
+                  "value": "\"10-in-15min\"; r=8; t=875"
+                },
+                {
+                  "key": "ratelimit-policy",
+                  "value": "\"10-in-15min\"; q=10; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "263"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"107-0yX9UXMoC9du4br/7yUVCAA1kbo\""
+                },
+                {
+                  "key": "date",
+                  "value": "Mon, 14 Sep 2026 13:39:11 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Email already exists\",\n  \"data\": {\n    \"statusCode\": 409,\n    \"stack\": \"at isEmailExist (file:///E:/Route%20Academy/Backend/Assignments/sarahah-app/src/utils/checkEmail.js:7:11)\",\n    \"route\": \"/api/v1/auth/register\",\n    \"method\": \"POST\",\n    \"API_PREFIX\": \"/api/v1\"\n  }\n}"
+            }
+          ]
         },
         {
           "name": "Login",
@@ -301,6 +1157,16 @@
             }
           ],
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "POST",
             "header": [
               {
@@ -310,7 +1176,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"userName\": \"{{userName}}\",\n  \"password\": \"{{password}}\"\n}",
+              "raw": "{\n    \"userName\": \"abdelrahman968\",\n    \"password\": \"Password@123\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -327,7 +1193,776 @@
                 "login"
               ]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "Email Login",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"se.abdelrahman968@gmail.com\",\n    \"password\": \"TestPassword12@\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "ratelimit",
+                  "value": "\"10-in-15min\"; r=9; t=900"
+                },
+                {
+                  "key": "ratelimit-policy",
+                  "value": "\"10-in-15min\"; q=10; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWE3ZjhlNjkwZWU1ZmY0NTQyMzQ3NDQiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTc4OTM5MzM5MSwiZXhwIjoxNzg5OTk4MTkxLCJhdWQiOiJzYXJhaGFoLWNsaWVudCIsImlzcyI6InNhcmFoYWgtYXBpIn0.f9hCgWYWa9smH73Zu2e5QRWC8E-Q3iikPtn3W5sHpsY; Max-Age=604800; Path=/api/v1/users; Expires=Mon, 21 Sep 2026 13:43:11 GMT; HttpOnly; SameSite=Lax"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "598"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"256-F6a/iXNgMX2QocBJYzEtJD4nd04\""
+                },
+                {
+                  "key": "date",
+                  "value": "Mon, 14 Sep 2026 13:43:11 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Login Successfully\",\n  \"data\": {\n    \"user\": {\n      \"id\": \"6aa7f8e690ee5ff454234744\",\n      \"firstName\": \"Abdelrahman\",\n      \"lastName\": \"Ayman\",\n      \"email\": \"se.abdelrahman968@gmail.com\",\n      \"gender\": \"male\",\n      \"age\": 23,\n      \"profileImage\": null,\n      \"bio\": null,\n      \"createdAt\": \"2026-09-14T13:38:46.273Z\",\n      \"updatedAt\": \"2026-09-14T13:38:46.273Z\",\n      \"fullName\": \"Abdelrahman Ayman\"\n    },\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWE3ZjhlNjkwZWU1ZmY0NTQyMzQ3NDQiLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzg5MzkzMzkxLCJleHAiOjE3ODkzOTQyOTEsImF1ZCI6InNhcmFoYWgtY2xpZW50IiwiaXNzIjoic2FyYWhhaC1hcGkifQ.LrCr6rRwT6uMB9LpqqVokvbxQEpz0ccoQl1e3_neIqo\"\n  }\n}"
+            },
+            {
+              "name": "Refresh Token",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "",
+                    "value": ""
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"se.abdelrahman968@gmail.com\",\n    \"password\": \"Password@123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/refresh-token",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "refresh-token"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "ratelimit",
+                  "value": "\"10-in-15min\"; r=7; t=890"
+                },
+                {
+                  "key": "ratelimit-policy",
+                  "value": "\"10-in-15min\"; q=10; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWE3ZjhlNjkwZWU1ZmY0NTQyMzQ3NDQiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTc4OTM5NDQwNywiZXhwIjoxNzg5OTk5MjA3LCJhdWQiOiJzYXJhaGFoLWNsaWVudCIsImlzcyI6InNhcmFoYWgtYXBpIn0.H0ynzfz_XhvOQI19jfCd4uvMIUgwolJhbo5OecNlMcI; Max-Age=604800; Path=/api/v1/auth; Expires=Mon, 21 Sep 2026 14:00:07 GMT; HttpOnly; SameSite=Lax"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "319"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"13f-w+YfMC93+ofArw/sX43hou1zf8s\""
+                },
+                {
+                  "key": "date",
+                  "value": "Mon, 14 Sep 2026 14:00:07 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Token refreshed successfully\",\n  \"data\": {\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWE3ZjhlNjkwZWU1ZmY0NTQyMzQ3NDQiLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzg5Mzk0NDA3LCJleHAiOjE3ODkzOTUzMDcsImF1ZCI6InNhcmFoYWgtY2xpZW50IiwiaXNzIjoic2FyYWhhaC1hcGkifQ.fejDT_quELeNAovUeKhU958_UCEHm219AkrN90a07B0\"\n  }\n}"
+            },
+            {
+              "name": "username login",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"userName\": \"abdelrahman968\",\n    \"password\": \"Password@123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "ratelimit",
+                  "value": "\"15-in-15min\"; r=14; t=900"
+                },
+                {
+                  "key": "ratelimit-policy",
+                  "value": "\"15-in-15min\"; q=15; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWQ3NzE4MDVkN2VlYjQwYjBhMDhjY2QiLCJyb2xlIjoiYWRtaW4iLCJpc1ZlcmlmaWVkIjpmYWxzZSwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3OTI1NjY1MjEsImV4cCI6MTc5MzE3MTMyMSwiYXVkIjoic2FyYWhhaC1jbGllbnQiLCJpc3MiOiJzYXJhaGFoLWFwaSIsImp0aSI6Ijc1ZDlkNDM0LTA2NmYtNDg1Ny1iM2ViLWIwM2YzYmVmYzA5ZSJ9.vWv36gt6D9_bIaLyNkdL-pm7p0-YlilLwrAKtNwj0OI; Max-Age=604800; Path=/api/v1/auth; Expires=Wed, 28 Oct 2026 07:08:41 GMT; HttpOnly; SameSite=Lax"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "853"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"355-JcjHPU1/TaPU1x+coAQaxWO8BCE\""
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 07:08:41 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Login Successfully\",\n  \"notes\": \"Need to verify email, please check your email\",\n  \"route\": \"auth/activate-request\",\n  \"data\": {\n    \"user\": {\n      \"id\": \"6ad771805d7eeb40b0a08ccd\",\n      \"userName\": \"abdelrahman968\",\n      \"firstName\": \"Abdelrahman\",\n      \"lastName\": \"Ayman\",\n      \"role\": \"admin\",\n      \"email\": \"se.abdelrahman968+admin@gmail.com\",\n      \"isVerified\": false,\n      \"gender\": \"male\",\n      \"age\": 23,\n      \"avatar\": null,\n      \"bio\": null,\n      \"createdAt\": \"2026-10-20T13:49:52.741Z\",\n      \"updatedAt\": \"2026-10-21T06:49:06.927Z\",\n      \"fullName\": \"Abdelrahman Ayman\"\n    },\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWQ3NzE4MDVkN2VlYjQwYjBhMDhjY2QiLCJyb2xlIjoiYWRtaW4iLCJpc1ZlcmlmaWVkIjpmYWxzZSwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc5MjU2NjUyMSwiZXhwIjoxNzkzMTcxMzIxLCJhdWQiOiJzYXJhaGFoLWNsaWVudCIsImlzcyI6InNhcmFoYWgtYXBpIiwianRpIjoiYjYzZDM4YjQtYWRlZS00YzlhLWJhYWQtNzYxMjI4MTQ1MDFjIn0.U7M8ZN5ctRVfvq-rYKEPxSXxOnE8tWWv4XIyBvGLNmQ\"\n  }\n}"
+            },
+            {
+              "name": "Too Many Failed login attempts",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"userName\": \"abdelrahman968\",\n    \"password\": \"Password@123s\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "RateLimit",
+                  "value": "\"15-in-15min\"; r=10; t=889"
+                },
+                {
+                  "key": "RateLimit-Policy",
+                  "value": "\"15-in-15min\"; q=15; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "313"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"139-kgCD9eHswfQuLd7ctcMEU9xPVi0\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Fri, 23 Oct 2026 11:33:10 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Too many failed login attempts. Please try again in 5 minutes.\",\n  \"data\": {\n    \"statusCode\": 429,\n    \"stack\": \"at LoginUserService (file:///E:/Route%20Academy/Backend/Sarahah/sarahah-api/src/modules/auth/auth.service.js:282:11)\",\n    \"route\": \"/api/v1/auth/login\",\n    \"method\": \"POST\",\n    \"API_PREFIX\": \"/api/v1\"\n  }\n}"
+            },
+            {
+              "name": "OTP Enabled",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"userName\": \"abdelrahman968\",\n    \"password\": \"Password@123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "RateLimit",
+                  "value": "\"15-in-15min\"; r=11; t=862"
+                },
+                {
+                  "key": "RateLimit-Policy",
+                  "value": "\"15-in-15min\"; q=15; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "244"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"f4-4aAicmOB248yimdd3t4L6ziDyuA\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 27 Oct 2026 15:46:50 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"OTP sent. Complete two-factor authentication.\",\n  \"requiresTwoFactor\": true,\n  \"challenge\": \"9deb6fbd-be91-4a26-98f9-f38858e6732a\",\n  \"otpResult\": {\n    \"otpType\": \"two-factor-login\",\n    \"sent\": true,\n    \"expiresIn\": \"15 minutes and 0 seconds\",\n    \"otp\": \"UiL5aS\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login with otp",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();\n\nif (json.data && json.data.accessToken) {\n    pm.collectionVariables.set('accessToken', json.data.accessToken);\n}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"challenge\": \"9deb6fbd-be91-4a26-98f9-f38858e6732a\",\n    \"otp\": \"UiL5aS\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login/verify-2fa",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login",
+                "verify-2fa"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Login challenge is invalid or expired",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"challenge\": \"7b3a94d9-a731-49f7-b965-4a3cee1f593b\",\n    \"otp\": \"I80KIm\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login/verify-2fa",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login",
+                    "verify-2fa"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "RateLimit",
+                  "value": "\"15-in-15min\"; r=14; t=900"
+                },
+                {
+                  "key": "RateLimit-Policy",
+                  "value": "\"15-in-15min\"; q=15; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "304"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"130-bPhmMpzlLzuB3stBJkBDjDurmgA\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 27 Oct 2026 15:25:31 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Login challenge is invalid or expired\",\n  \"data\": {\n    \"statusCode\": 401,\n    \"stack\": \"at verifyLoginOTPService (file:///E:/Route%20Academy/Backend/Sarahah/sarahah-api/src/modules/auth/auth.service.js:823:11)\",\n    \"route\": \"/api/v1/auth/login/verify-2fa\",\n    \"method\": \"POST\",\n    \"API_PREFIX\": \"/api/v1\"\n  }\n}"
+            },
+            {
+              "name": "Login with otp",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"challenge\": \"9deb6fbd-be91-4a26-98f9-f38858e6732a\",\n    \"otp\": \"UiL5aS\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login/verify-2fa",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login",
+                    "verify-2fa"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "RateLimit",
+                  "value": "\"15-in-15min\"; r=14; t=900"
+                },
+                {
+                  "key": "RateLimit-Policy",
+                  "value": "\"15-in-15min\"; q=15; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "Set-Cookie",
+                  "value": "refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWQ4NjU2MzZjMzE5YWYzOWE5NDk5MTEiLCJyb2xlIjoiYWRtaW4iLCJpc1ZlcmlmaWVkIjp0cnVlLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTc5MzExNjA1NywiZXhwIjoxNzkzNzIwODU3LCJhdWQiOiJzYXJhaGFoLWNsaWVudCIsImlzcyI6InNhcmFoYWgtYXBpIiwianRpIjoiMzIxNDNiZDYtNDlhYS00Mjc1LTkwODMtNjI3ZWY1ZmEwYTlhIn0.CJb-Uqp_NqrzI6-meS3AocpOKLs89n_YwB8-nZ5oyXo; Max-Age=604800; Path=/api/v1/auth; Expires=Tue, 03 Nov 2026 15:47:37 GMT; HttpOnly; SameSite=Lax"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "874"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"36a-28hmo2X0MABaLXGGt9qSjBJ63bU\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 27 Oct 2026 15:47:37 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Login successfully\",\n  \"data\": {\n    \"user\": {\n      \"id\": \"6ad865636c319af39a949911\",\n      \"twoFactor\": {\n        \"enabled\": true\n      },\n      \"userName\": \"abdelrahman968\",\n      \"firstName\": \"Abdelrahman\",\n      \"lastName\": \"Ayman\",\n      \"role\": \"admin\",\n      \"email\": \"se.abdelrahman968+newadmin@gmail.com\",\n      \"isVerified\": true,\n      \"gender\": \"male\",\n      \"age\": 23,\n      \"avatar\": \"uploads/6ad865636c319af39a949911/avatar/27fcc05e-9dcb-4eef-be92-34ac5a5f53f1.webp\",\n      \"bio\": null,\n      \"createdAt\": \"2026-10-21T07:10:27.842Z\",\n      \"updatedAt\": \"2026-10-27T15:14:03.792Z\",\n      \"fullName\": \"Abdelrahman Ayman\"\n    },\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWQ4NjU2MzZjMzE5YWYzOWE5NDk5MTEiLCJyb2xlIjoiYWRtaW4iLCJpc1ZlcmlmaWVkIjp0cnVlLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzkzMTE2MDU3LCJleHAiOjE3OTM3MjA4NTcsImF1ZCI6InNhcmFoYWgtY2xpZW50IiwiaXNzIjoic2FyYWhhaC1hcGkiLCJqdGkiOiIwN2M1NWJiYy02OThhLTQ3YTctYmRhZS03ZmE0MTc3OGUzNzEifQ.uzRjTPC6-gV9GijXsAPMXhjv6KlnxYPlgOXYefOBMxM\"\n  }\n}"
+            }
+          ]
         },
         {
           "name": "Logout",
@@ -337,13 +1972,18 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{accessToken}}",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWQ3NzE4MDVkN2VlYjQwYjBhMDhjY2QiLCJyb2xlIjoiYWRtaW4iLCJpc1ZlcmlmaWVkIjpmYWxzZSwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc5MjU2NjUyMSwiZXhwIjoxNzkzMTcxMzIxLCJhdWQiOiJzYXJhaGFoLWNsaWVudCIsImlzcyI6InNhcmFoYWgtYXBpIiwianRpIjoiYjYzZDM4YjQtYWRlZS00YzlhLWJhYWQtNzYxMjI4MTQ1MDFjIn0.U7M8ZN5ctRVfvq-rYKEPxSXxOnE8tWWv4XIyBvGLNmQ",
                   "type": "string"
                 }
               ]
             },
             "method": "POST",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWQ3NzE4MDVkN2VlYjQwYjBhMDhjY2QiLCJyb2xlIjoiYWRtaW4iLCJpc1ZlcmlmaWVkIjp0cnVlLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzkyNTA0NTk3LCJleHAiOjE3OTMxMDkzOTcsImF1ZCI6InNhcmFoYWgtY2xpZW50IiwiaXNzIjoic2FyYWhhaC1hcGkiLCJqdGkiOiJlODMyMzkzMS1mMWY4LTQxOTgtYjY1Mi02NjliMjU3MTVkYWIifQ.0SAO1KGcLBDdgHm7VO0lY_JNnMg_xnNjVENYwmgskR0"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/auth/logout",
               "host": [
@@ -355,7 +1995,82 @@
               ]
             },
             "description": "Revokes the refresh token stored in the cookie."
-          }
+          },
+          "response": [
+            {
+              "name": "Logout",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWQ3NzE4MDVkN2VlYjQwYjBhMDhjY2QiLCJyb2xlIjoiYWRtaW4iLCJpc1ZlcmlmaWVkIjp0cnVlLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzkyNTA0NTk3LCJleHAiOjE3OTMxMDkzOTcsImF1ZCI6InNhcmFoYWgtY2xpZW50IiwiaXNzIjoic2FyYWhhaC1hcGkiLCJqdGkiOiJlODMyMzkzMS1mMWY4LTQxOTgtYjY1Mi02NjliMjU3MTVkYWIifQ.0SAO1KGcLBDdgHm7VO0lY_JNnMg_xnNjVENYwmgskR0"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/logout",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "logout"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "ratelimit",
+                  "value": "\"15-in-15min\"; r=13; t=855"
+                },
+                {
+                  "key": "ratelimit-policy",
+                  "value": "\"15-in-15min\"; q=15; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "refreshToken=; Path=/api/v1/auth; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "33"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"21-lLmD67O0VkKhqUEw0fr9HQ3hNcw\""
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 07:09:26 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Logout successfully\"\n}"
+            }
+          ]
         },
         {
           "name": "Reset Password",
@@ -365,11 +2080,16 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "",
+                "value": "",
+                "disabled": true
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"newPassword\": \"{{newPassword}}\",\n  \"confirmPassword\": \"{{newPassword}}\"\n}",
+              "raw": "{\n    \"token\": \"b80cefc437a142d2e0a032656a212a25c60dc8a27fb19f9ce4f3645059857d28\",\n    \"newPassword\": \"NewPassword@123@rest\",\n    \"confirmPassword\": \"NewPassword@123@rest\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -386,7 +2106,175 @@
                 "reset-password"
               ]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "failed",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "",
+                    "value": "",
+                    "disabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"token\": \"b80cefc437a142d2e0a032656a212a25c60dc8a27fb19f9ce4f3645059857d28\",\n    \"newPassword\": \"NewPassword@123@1s2s3\",\n    \"confirmPassword\": \"NewPassword@123@1s2s3\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/reset-password",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "reset-password"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "ratelimit",
+                  "value": "\"100-in-15min\"; r=98; t=894"
+                },
+                {
+                  "key": "ratelimit-policy",
+                  "value": "\"100-in-15min\"; q=100; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "319"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"13f-rgWCHklRfivB3OBX29xUTewoRjI\""
+                },
+                {
+                  "key": "date",
+                  "value": "Mon, 14 Sep 2026 15:20:34 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"New password cannot be the same as the old password\",\n  \"data\": {\n    \"statusCode\": 400,\n    \"stack\": \"at ResetPasswordService (file:///E:/Route%20Academy/Backend/Assignments/sarahah-app/src/modules/user/user.service.js:243:11)\",\n    \"route\": \"/api/v1/user/reset-password\",\n    \"method\": \"POST\",\n    \"API_PREFIX\": \"/api/v1\"\n  }\n}"
+            },
+            {
+              "name": "Reset Password",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "",
+                    "value": "",
+                    "disabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"token\": \"b80cefc437a142d2e0a032656a212a25c60dc8a27fb19f9ce4f3645059857d28\",\n    \"newPassword\": \"NewPassword@123@rest\",\n    \"confirmPassword\": \"NewPassword@123@rest\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/reset-password",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "reset-password"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "ratelimit",
+                  "value": "\"100-in-15min\"; r=97; t=870"
+                },
+                {
+                  "key": "ratelimit-policy",
+                  "value": "\"100-in-15min\"; q=100; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "344"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"158-zecOwx4AcNf4y8fBDJADCkI8ArA\""
+                },
+                {
+                  "key": "date",
+                  "value": "Mon, 14 Sep 2026 15:20:58 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Password reset successfully\",\n  \"user\": {\n    \"id\": \"6aa7f8e690ee5ff454234744\",\n    \"firstName\": \"Ahmed\",\n    \"lastName\": \"Mohamed\",\n    \"email\": \"se.abdelrahman968+test1@gmail.com\",\n    \"gender\": \"male\",\n    \"age\": 26,\n    \"profileImage\": null,\n    \"bio\": \"Frontend Developer\",\n    \"createdAt\": \"2026-09-14T13:38:46.273Z\",\n    \"updatedAt\": \"2026-09-14T15:20:58.147Z\",\n    \"fullName\": \"Ahmed Mohamed\"\n  }\n}"
+            }
+          ]
         },
         {
           "name": "Forgot Password",
@@ -396,11 +2284,16 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "",
+                "value": "",
+                "disabled": true
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"{{email}}\"\n}",
+              "raw": "{\n    \"email\": \"se.abdelrahman968+test1@gmail.com\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -417,13 +2310,103 @@
                 "forgot-password"
               ]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "Forgot Password",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "",
+                    "value": "",
+                    "disabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"se.abdelrahman968+test1@gmail.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/forgot-password",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "forgot-password"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "ratelimit",
+                  "value": "\"100-in-15min\"; r=99; t=900"
+                },
+                {
+                  "key": "ratelimit-policy",
+                  "value": "\"100-in-15min\"; q=100; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "201"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"c9-nmwk6qhnXZxCoB3+QEgcdk9zrFU\""
+                },
+                {
+                  "key": "date",
+                  "value": "Mon, 14 Sep 2026 14:46:50 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"data\": {\n    \"message\": \"If the email exists, a password reset link has been sent.\",\n    \"resetUrl\": \"http://localhost:3000/reset-password?token=c7d6aa0617bbf5db5e0e78fd84de70619f094ca982ab444af3642fab31a58799\"\n  }\n}"
+            }
+          ]
         },
         {
           "name": "Get Profile",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/auth/profile",
               "host": [
@@ -433,24 +2416,539 @@
                 "auth",
                 "profile"
               ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "Get Profile",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/profile",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "profile"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "ratelimit",
+                  "value": "\"15-in-15min\"; r=14; t=900"
+                },
+                {
+                  "key": "ratelimit-policy",
+                  "value": "\"15-in-15min\"; q=15; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "429"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"1ad-OVzEQpRw0TuRaPr/NOEEv95sic4\""
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 07:16:07 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"notes\": \"Please verify your email to access to all features.\",\n  \"data\": {\n    \"id\": \"6ad865636c319af39a949911\",\n    \"userName\": \"abdelrahman968\",\n    \"firstName\": \"Abdelrahman\",\n    \"lastName\": \"Ayman\",\n    \"role\": \"admin\",\n    \"email\": \"se.abdelrahman968+admin@gmail.com\",\n    \"isVerified\": false,\n    \"gender\": \"male\",\n    \"age\": 23,\n    \"avatar\": null,\n    \"bio\": null,\n    \"createdAt\": \"2026-10-21T07:10:27.842Z\",\n    \"updatedAt\": \"2026-10-21T07:10:27.842Z\",\n    \"fullName\": \"Abdelrahman Ayman\"\n  }\n}"
+            }
+          ]
         },
         {
-          "name": "Request Email Activation Code",
+          "name": "Disable 2FA",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/2fa-disable",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "2fa-disable"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Disable 2FA",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/2fa-disable",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "2fa-disable"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "RateLimit",
+                  "value": "\"15-in-15min\"; r=13; t=888"
+                },
+                {
+                  "key": "RateLimit-Policy",
+                  "value": "\"15-in-15min\"; q=15; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "503"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"1f7-VlUvaSIp41Qte2UfK2gOHePxshM\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 27 Oct 2026 15:53:13 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"massage\": \"2FA disabled successfully\",\n  \"result\": {\n    \"id\": \"6ad865636c319af39a949911\",\n    \"twoFactor\": {\n      \"enabled\": false\n    },\n    \"userName\": \"abdelrahman968\",\n    \"firstName\": \"Abdelrahman\",\n    \"lastName\": \"Ayman\",\n    \"role\": \"admin\",\n    \"email\": \"se.abdelrahman968+newadmin@gmail.com\",\n    \"isVerified\": true,\n    \"gender\": \"male\",\n    \"age\": 23,\n    \"avatar\": \"uploads/6ad865636c319af39a949911/avatar/27fcc05e-9dcb-4eef-be92-34ac5a5f53f1.webp\",\n    \"bio\": null,\n    \"createdAt\": \"2026-10-21T07:10:27.842Z\",\n    \"updatedAt\": \"2026-10-27T15:53:00.691Z\",\n    \"fullName\": \"Abdelrahman Ayman\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Enable 2FA Copy",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/2fa-enable",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "2fa-enable"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Enable 2FA",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/2fa-enable",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "2fa-enable"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "RateLimit",
+                  "value": "\"15-in-15min\"; r=14; t=900"
+                },
+                {
+                  "key": "RateLimit-Policy",
+                  "value": "\"15-in-15min\"; q=15; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "96"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"60-wLFH8FSYGZb5yZJYfu/zsv7oIJI\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 27 Oct 2026 15:12:09 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"otpType\": \"two-factor-setup\",\n  \"sent\": true,\n  \"expiresIn\": \"15 minutes and 0 seconds\",\n  \"otp\": \"6lRCKH\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "verify 2FA",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"otp\":\"6lRCKH\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/2fa-verify",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "2fa-verify"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "verify 2FA",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"otp\":\"6lRCKH\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/2fa-verify",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "2fa-verify"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "RateLimit",
+                  "value": "\"15-in-15min\"; r=13; t=786"
+                },
+                {
+                  "key": "RateLimit-Policy",
+                  "value": "\"15-in-15min\"; q=15; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "Set-Cookie",
+                  "value": "refreshToken=; Path=/api/v1/auth; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax"
+                },
+                {
+                  "key": "Set-Cookie",
+                  "value": "refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWQ4NjU2MzZjMzE5YWYzOWE5NDk5MTEiLCJyb2xlIjoiYWRtaW4iLCJpc1ZlcmlmaWVkIjp0cnVlLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTc5MzExNDA0MywiZXhwIjoxNzkzNzE4ODQzLCJhdWQiOiJzYXJhaGFoLWNsaWVudCIsImlzcyI6InNhcmFoYWgtYXBpIiwianRpIjoiNjU5OGU0ZGItZmRlMC00YjVlLWI5M2YtMmZmOTFjZDliNjhmIn0.vLh02z2x14rvAPEKsXB3mS4rEoH_LEVZ4uStIAhXx6E; Max-Age=604800; Path=/api/v1/auth; Expires=Tue, 03 Nov 2026 15:14:03 GMT; HttpOnly; SameSite=Lax"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "411"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"19b-QjHRUMtlCruNTMjA+6v9dW19+yg\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 27 Oct 2026 15:14:03 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"OTP verified successfully\",\n  \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWQ4NjU2MzZjMzE5YWYzOWE5NDk5MTEiLCJyb2xlIjoiYWRtaW4iLCJpc1ZlcmlmaWVkIjp0cnVlLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzkzMTE0MDQzLCJleHAiOjE3OTM3MTg4NDMsImF1ZCI6InNhcmFoYWgtY2xpZW50IiwiaXNzIjoic2FyYWhhaC1hcGkiLCJqdGkiOiJmZWY4MTI1ZS00YTE1LTQ5OTEtOGNiZi03YmQ0YWU4ZTliYjQifQ.b9_q881eFFtK33UpkxaOMKDAj0BogoRI1IK7QUT4mhs\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Email Activate Req",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/auth/activate-request",
               "host": [
@@ -460,27 +2958,162 @@
                 "auth",
                 "activate-request"
               ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "Activate Req first time",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/activate-request",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "activate-request"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "ratelimit",
+                  "value": "\"15-in-15min\"; r=14; t=900"
+                },
+                {
+                  "key": "ratelimit-policy",
+                  "value": "\"15-in-15min\"; q=15; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "52"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"34-8QyBogMr6IxW6VnFGAHq3Isl8B4\""
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 07:17:47 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"sent\": true,\n  \"expiresIn\": \"15 minutes and 0 seconds\"\n}"
+            },
+            {
+              "name": "Activate Req",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/activate-request",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "activate-request"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "ratelimit",
+                  "value": "\"15-in-15min\"; r=11; t=863"
+                },
+                {
+                  "key": "ratelimit-policy",
+                  "value": "\"15-in-15min\"; q=15; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "54"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"36-4E5WppF3aG7dTzmDFkXsgb+CuUQ\""
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 07:18:24 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"sent\": false,\n  \"expiresIn\": \"14 minutes and 23 seconds\"\n}"
+            }
+          ]
         },
         {
-          "name": "Verify Email",
+          "name": "Email OTP Verify",
           "request": {
             "method": "POST",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"otp\": \"{{otp}}\"\n}",
+              "raw": "{\r\n    \"otp\": \"G6PKlx\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -496,18 +3129,333 @@
                 "auth",
                 "activate-email"
               ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
+            }
+          },
+          "response": [
+            {
+              "name": "Invalid OTP",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"otp\": \"K5RIUx\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/activate-email",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "activate-email"
+                  ]
                 }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "ratelimit",
+                  "value": "\"15-in-15min\"; r=10; t=748"
+                },
+                {
+                  "key": "ratelimit-policy",
+                  "value": "\"15-in-15min\"; q=15; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "273"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"111-4dM/Yd2DSWIen6foKyQgxnQepko\""
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 07:20:19 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Invalid OTP code\",\n  \"data\": {\n    \"statusCode\": 400,\n    \"stack\": \"at verifyOTPCode (file:///E:/Route%20Academy/Backend/Sarahah/sarahah-api/src/modules/auth/auth.service.js:153:11)\",\n    \"route\": \"/api/v1/auth/activate-email\",\n    \"method\": \"POST\",\n    \"API_PREFIX\": \"/api/v1\"\n  }\n}"
+            },
+            {
+              "name": "OTP Verify",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"otp\": \"Et0DBy\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/activate-email",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "activate-email"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "ratelimit",
+                  "value": "\"15-in-15min\"; r=10; t=822"
+                },
+                {
+                  "key": "ratelimit-policy",
+                  "value": "\"15-in-15min\"; q=15; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "refreshToken=; Path=/api/v1/auth; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWQ4NjU2MzZjMzE5YWYzOWE5NDk5MTEiLCJyb2xlIjoiYWRtaW4iLCJpc1ZlcmlmaWVkIjp0cnVlLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTc5MjU2ODYxMCwiZXhwIjoxNzkzMTczNDEwLCJhdWQiOiJzYXJhaGFoLWNsaWVudCIsImlzcyI6InNhcmFoYWgtYXBpIiwianRpIjoiOGFkM2FlMDAtODg4OC00Y2U4LTlkYWItYzBiOWU2ODY3ZDlmIn0.joklnQvhbmQAOFoRz0fx0-u-9aEoHeJkUJf1y7tDrJU; Max-Age=604800; Path=/api/v1/auth; Expires=Wed, 28 Oct 2026 07:43:30 GMT; HttpOnly; SameSite=Lax"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "412"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"19c-2cDeiehCWf/LDAvvSCXtnCMq7WU\""
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 07:43:30 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"User verified successfully\",\n  \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWQ4NjU2MzZjMzE5YWYzOWE5NDk5MTEiLCJyb2xlIjoiYWRtaW4iLCJpc1ZlcmlmaWVkIjp0cnVlLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzkyNTY4NjEwLCJleHAiOjE3OTMxNzM0MTAsImF1ZCI6InNhcmFoYWgtY2xpZW50IiwiaXNzIjoic2FyYWhhaC1hcGkiLCJqdGkiOiJiYzY1Y2I3YS0xNDZjLTQ2MzgtOWMzNC1mNzA3NzBmYjI1NWMifQ.4v9Z-I_m7YTAb6fGBEaUIquIQ2NI0OfqK4p6edbMmuc\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Resend OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"otpType\": \"email-verification\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/resend-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "resend-otp"
               ]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "Resend OTP",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"otpType\": \"email-verification\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/resend-otp",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "resend-otp"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "RateLimit",
+                  "value": "\"15-in-15min\"; r=11; t=882"
+                },
+                {
+                  "key": "RateLimit-Policy",
+                  "value": "\"15-in-15min\"; q=15; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "127"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"7f-BuGn6KrKZVT0KMB5SryQvHTZTX4\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 27 Oct 2026 16:13:45 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"OTP sent successfully\",\n  \"data\": {\n    \"otpType\": \"email-verification\",\n    \"sent\": true,\n    \"expiresIn\": \"14 minutes and 50 seconds\"\n  }\n}"
+            }
+          ]
         }
       ]
     },
@@ -518,7 +3466,12 @@
           "name": "Get Profile",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/user/profile",
               "host": [
@@ -528,18 +3481,140 @@
                 "user",
                 "profile"
               ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "Get Profile",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/user/profile",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "user",
+                    "profile"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "ratelimit",
+                  "value": "\"100-in-15min\"; r=99; t=900"
+                },
+                {
+                  "key": "ratelimit-policy",
+                  "value": "\"100-in-15min\"; q=100; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "290"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"122-Cb+g+O4NqZtxxTQnaCtaCBXYb0k\""
+                },
+                {
+                  "key": "date",
+                  "value": "Mon, 14 Sep 2026 14:01:46 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"data\": {\n    \"id\": \"6aa7f8e690ee5ff454234744\",\n    \"firstName\": \"Abdelrahman\",\n    \"lastName\": \"Ayman\",\n    \"email\": \"se.abdelrahman968@gmail.com\",\n    \"gender\": \"male\",\n    \"age\": 23,\n    \"profileImage\": null,\n    \"bio\": null,\n    \"createdAt\": \"2026-09-14T13:38:46.273Z\",\n    \"updatedAt\": \"2026-09-14T13:38:46.273Z\",\n    \"fullName\": \"Abdelrahman Ayman\"\n  }\n}"
+            },
+            {
+              "name": "Email not verified",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/user/profile",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "user",
+                    "profile"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "327"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"147-kJ+h7Gvd6i8YVF8Dg6JBpgpKS14\""
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 07:10:44 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Email not verified, activate your account and try again.\",\n  \"data\": {\n    \"statusCode\": 401,\n    \"stack\": \"at requireVerifiedEmail (file:///E:/Route%20Academy/Backend/Sarahah/sarahah-api/src/middleware/requireVerifiedEmail.middleware.js:4:13)\",\n    \"route\": \"/api/v1/user/profile\",\n    \"method\": \"GET\",\n    \"API_PREFIX\": \"/api/v1\"\n  }\n}"
+            }
+          ]
         },
         {
           "name": "Update Profile",
@@ -549,11 +3624,15 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstName\": \"Sarahah\",\n  \"lastName\": \"User\",\n  \"gender\": \"male\",\n  \"age\": 26,\n  \"bio\": \"Example bio\"\n}",
+              "raw": "{\n  \"firstName\": \"Ahmed\",\n  \"lastName\": \"Mohamed\",\n  \"gender\": \"male\",\n  \"age\": 26,\n  \"bio\": \"Frontend Developer\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -569,18 +3648,92 @@
                 "user",
                 "update-profile"
               ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "Update Profile",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"firstName\": \"Ahmed\",\n  \"lastName\": \"Mohamed\",\n  \"gender\": \"male\",\n  \"age\": 26,\n  \"bio\": \"Frontend Developer\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/user/update-profile",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "user",
+                    "update-profile"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "ratelimit",
+                  "value": "\"100-in-15min\"; r=99; t=900"
+                },
+                {
+                  "key": "ratelimit-policy",
+                  "value": "\"100-in-15min\"; q=100; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "339"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"153-LUuCrt5lNPyi1SCkrq/zSV20S0E\""
+                },
+                {
+                  "key": "date",
+                  "value": "Mon, 14 Sep 2026 14:04:05 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Profile updated successfully\",\n  \"data\": {\n    \"id\": \"6aa7f8e690ee5ff454234744\",\n    \"firstName\": \"Ahmed\",\n    \"lastName\": \"Mohamed\",\n    \"email\": \"se.abdelrahman968@gmail.com\",\n    \"gender\": \"male\",\n    \"age\": 26,\n    \"profileImage\": null,\n    \"bio\": \"Frontend Developer\",\n    \"createdAt\": \"2026-09-14T13:38:46.273Z\",\n    \"updatedAt\": \"2026-09-14T14:04:05.619Z\",\n    \"fullName\": \"Ahmed Mohamed\"\n  }\n}"
+            }
+          ]
         },
         {
           "name": "Update Email",
@@ -590,11 +3743,15 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"{{email}}\"\n}",
+              "raw": "{\n  \"email\": \"se.abdelrahman968+newadmin@gmail.com\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -610,18 +3767,92 @@
                 "user",
                 "update-email"
               ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "Update Email",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"se.abdelrahman968+newadmin@gmail.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/user/update-email",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "user",
+                    "update-email"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "ratelimit",
+                  "value": "\"100-in-15min\"; r=99; t=900"
+                },
+                {
+                  "key": "ratelimit-policy",
+                  "value": "\"100-in-15min\"; q=100; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "393"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"189-tLipCGR89z4M6qYvEJT0JdFdkYk\""
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 07:48:44 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Email updated successfully\",\n  \"data\": {\n    \"id\": \"6ad865636c319af39a949911\",\n    \"userName\": \"abdelrahman968\",\n    \"firstName\": \"Abdelrahman\",\n    \"lastName\": \"Ayman\",\n    \"role\": \"admin\",\n    \"email\": \"se.abdelrahman968+newadmin@gmail.com\",\n    \"isVerified\": true,\n    \"gender\": \"male\",\n    \"age\": 23,\n    \"avatar\": null,\n    \"bio\": null,\n    \"createdAt\": \"2026-10-21T07:10:27.842Z\",\n    \"updatedAt\": \"2026-10-21T07:48:44.392Z\",\n    \"fullName\": \"Abdelrahman Ayman\"\n  }\n}"
+            }
+          ]
         },
         {
           "name": "Update Password",
@@ -631,11 +3862,15 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"currentPassword\": \"{{currentPassword}}\",\n  \"newPassword\": \"{{newPassword}}\",\n  \"confirmPassword\": \"{{newPassword}}\"\n}",
+              "raw": "{\n  \"currentPassword\": \"Password@123\",\n  \"newPassword\": \"NewPassword@123\",\n  \"confirmPassword\": \"NewPassword@123\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -651,24 +3886,358 @@
                 "user",
                 "update-password"
               ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
+            }
+          },
+          "response": [
+            {
+              "name": "failed",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"currentPassword\": \"Password@123\",\n  \"newPassword\": \"Password@123\",\n  \"confirmPassword\": \"Password@123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/user/update-password",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "user",
+                    "update-password"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
                 {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "ratelimit",
+                  "value": "\"100-in-15min\"; r=97; t=818"
+                },
+                {
+                  "key": "ratelimit-policy",
+                  "value": "\"100-in-15min\"; q=100; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "147"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"93-kN0hX9zXui/7lPPOBkaKqVCscII\""
+                },
+                {
+                  "key": "date",
+                  "value": "Mon, 14 Sep 2026 14:05:28 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"errors\": [\n    {\n      \"field\": \"newPassword\",\n      \"message\": \"New password must be different from current password\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Update Password",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"currentPassword\": \"Password@123\",\n  \"newPassword\": \"NewPassword@123\",\n  \"confirmPassword\": \"NewPassword@123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/user/update-password",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "user",
+                    "update-password"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "ratelimit",
+                  "value": "\"100-in-15min\"; r=96; t=747"
+                },
+                {
+                  "key": "ratelimit-policy",
+                  "value": "\"100-in-15min\"; q=100; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "334"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"14e-SU3+kzWnIrhRK6de8YeHh0+pnwQ\""
+                },
+                {
+                  "key": "date",
+                  "value": "Mon, 14 Sep 2026 14:06:39 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Password updated successfully\",\n  \"data\": {\n    \"id\": \"6aa7f8e690ee5ff454234744\",\n    \"firstName\": \"Ahmed\",\n    \"lastName\": \"Mohamed\",\n    \"email\": \"new.email@example.com\",\n    \"gender\": \"male\",\n    \"age\": 26,\n    \"profileImage\": null,\n    \"bio\": \"Frontend Developer\",\n    \"createdAt\": \"2026-09-14T13:38:46.273Z\",\n    \"updatedAt\": \"2026-09-14T14:06:39.587Z\",\n    \"fullName\": \"Ahmed Mohamed\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Avatar",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "avatar",
+                  "type": "file",
+                  "src": [
+                    "postman-cloud:///1f1d20a4-4152-4b60-bbee-93c0248981c1"
+                  ]
                 }
               ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/update-avatar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "update-avatar"
+              ]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "Update Avatar",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "avatar",
+                      "type": "file",
+                      "src": [
+                        "postman-cloud:///1f1d20a4-4152-4b60-bbee-93c0248981c1"
+                      ]
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/user/update-avatar",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "user",
+                    "update-avatar"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "RateLimit",
+                  "value": "\"100-in-15min\"; r=98; t=818"
+                },
+                {
+                  "key": "RateLimit-Policy",
+                  "value": "\"100-in-15min\"; q=100; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "503"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"1f7-gvFfMYG8UrKTZTNzMT0pWya1ZxU\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 27 Oct 2026 13:29:33 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Avatar updated successfully\",\n  \"data\": {\n    \"id\": \"6ad865636c319af39a949911\",\n    \"twoFactor\": {\n      \"enabled\": false\n    },\n    \"userName\": \"abdelrahman968\",\n    \"firstName\": \"Abdelrahman\",\n    \"lastName\": \"Ayman\",\n    \"role\": \"admin\",\n    \"email\": \"se.abdelrahman968+newadmin@gmail.com\",\n    \"isVerified\": true,\n    \"gender\": \"male\",\n    \"age\": 23,\n    \"avatar\": \"uploads/6ad865636c319af39a949911/avatar/27fcc05e-9dcb-4eef-be92-34ac5a5f53f1.webp\",\n    \"bio\": null,\n    \"createdAt\": \"2026-10-21T07:10:27.842Z\",\n    \"updatedAt\": \"2026-10-27T13:29:33.193Z\",\n    \"fullName\": \"Abdelrahman Ayman\"\n  }\n}"
+            }
+          ]
         },
         {
           "name": "Delete My Account",
           "request": {
             "method": "DELETE",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/user/delete/me",
               "host": [
@@ -679,18 +4248,80 @@
                 "delete",
                 "me"
               ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "Delete My Account",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/user/delete/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "user",
+                    "delete",
+                    "me"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "access-control-allow-credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "ratelimit",
+                  "value": "\"100-in-15min\"; r=99; t=900"
+                },
+                {
+                  "key": "ratelimit-policy",
+                  "value": "\"100-in-15min\"; q=100; w=900; pk=:YmIwY2Q1MTM2YWU1:"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "342"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"156-5Xb4axuGvI6Y1zdHw5bfBoSdko4\""
+                },
+                {
+                  "key": "date",
+                  "value": "Thu, 17 Sep 2026 16:53:35 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"User deleted successfully\",\n  \"data\": {\n    \"id\": \"6aa7f8e690ee5ff454234744\",\n    \"firstName\": \"Ahmed\",\n    \"lastName\": \"Mohamed\",\n    \"email\": \"se.abdelrahman968+test1@gmail.com\",\n    \"gender\": \"male\",\n    \"age\": 26,\n    \"profileImage\": null,\n    \"bio\": \"Frontend Developer\",\n    \"createdAt\": \"2026-09-14T13:38:46.273Z\",\n    \"updatedAt\": \"2026-09-14T15:20:58.147Z\",\n    \"fullName\": \"Ahmed Mohamed\"\n  }\n}"
+            }
+          ]
         }
       ]
     }
@@ -698,42 +4329,10 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:5000/api/v1"
+      "value": "http://localhost:5000/api/v1/users"
     },
     {
       "key": "accessToken",
-      "value": ""
-    },
-    {
-      "key": "userId",
-      "value": ""
-    },
-    {
-      "key": "userName",
-      "value": "sarahah_user"
-    },
-    {
-      "key": "email",
-      "value": "user@example.com"
-    },
-    {
-      "key": "password",
-      "value": ""
-    },
-    {
-      "key": "currentPassword",
-      "value": ""
-    },
-    {
-      "key": "newPassword",
-      "value": ""
-    },
-    {
-      "key": "resetToken",
-      "value": ""
-    },
-    {
-      "key": "otp",
       "value": ""
     }
   ]
