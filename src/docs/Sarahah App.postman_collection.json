@@ -4731,6 +4731,95 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "Blocking",
+      "item": [
+        {
+          "name": "Block User",
+          "request": {
+            "method": "POST",
+            "description": "Block a registered user.",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/blocking/:userId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "blocking",
+                ":userId"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unblock User",
+          "request": {
+            "method": "DELETE",
+            "description": "Remove the current user’s block.",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/blocking/:userId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "blocking",
+                ":userId"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Blocked Users",
+          "request": {
+            "method": "GET",
+            "description": "List users blocked by the current user.",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/blocking",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "blocking"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "Manage blocked users. Blocking either user prevents messaging and conversation access in both directions until unblocked."
     }
   ],
   "variable": [

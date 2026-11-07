@@ -10,6 +10,45 @@ export function registerDocsRoutes(registry) {
     bearerFormat: "JWT",
   });
 
+  registry.registerPath({
+    method: "post",
+    path: "/blocking/{userId}",
+    tags: ["Blocking"],
+    summary: "Block User",
+    description: "Blocks a user and prevents messaging in either direction.",
+    security: [{ bearerAuth: [] }],
+    request: { params: z.object({ userId: z.string().openapi({ example: "6aac25113c5dde33996e400c" }) }) },
+    responses: {
+      201: { description: "User blocked." },
+      400: { description: "Invalid ID or self block." },
+      404: { description: "User not found." },
+      409: { description: "User already blocked." },
+    },
+  });
+  registry.registerPath({
+    method: "delete",
+    path: "/blocking/{userId}",
+    tags: ["Blocking"],
+    summary: "Unblock User",
+    description: "Removes the current user's block for this user.",
+    security: [{ bearerAuth: [] }],
+    request: { params: z.object({ userId: z.string().openapi({ example: "6aac25113c5dde33996e400c" }) }) },
+    responses: {
+      200: { description: "User unblocked." },
+      400: { description: "Invalid user ID." },
+      404: { description: "Block not found." },
+    },
+  });
+  registry.registerPath({
+    method: "get",
+    path: "/blocking",
+    tags: ["Blocking"],
+    summary: "List Blocked Users",
+    description: "Returns the users blocked by the authenticated user.",
+    security: [{ bearerAuth: [] }],
+    responses: { 200: { description: "Blocked users retrieved." } },
+  });
+
   // System
   registry.registerPath({
     method: "get",

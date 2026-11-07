@@ -50,6 +50,10 @@ export const openapiDocument = generator.generateDocument({
       name: "Messaging",
       description: "Anonymous messages, identity requests, and conversations",
     },
+    {
+      name: "Blocking",
+      description: "Block and unblock users",
+    },
   ],
 
   externalDocs: {

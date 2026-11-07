@@ -9,6 +9,7 @@ import identityRequestRepository from "../../db/repository/identity-request.repo
 import conversationRepository from "../../db/repository/conversation.repository.js";
 import conversationMessageRepository from "../../db/repository/conversation-message.repository.js";
 import { isValidObjectId } from "../../utils/validation/isValidObjectId.js";
+import blockRepository from "../../db/repository/block.repository.js";
 
 const publicUserFields = "userName firstName lastName avatar";
 
@@ -44,6 +45,9 @@ export const sendAnonymousMessageService = async (senderId, body) => {
   const receiver = await userRepository.findById(receiverId, "_id");
   if (!receiver) {
     throw new Error("Receiver not found", { cause: { status: 404 } });
+  }
+  if (await blockRepository.existsBetween(senderId, receiverId)) {
+    throw new Error("Messaging is not allowed between these users", { cause: { status: 403 } });
   }
 
   const message = await Message.create({
@@ -208,6 +212,9 @@ export const updateIdentityRequestService = async (senderId, requestId, status) 
       if (!acceptedRequest) {
         throw conflictError("Identity request has already been processed");
       }
+      if (await blockRepository.existsBetween(senderId, message.receiverId).session(session)) {
+        throw new Error("A conversation cannot be created while either user blocks the other", { cause: { status: 403 } });
+      }
 
       [conversation] = await Conversation.create(
         [
@@ -255,6 +262,11 @@ const getAuthorizedConversation = async (conversationId, userId) => {
       exists ? "You are not authorized to access this conversation" : "Conversation not found",
       { cause: { status: exists ? 403 : 404 } },
     );
+  }
+
+  const otherParticipant = conversation.participants.find((id) => id.toString() !== userId);
+  if (otherParticipant && await blockRepository.existsBetween(userId, otherParticipant)) {
+    throw new Error("Messaging is not allowed between these users", { cause: { status: 403 } });
   }
 
   return conversation;

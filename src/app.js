@@ -15,6 +15,7 @@ import { requireVerifiedEmail } from "./middleware/requireVerifiedEmail.middlewa
 import {
   AdminRoutes,
   AuthRoutes,
+  BlockingRoutes,
   MessagingRoutes,
   SystemRoutes,
   UserRoutes,
@@ -100,6 +101,12 @@ const routes = [
     docs: {
       tag: "Messaging",
     },
+  },
+  {
+    path: "/blocking",
+    middlewares: [authenticate, requireVerifiedEmail, apiLimiter],
+    router: BlockingRoutes,
+    docs: { tag: "Blocking" },
   },
   {
     path: "/admin",

@@ -194,6 +194,17 @@ Pagination uses `page` (default `1`) and `limit` (default `20`, maximum `100`).
 | `POST` | `/messaging/conversations/:conversationId/messages` | Send a conversation message |
 | `GET` | `/messaging/conversations/:conversationId/messages` | Get conversation participants and paginated messages |
 
+### Blocking
+
+Blocking routes require an authenticated user with a verified email address.
+Blocking either user prevents anonymous messages and conversation access in both directions until the block is removed. Existing conversations remain stored.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `POST` | `/blocking/:userId` | Block a user |
+| `DELETE` | `/blocking/:userId` | Unblock a user |
+| `GET` | `/blocking` | List blocked users |
+
 ### Admin
 
 Admin routes require an authenticated user with the `admin` role.
