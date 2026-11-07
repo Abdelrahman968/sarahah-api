@@ -66,15 +66,15 @@ are validated during startup. JWT secrets must be at least 32 characters.
 
 ## Environment variables
 
-| Group | Variables |
-| --- | --- |
-| App | `NODE_ENV`, `PORT`, `API_PREFIX`, `TRUSTED_ORIGINS` |
-| Database | `MONGO_URI`, `MONGO_DB_NAME`, `REDIS_URL` |
-| JWT | `JWT_ACCESS_SECRET`, `JWT_ACCESS_EXPIRES_IN`, `JWT_ADMIN_ACCESS_SECRET`, `JWT_ADMIN_ACCESS_EXPIRES_IN`, `JWT_REFRESH_SECRET`, `JWT_REFRESH_EXPIRES_IN`, `JWT_ADMIN_REFRESH_SECRET`, `JWT_ADMIN_REFRESH_EXPIRES_IN`, `JWT_REFRESH_COOKIE_NAME` |
-| OTP and login | `CODE_CHARACTERS`, `OTP_LENGTH`, `OTP_EXPIRES_IN`, `OTP_MAX_ATTEMPTS`, `LOGIN_MAX_ATTEMPTS` |
-| Email | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `MAIL_FROM` |
-| Client and OAuth | `CLIENT_URL`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_CALLBACK_URL`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `GITHUB_CALLBACK_URL` |
-| Avatars | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` |
+| Group            | Variables                                                                                                                                                                                                                                     |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| App              | `NODE_ENV`, `PORT`, `API_PREFIX`, `TRUSTED_ORIGINS`                                                                                                                                                                                           |
+| Database         | `MONGO_URI`, `MONGO_DB_NAME`, `REDIS_URL`                                                                                                                                                                                                     |
+| JWT              | `JWT_ACCESS_SECRET`, `JWT_ACCESS_EXPIRES_IN`, `JWT_ADMIN_ACCESS_SECRET`, `JWT_ADMIN_ACCESS_EXPIRES_IN`, `JWT_REFRESH_SECRET`, `JWT_REFRESH_EXPIRES_IN`, `JWT_ADMIN_REFRESH_SECRET`, `JWT_ADMIN_REFRESH_EXPIRES_IN`, `JWT_REFRESH_COOKIE_NAME` |
+| OTP and login    | `CODE_CHARACTERS`, `OTP_LENGTH`, `OTP_EXPIRES_IN`, `OTP_MAX_ATTEMPTS`, `LOGIN_MAX_ATTEMPTS`                                                                                                                                                   |
+| Email            | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `MAIL_FROM`                                                                                                                                                                           |
+| Client and OAuth | `CLIENT_URL`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_CALLBACK_URL`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `GITHUB_CALLBACK_URL`                                                                                            |
+| Avatars          | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`                                                                                                                                                                        |
 
 `TRUSTED_ORIGINS` accepts a comma-separated list of origins, for example
 `http://localhost:3000,http://localhost:5000`.
@@ -108,7 +108,7 @@ both services are available before running the application.
 >
 > Test the Sarahah API instantly with the complete hosted Postman collection:
 >
-> **[📚 Open Sarahah API Documentation](https://documenter.getpostman.com/view/34579966/2sBYAyu9Ts)**
+> **[📚 Open Sarahah API Documentation](https://documenter.getpostman.com/view/34579966/2sBYHYuJ5N)**
 
 Open the interactive Scalar API reference at:
 
@@ -133,102 +133,102 @@ All paths below are relative to `/api/v1`.
 
 ### System
 
-| Method | Path | Purpose |
-| --- | --- | --- |
-| `GET` | `/system/health` | Check API and database health |
-| `GET` | `/system/get-users` | List users through the system endpoint |
+| Method | Path                | Purpose                                |
+| ------ | ------------------- | -------------------------------------- |
+| `GET`  | `/system/health`    | Check API and database health          |
+| `GET`  | `/system/get-users` | List users through the system endpoint |
 
 ### Authentication
 
-| Method | Path | Purpose |
-| --- | --- | --- |
-| `POST` | `/auth/register` | Create an account |
-| `POST` | `/auth/login` | Log in with username or email |
-| `POST` | `/auth/login/verify-2fa` | Complete a 2FA login challenge |
-| `POST` | `/auth/refresh-token` | Issue a new access token from the refresh cookie |
-| `POST` | `/auth/logout` | Revoke the current session |
-| `GET` | `/auth/profile` | Get the authenticated profile |
-| `GET` | `/auth/activate-request` | Send an email verification OTP |
-| `POST` | `/auth/activate-email` | Verify an email OTP |
-| `POST` | `/auth/resend-otp` | Resend an email or 2FA OTP |
-| `POST` | `/auth/forgot-password` | Request a password reset |
-| `POST` | `/auth/reset-password` | Set a password with a reset token |
-| `POST` | `/auth/set-password` | Set a password for an OAuth account |
-| `GET` | `/auth/2fa-enable` | Start 2FA setup |
-| `POST` | `/auth/2fa-verify` | Verify and enable 2FA |
-| `GET` | `/auth/2fa-disable` | Disable 2FA |
-| `GET` | `/auth/google` | Start Google OAuth |
-| `GET` | `/auth/google/callback` | Complete Google OAuth |
-| `GET` | `/auth/github` | Start GitHub OAuth |
-| `GET` | `/auth/github/callback` | Complete GitHub OAuth |
+| Method | Path                     | Purpose                                          |
+| ------ | ------------------------ | ------------------------------------------------ |
+| `POST` | `/auth/register`         | Create an account                                |
+| `POST` | `/auth/login`            | Log in with username or email                    |
+| `POST` | `/auth/login/verify-2fa` | Complete a 2FA login challenge                   |
+| `POST` | `/auth/refresh-token`    | Issue a new access token from the refresh cookie |
+| `POST` | `/auth/logout`           | Revoke the current session                       |
+| `GET`  | `/auth/profile`          | Get the authenticated profile                    |
+| `GET`  | `/auth/activate-request` | Send an email verification OTP                   |
+| `POST` | `/auth/activate-email`   | Verify an email OTP                              |
+| `POST` | `/auth/resend-otp`       | Resend an email or 2FA OTP                       |
+| `POST` | `/auth/forgot-password`  | Request a password reset                         |
+| `POST` | `/auth/reset-password`   | Set a password with a reset token                |
+| `POST` | `/auth/set-password`     | Set a password for an OAuth account              |
+| `GET`  | `/auth/2fa-enable`       | Start 2FA setup                                  |
+| `POST` | `/auth/2fa-verify`       | Verify and enable 2FA                            |
+| `GET`  | `/auth/2fa-disable`      | Disable 2FA                                      |
+| `GET`  | `/auth/google`           | Start Google OAuth                               |
+| `GET`  | `/auth/google/callback`  | Complete Google OAuth                            |
+| `GET`  | `/auth/github`           | Start GitHub OAuth                               |
+| `GET`  | `/auth/github/callback`  | Complete GitHub OAuth                            |
 
 ### Users
 
-| Method | Path | Purpose |
-| --- | --- | --- |
-| `GET` | `/user/profile` | Get the current user's profile |
-| `PATCH` | `/user/update-profile` | Update profile fields |
-| `PATCH` | `/user/update-email` | Change email address |
-| `PATCH` | `/user/update-password` | Change password |
-| `PATCH` | `/user/update-avatar` | Upload an avatar as multipart form data |
-| `DELETE` | `/user/delete/me` | Delete the current account |
+| Method   | Path                    | Purpose                                 |
+| -------- | ----------------------- | --------------------------------------- |
+| `GET`    | `/user/profile`         | Get the current user's profile          |
+| `PATCH`  | `/user/update-profile`  | Update profile fields                   |
+| `PATCH`  | `/user/update-email`    | Change email address                    |
+| `PATCH`  | `/user/update-password` | Change password                         |
+| `PATCH`  | `/user/update-avatar`   | Upload an avatar as multipart form data |
+| `DELETE` | `/user/delete/me`       | Delete the current account              |
 
 ### Messaging
 
 Messaging routes require an authenticated user with a verified email address.
 Pagination uses `page` (default `1`) and `limit` (default `20`, maximum `100`).
 
-| Method | Path | Purpose |
-| --- | --- | --- |
-| `POST` | `/messaging/messages` | Send an anonymous text message |
-| `GET` | `/messaging/messages/received` | List received anonymous messages without sender identity |
-| `GET` | `/messaging/messages/sent` | List sent anonymous messages |
-| `DELETE` | `/messaging/messages/:id` | Delete a message sent by the current user |
-| `POST` | `/messaging/messages/:messageId/identity-requests` | Request the sender identity of a received message |
-| `GET` | `/messaging/identity-requests` | List requests for messages sent by the current user |
-| `PATCH` | `/messaging/identity-requests/:requestId` | Accept or reject a sender identity request |
-| `GET` | `/messaging/conversations` | List conversations and participant profiles |
-| `GET` | `/messaging/conversations/:id` | Get conversation details |
-| `PATCH` | `/messaging/conversations/:id/read` | Mark the current user's conversation as read |
-| `DELETE` | `/messaging/conversations/:id` | Hide the conversation for the current user |
-| `POST` | `/messaging/conversations/:conversationId/messages` | Send a conversation message |
-| `GET` | `/messaging/conversations/:conversationId/messages` | Get conversation participants and paginated messages |
+| Method   | Path                                                | Purpose                                                  |
+| -------- | --------------------------------------------------- | -------------------------------------------------------- |
+| `POST`   | `/messaging/messages`                               | Send an anonymous text message                           |
+| `GET`    | `/messaging/messages/received`                      | List received anonymous messages without sender identity |
+| `GET`    | `/messaging/messages/sent`                          | List sent anonymous messages                             |
+| `DELETE` | `/messaging/messages/:id`                           | Delete a message sent by the current user                |
+| `POST`   | `/messaging/messages/:messageId/identity-requests`  | Request the sender identity of a received message        |
+| `GET`    | `/messaging/identity-requests`                      | List requests for messages sent by the current user      |
+| `PATCH`  | `/messaging/identity-requests/:requestId`           | Accept or reject a sender identity request               |
+| `GET`    | `/messaging/conversations`                          | List conversations and participant profiles              |
+| `GET`    | `/messaging/conversations/:id`                      | Get conversation details                                 |
+| `PATCH`  | `/messaging/conversations/:id/read`                 | Mark the current user's conversation as read             |
+| `DELETE` | `/messaging/conversations/:id`                      | Hide the conversation for the current user               |
+| `POST`   | `/messaging/conversations/:conversationId/messages` | Send a conversation message                              |
+| `GET`    | `/messaging/conversations/:conversationId/messages` | Get conversation participants and paginated messages     |
 
 ### Blocking
 
 Blocking routes require an authenticated user with a verified email address.
 Blocking either user prevents anonymous messages and conversation access in both directions until the block is removed. Existing conversations remain stored.
 
-| Method | Path | Purpose |
-| --- | --- | --- |
-| `POST` | `/blocking/:userId` | Block a user |
-| `DELETE` | `/blocking/:userId` | Unblock a user |
-| `GET` | `/blocking` | List blocked users |
+| Method   | Path                | Purpose            |
+| -------- | ------------------- | ------------------ |
+| `POST`   | `/blocking/:userId` | Block a user       |
+| `DELETE` | `/blocking/:userId` | Unblock a user     |
+| `GET`    | `/blocking`         | List blocked users |
 
 ### Reporting
 
 Users can report a received message or another user with a reason (`spam`, `harassment`, `inappropriate`, `threats`, or `other`) and optional details. Reports require an authenticated, verified account. Admin review routes require the `admin` role.
 
-| Method | Path | Purpose |
-| --- | --- | --- |
-| `POST` | `/reporting/messages/:messageId` | Report a message received by the current user |
-| `POST` | `/reporting/users/:userId` | Report another user |
-| `GET` | `/reporting/mine` | Track the current user's paginated reports |
-| `GET` | `/admin/reports` | List reports, optionally filtered by status |
-| `GET` | `/admin/reports/:reportId` | Review a report and its target details |
-| `PATCH` | `/admin/reports/:reportId` | Set review status, action outcome, and admin note |
+| Method  | Path                             | Purpose                                           |
+| ------- | -------------------------------- | ------------------------------------------------- |
+| `POST`  | `/reporting/messages/:messageId` | Report a message received by the current user     |
+| `POST`  | `/reporting/users/:userId`       | Report another user                               |
+| `GET`   | `/reporting/mine`                | Track the current user's paginated reports        |
+| `GET`   | `/admin/reports`                 | List reports, optionally filtered by status       |
+| `GET`   | `/admin/reports/:reportId`       | Review a report and its target details            |
+| `PATCH` | `/admin/reports/:reportId`       | Set review status, action outcome, and admin note |
 
 ### Admin
 
 Admin routes require an authenticated user with the `admin` role.
 
-| Method | Path | Purpose |
-| --- | --- | --- |
-| `GET` | `/admin/users` | List all users |
-| `GET` | `/admin/user?userName=...` | Find a user by username query |
-| `GET` | `/admin/user/:userName` | Find a user by username path |
-| `POST` | `/admin/edit/user/:id` | Update a user |
-| `DELETE` | `/admin/delete/user/:id` | Delete a user |
+| Method   | Path                       | Purpose                       |
+| -------- | -------------------------- | ----------------------------- |
+| `GET`    | `/admin/users`             | List all users                |
+| `GET`    | `/admin/user?userName=...` | Find a user by username query |
+| `GET`    | `/admin/user/:userName`    | Find a user by username path  |
+| `POST`   | `/admin/edit/user/:id`     | Update a user                 |
+| `DELETE` | `/admin/delete/user/:id`   | Delete a user                 |
 
 ## Authentication notes
 

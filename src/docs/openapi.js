@@ -18,8 +18,7 @@ export const openapiDocument = generator.generateDocument({
   info: {
     title: "Sarahah API",
     version: "0.1.0",
-    description:
-      `Sarahah App REST API built with Node.js, Express, and MongoDB. Includes authentication, user management, OAuth, email verification, and password recovery.\n\n[Download the Postman collection](${API_PREFIX}/docs/postman) or [view the hosted Postman documentation](https://documenter.getpostman.com/view/34579966/2sBYAyu9Ts).`,
+    description: `Sarahah App REST API built with Node.js, Express, and MongoDB. Includes authentication, user management, OAuth, email verification, and password recovery.\n\n[Download the Postman collection](${API_PREFIX}/docs/postman) or [view the hosted Postman documentation](https://documenter.getpostman.com/view/34579966/2sBYHYuJ5N).`,
   },
 
   servers: [
@@ -61,7 +60,7 @@ export const openapiDocument = generator.generateDocument({
   ],
 
   externalDocs: {
-    url: "https://documenter.getpostman.com/view/34579966/2sBYAyu9Ts",
+    url: "https://documenter.getpostman.com/view/34579966/2sBYHYuJ5N",
     description: "Postman Documentation",
   },
 });
