@@ -519,6 +519,168 @@ export function registerDocsRoutes(registry) {
   });
 
   // Users
+  const paginationQuery = z.object({
+    page: z.coerce.number().int().min(1).max(1_000_000).default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(20),
+  });
+  const messageParams = z.object({
+    messageId: z.string().openapi({ example: "6aac25113c5dde33996e4010" }),
+  });
+
+  registry.registerPath({
+    method: "post",
+    path: "/messaging/messages",
+    tags: ["Messaging"],
+    summary: "Send Anonymous Message",
+    description: "Sends a text message without exposing the sender identity.",
+    security: [{ bearerAuth: [] }],
+    request: {
+      body: {
+        content: {
+          "application/json": {
+            schema: z.object({
+              receiverId: z.string().openapi({ example: "6aac25113c5dde33996e400c" }),
+              content: z.string().min(1).max(2000).openapi({ example: "Hello!" }),
+            }),
+          },
+        },
+      },
+    },
+    responses: {
+      201: { description: "Anonymous message sent." },
+      400: { description: "Invalid input or self-message." },
+      404: { description: "Receiver not found." },
+    },
+  });
+
+  registry.registerPath({
+    method: "get",
+    path: "/messaging/messages/received",
+    tags: ["Messaging"],
+    summary: "Get Received Anonymous Messages",
+    description: "Returns received messages without sender identities.",
+    security: [{ bearerAuth: [] }],
+    request: { query: paginationQuery },
+    responses: { 200: { description: "Messages retrieved." } },
+  });
+
+  registry.registerPath({ method: "get", path: "/messaging/messages/sent", tags: ["Messaging"], summary: "Get Sent Messages", description: "Returns the authenticated user's anonymous messages.", security: [{ bearerAuth: [] }], request: { query: paginationQuery }, responses: { 200: { description: "Sent messages retrieved." } } });
+  registry.registerPath({ method: "delete", path: "/messaging/messages/{id}", tags: ["Messaging"], summary: "Delete Sent Message", description: "Deletes a message owned by the authenticated sender.", security: [{ bearerAuth: [] }], request: { params: z.object({ id: z.string() }) }, responses: { 200: { description: "Message deleted." }, 404: { description: "Message not found." } } });
+  registry.registerPath({ method: "get", path: "/messaging/conversations/{id}", tags: ["Messaging"], summary: "Get Conversation", description: "Returns conversation details to a participant.", security: [{ bearerAuth: [] }], request: { params: z.object({ id: z.string() }) }, responses: { 200: { description: "Conversation retrieved." }, 404: { description: "Conversation not found." } } });
+  registry.registerPath({ method: "patch", path: "/messaging/conversations/{id}/read", tags: ["Messaging"], summary: "Mark Conversation Read", description: "Marks this conversation read for the current participant.", security: [{ bearerAuth: [] }], request: { params: z.object({ id: z.string() }) }, responses: { 200: { description: "Conversation marked read." }, 404: { description: "Conversation not found." } } });
+  registry.registerPath({ method: "delete", path: "/messaging/conversations/{id}", tags: ["Messaging"], summary: "Hide Conversation", description: "Hides this conversation for the current participant.", security: [{ bearerAuth: [] }], request: { params: z.object({ id: z.string() }) }, responses: { 200: { description: "Conversation hidden." }, 404: { description: "Conversation not found." } } });
+
+  registry.registerPath({
+    method: "post",
+    path: "/messaging/messages/{messageId}/identity-requests",
+    tags: ["Messaging"],
+    summary: "Request Message Sender Identity",
+    description: "Requests the identity of the sender of a received message.",
+    security: [{ bearerAuth: [] }],
+    request: { params: messageParams },
+    responses: {
+      201: { description: "Identity request created." },
+      403: { description: "The message belongs to another receiver." },
+      404: { description: "Message not found." },
+      409: { description: "A pending or accepted request already exists." },
+    },
+  });
+
+  registry.registerPath({
+    method: "get",
+    path: "/messaging/identity-requests",
+    tags: ["Messaging"],
+    summary: "Get Identity Requests",
+    description: "Returns requests for messages sent by the authenticated user.",
+    security: [{ bearerAuth: [] }],
+    request: { query: paginationQuery },
+    responses: { 200: { description: "Identity requests retrieved." } },
+  });
+
+  registry.registerPath({
+    method: "patch",
+    path: "/messaging/identity-requests/{requestId}",
+    tags: ["Messaging"],
+    summary: "Accept or Reject Identity Request",
+    description: "Accepting creates a conversation; rejection keeps identity hidden.",
+    security: [{ bearerAuth: [] }],
+    request: {
+      params: z.object({
+        requestId: z.string().openapi({ example: "6aac25113c5dde33996e4020" }),
+      }),
+      body: {
+        content: {
+          "application/json": {
+            schema: z.object({ status: z.enum(["accepted", "rejected"]) }),
+          },
+        },
+      },
+    },
+    responses: {
+      200: { description: "Identity request updated." },
+      403: { description: "Request belongs to another sender." },
+      404: { description: "Request not found." },
+      409: { description: "Request was already processed." },
+    },
+  });
+
+  registry.registerPath({
+    method: "get",
+    path: "/messaging/conversations",
+    tags: ["Messaging"],
+    summary: "Get Conversations",
+    description: "Returns conversations and public profiles for their participants.",
+    security: [{ bearerAuth: [] }],
+    request: { query: paginationQuery },
+    responses: { 200: { description: "Conversations retrieved." } },
+  });
+
+  registry.registerPath({
+    method: "post",
+    path: "/messaging/conversations/{conversationId}/messages",
+    tags: ["Messaging"],
+    summary: "Send Conversation Message",
+    description: "Sends a text message as a conversation participant.",
+    security: [{ bearerAuth: [] }],
+    request: {
+      params: z.object({
+        conversationId: z.string().openapi({ example: "6aac25113c5dde33996e4030" }),
+      }),
+      body: {
+        content: {
+          "application/json": {
+            schema: z.object({ content: z.string().min(1).max(2000) }),
+          },
+        },
+      },
+    },
+    responses: {
+      201: { description: "Message sent." },
+      403: { description: "User is not a participant." },
+      404: { description: "Conversation not found." },
+    },
+  });
+
+  registry.registerPath({
+    method: "get",
+    path: "/messaging/conversations/{conversationId}/messages",
+    tags: ["Messaging"],
+    summary: "Get Conversation Messages",
+    description: "Returns participant profiles and paginated conversation messages.",
+    security: [{ bearerAuth: [] }],
+    request: {
+      params: z.object({
+        conversationId: z.string().openapi({ example: "6aac25113c5dde33996e4030" }),
+      }),
+      query: paginationQuery,
+    },
+    responses: {
+      200: { description: "Conversation and messages retrieved." },
+      403: { description: "User is not a participant." },
+      404: { description: "Conversation not found." },
+    },
+  });
+
   registry.registerPath({
     method: "get",
     path: "/user/profile",

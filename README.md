@@ -173,6 +173,27 @@ All paths below are relative to `/api/v1`.
 | `PATCH` | `/user/update-avatar` | Upload an avatar as multipart form data |
 | `DELETE` | `/user/delete/me` | Delete the current account |
 
+### Messaging
+
+Messaging routes require an authenticated user with a verified email address.
+Pagination uses `page` (default `1`) and `limit` (default `20`, maximum `100`).
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `POST` | `/messaging/messages` | Send an anonymous text message |
+| `GET` | `/messaging/messages/received` | List received anonymous messages without sender identity |
+| `GET` | `/messaging/messages/sent` | List sent anonymous messages |
+| `DELETE` | `/messaging/messages/:id` | Delete a message sent by the current user |
+| `POST` | `/messaging/messages/:messageId/identity-requests` | Request the sender identity of a received message |
+| `GET` | `/messaging/identity-requests` | List requests for messages sent by the current user |
+| `PATCH` | `/messaging/identity-requests/:requestId` | Accept or reject a sender identity request |
+| `GET` | `/messaging/conversations` | List conversations and participant profiles |
+| `GET` | `/messaging/conversations/:id` | Get conversation details |
+| `PATCH` | `/messaging/conversations/:id/read` | Mark the current user's conversation as read |
+| `DELETE` | `/messaging/conversations/:id` | Hide the conversation for the current user |
+| `POST` | `/messaging/conversations/:conversationId/messages` | Send a conversation message |
+| `GET` | `/messaging/conversations/:conversationId/messages` | Get conversation participants and paginated messages |
+
 ### Admin
 
 Admin routes require an authenticated user with the `admin` role.

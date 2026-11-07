@@ -46,6 +46,10 @@ export const openapiDocument = generator.generateDocument({
       name: "Users",
       description: "User endpoints",
     },
+    {
+      name: "Messaging",
+      description: "Anonymous messages, identity requests, and conversations",
+    },
   ],
 
   externalDocs: {

@@ -49,6 +49,13 @@ class UserRepository extends BaseRepository {
     });
   }
 
+  findPublicByIds(ids) {
+    return this.model
+      .find({ _id: { $in: ids } })
+      .select("userName firstName lastName avatar")
+      .lean();
+  }
+
   findById(id, select) {
     return this.model.findById(id).select(select);
   }
