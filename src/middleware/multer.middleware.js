@@ -7,7 +7,6 @@ import sharp from "sharp";
 import { z } from "zod";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
-const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png"];
 
 export const upload = multer({
   storage: multer.memoryStorage(),
@@ -21,7 +20,6 @@ export const upload = multer({
 
 const AvatarFileValidator = z
   .object({
-    mimetype: z.enum(ACCEPTED_IMAGE_TYPES),
     size: z.number().positive().max(MAX_FILE_SIZE),
     buffer: z.instanceof(Buffer),
   })
