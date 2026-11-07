@@ -8,9 +8,36 @@ import {
 import { validate } from "../../middleware/validate.middleware.js";
 import {
   AdminUpdateValidator,
+  adminReportParamsValidator,
+  adminReportUpdateValidator,
+  adminReportsValidator,
   userSearchByUserNameValidator,
 } from "./admin.zod.js";
+import {
+  getReportForAdminService,
+  getReportsForAdminService,
+  updateReportService,
+} from "../reporting/reporting.service.js";
 const router = Router();
+
+router.get("/reports", validate(adminReportsValidator), async (req, res, next) => {
+  try {
+    res.status(200).json(await getReportsForAdminService(req.validate.query));
+  } catch (error) { next(error); }
+});
+
+router.get("/reports/:reportId", validate(adminReportParamsValidator), async (req, res, next) => {
+  try {
+    res.status(200).json({ data: await getReportForAdminService(req.validate.params.reportId) });
+  } catch (error) { next(error); }
+});
+
+router.patch("/reports/:reportId", validate(adminReportUpdateValidator), async (req, res, next) => {
+  try {
+    const data = await updateReportService(req.user.id, req.validate.params.reportId, req.validate.body);
+    res.status(200).json({ message: "Report reviewed successfully", data });
+  } catch (error) { next(error); }
+});
 
 router.delete("/delete/user/:id", async (req, res, next) => {
   try {

@@ -4,3 +4,4 @@ export * from "./auth/index.js";
 export * from "./admin/index.js";
 export * from "./messaging/index.js";
 export * from "./blocking/index.js";
+export * from "./reporting/index.js";

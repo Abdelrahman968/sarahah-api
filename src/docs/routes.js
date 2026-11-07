@@ -49,6 +49,36 @@ export function registerDocsRoutes(registry) {
     responses: { 200: { description: "Blocked users retrieved." } },
   });
 
+  registry.registerPath({
+    method: "post",
+    path: "/reporting/messages/{messageId}",
+    tags: ["Reporting"],
+    summary: "Report Message",
+    security: [{ bearerAuth: [] }],
+    request: {
+      params: z.object({ messageId: z.string() }),
+      body: { content: { "application/json": { schema: z.object({ reason: z.enum(["spam", "harassment", "inappropriate", "threats", "other"]), details: z.string().max(1000).optional() }) } } },
+    },
+    responses: { 201: { description: "Report created." }, 403: { description: "Only the message receiver can report it." }, 404: { description: "Message not found." } },
+  });
+  registry.registerPath({
+    method: "post",
+    path: "/reporting/users/{userId}",
+    tags: ["Reporting"],
+    summary: "Report User",
+    security: [{ bearerAuth: [] }],
+    request: {
+      params: z.object({ userId: z.string() }),
+      body: { content: { "application/json": { schema: z.object({ reason: z.enum(["spam", "harassment", "inappropriate", "threats", "other"]), details: z.string().max(1000).optional() }) } } },
+    },
+    responses: { 201: { description: "Report created." }, 400: { description: "Cannot report yourself." }, 404: { description: "User not found." } },
+  });
+  const reportPaginationQuery = z.object({ page: z.coerce.number().int().min(1).default(1), limit: z.coerce.number().int().min(1).max(100).default(20) });
+  registry.registerPath({ method: "get", path: "/reporting/mine", tags: ["Reporting"], summary: "Get My Reports", security: [{ bearerAuth: [] }], request: { query: reportPaginationQuery }, responses: { 200: { description: "User reports and their statuses." } } });
+  registry.registerPath({ method: "get", path: "/admin/reports", tags: ["Admin"], summary: "List Reports", security: [{ bearerAuth: [] }], request: { query: reportPaginationQuery.extend({ status: z.enum(["pending", "reviewing", "resolved", "dismissed"]).optional() }) }, responses: { 200: { description: "Reports retrieved." } } });
+  registry.registerPath({ method: "get", path: "/admin/reports/{reportId}", tags: ["Admin"], summary: "Get Report Details", security: [{ bearerAuth: [] }], request: { params: z.object({ reportId: z.string() }) }, responses: { 200: { description: "Report details retrieved." }, 404: { description: "Report not found." } } });
+  registry.registerPath({ method: "patch", path: "/admin/reports/{reportId}", tags: ["Admin"], summary: "Review Report", description: "Records review status, outcome action, and an optional admin note.", security: [{ bearerAuth: [] }], request: { params: z.object({ reportId: z.string() }), body: { content: { "application/json": { schema: z.object({ status: z.enum(["reviewing", "resolved", "dismissed"]), action: z.enum(["none", "warning", "content_removed", "account_restricted"]).default("none"), adminNote: z.string().max(1000).optional() }) } } } }, responses: { 200: { description: "Report updated." }, 404: { description: "Report not found." } } });
+
   // System
   registry.registerPath({
     method: "get",

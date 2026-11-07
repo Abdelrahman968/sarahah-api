@@ -54,6 +54,10 @@ export const openapiDocument = generator.generateDocument({
       name: "Blocking",
       description: "Block and unblock users",
     },
+    {
+      name: "Reporting",
+      description: "User reports and administrator review",
+    },
   ],
 
   externalDocs: {

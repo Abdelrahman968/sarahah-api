@@ -205,6 +205,19 @@ Blocking either user prevents anonymous messages and conversation access in both
 | `DELETE` | `/blocking/:userId` | Unblock a user |
 | `GET` | `/blocking` | List blocked users |
 
+### Reporting
+
+Users can report a received message or another user with a reason (`spam`, `harassment`, `inappropriate`, `threats`, or `other`) and optional details. Reports require an authenticated, verified account. Admin review routes require the `admin` role.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `POST` | `/reporting/messages/:messageId` | Report a message received by the current user |
+| `POST` | `/reporting/users/:userId` | Report another user |
+| `GET` | `/reporting/mine` | Track the current user's paginated reports |
+| `GET` | `/admin/reports` | List reports, optionally filtered by status |
+| `GET` | `/admin/reports/:reportId` | Review a report and its target details |
+| `PATCH` | `/admin/reports/:reportId` | Set review status, action outcome, and admin note |
+
 ### Admin
 
 Admin routes require an authenticated user with the `admin` role.

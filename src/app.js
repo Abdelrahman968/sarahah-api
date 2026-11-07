@@ -17,6 +17,7 @@ import {
   AuthRoutes,
   BlockingRoutes,
   MessagingRoutes,
+  ReportingRoutes,
   SystemRoutes,
   UserRoutes,
 } from "./modules/index.js";
@@ -107,6 +108,12 @@ const routes = [
     middlewares: [authenticate, requireVerifiedEmail, apiLimiter],
     router: BlockingRoutes,
     docs: { tag: "Blocking" },
+  },
+  {
+    path: "/reporting",
+    middlewares: [authenticate, requireVerifiedEmail, apiLimiter],
+    router: ReportingRoutes,
+    docs: { tag: "Reporting" },
   },
   {
     path: "/admin",
