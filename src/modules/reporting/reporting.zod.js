@@ -30,7 +30,9 @@ export const getReportsValidator = z.object({
 
 export const adminReportsValidator = z.object({
   query: paginationValidator.extend({
-    status: z.enum(["pending", "reviewing", "resolved", "dismissed"]).optional(),
+    status: z
+      .enum(["pending", "reviewing", "resolved", "dismissed"])
+      .optional(),
   }),
 });
 
@@ -38,7 +40,9 @@ export const updateReportValidator = z.object({
   params: z.object({ reportId: objectIdValidator }),
   body: z.object({
     status: z.enum(["reviewing", "resolved", "dismissed"]),
-    action: z.enum(["none", "warning", "content_removed", "account_restricted"]).default("none"),
+    action: z
+      .enum(["none", "warning", "content_removed", "account_restricted"])
+      .default("none"),
     adminNote: z.string().trim().max(1000).optional(),
   }),
 });
